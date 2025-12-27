@@ -94,7 +94,7 @@ class TokyoFestivalScraper:
         festivals = []
 
         # Mots-clés à filtrer (bruit)
-        noise_keywords = ['articles similaires', 'recherche', 'mon livre', 'jipangu',
+        noise_keywords = ['articles similaires', 'recherche', 'mon livre', 'mes livres', 'jipangu',
                          'articles recommandés', 'annuler la réponse', 'commentaire',
                          'guigui', 'réseaux sociaux', 'régions du japon', 'les festivals dédiés']
 
@@ -144,6 +144,14 @@ class TokyoFestivalScraper:
                         paragraph_elements.append(next_elem)
 
                 next_elem = next_elem.find_next_sibling()
+
+            # Cas spécial : Si le titre contient "marchés de Noël" ou similaire,
+            # chercher les sous-festivals dans les paragraphes <strong>
+            if 'marché' in name.lower() and 'noël' in name.lower():
+                sub_festivals = self._extract_sub_festivals(paragraph_elements, dates, month, year)
+                if sub_festivals:
+                    festivals.extend(sub_festivals)
+                    continue  # Ne pas ajouter le h2 parent, seulement les sous-festivals
 
             # Extraire les informations des paragraphes
             if paragraphs:
@@ -195,9 +203,152 @@ class TokyoFestivalScraper:
                 if description_parts:
                     festival['description'] = ' '.join(description_parts[:2])
 
-            festivals.append(festival)
+            # Ne garder que les festivals valides (qui ont au moins des dates ou une description)
+            if festival['dates'] or (festival['description'] and len(festival['description']) > 20):
+                festivals.append(festival)
 
         return festivals
+
+    def _extract_sub_festivals(self, paragraph_elements, parent_dates, month, year) -> List[Dict]:
+        """
+        Extrait les sous-festivals des paragraphes <strong>
+        Utilisé pour les cas comme "Les marchés de Noël" qui contiennent plusieurs festivals
+
+        Args:
+            paragraph_elements: Liste des éléments <p> BeautifulSoup
+            parent_dates: Dates du h2 parent
+            month: Mois
+            year: Année
+
+        Returns:
+            Liste des sous-festivals extraits
+        """
+        sub_festivals = []
+
+        for p_elem in paragraph_elements:
+            # Chercher les paragraphes qui commencent par <strong>
+            strong = p_elem.find('strong')
+            if not strong:
+                continue
+
+            # Le nom peut être dans plusieurs <strong> consécutifs
+            # Ex: <strong>Nom <strong>2025</strong></strong> <strong>Winter</strong>
+            # Extraire tout le texte avant le premier <br>
+            name_parts = []
+            for child in p_elem.children:
+                # Arrêter au premier <br>
+                if child.name == 'br':
+                    break
+                # Collecter le texte des <strong> (avec separator=' ' pour les balises imbriquées)
+                if child.name == 'strong':
+                    name_parts.append(child.get_text(separator=' ', strip=True))
+                elif isinstance(child, str):
+                    # Texte brut entre les balises
+                    text = child.strip()
+                    if text:
+                        name_parts.append(text)
+
+            name = ' '.join(name_parts)
+
+            # Ignorer si c'est juste un mot simple, vide, ou du texte générique
+            if len(name) < 5:
+                continue
+
+            # Filtrer les textes génériques qui ne sont pas des noms de festivals
+            # Caractéristiques des paragraphes d'introduction:
+            # - Très longs (>100 caractères)
+            # - Contiennent certains mots clés
+            if len(name) > 100:
+                continue
+
+            generic_keywords = ['quelques marchés', 'voici une liste', 'dans différents endroits']
+            if any(keyword in name.lower() for keyword in generic_keywords):
+                continue
+
+            if name.lower().startswith('des ') or name.lower().startswith('la magie'):
+                continue
+
+            # Créer l'entrée du festival
+            festival = {
+                'name': name,
+                'dates': None,
+                'location': None,
+                'description': '',
+                'website': None,
+                'googlemap_link': None
+            }
+
+            # Extraire le HTML brut pour parser plus finement
+            p_html = str(p_elem)
+
+            # Extraire le texte complet du paragraphe avec <br> comme séparateur
+            full_text = p_elem.get_text(separator=' ', strip=True)
+
+            # Chercher les dates (format: "Jusqu'au 25 décembre 2025")
+            # Note: \u2019 = ' (RIGHT SINGLE QUOTATION MARK)
+            dates_match = re.search(r'Jusqu[\'\'\u2019]?au\s+(\d{1,2})\s+(\w+)\s+(\d{4})', full_text, re.IGNORECASE)
+            if dates_match:
+                # Mapping des mois
+                mois_mapping = {
+                    'janvier': '01', 'février': '02', 'fevrier': '02', 'mars': '03',
+                    'avril': '04', 'mai': '05', 'juin': '06', 'juillet': '07',
+                    'août': '08', 'aout': '08', 'septembre': '09', 'octobre': '10',
+                    'novembre': '11', 'décembre': '12', 'decembre': '12'
+                }
+                jour = dates_match.group(1).zfill(2)
+                mois = mois_mapping.get(dates_match.group(2).lower(), '??')
+                annee = dates_match.group(3)
+
+                # Format: du 1er au 25 décembre
+                festival['dates'] = f"{annee}/{mois}/01 - {annee}/{mois}/{jour}"
+
+            # Chercher le lieu : il est dans un lien après "Lieu :"
+            # Il peut y avoir plusieurs liens, prendre le premier non-vide
+            lieu_section = re.search(r'Lieu\s*:(.+?)(?:<br|Site)', p_html, re.IGNORECASE | re.DOTALL)
+            if lieu_section:
+                lieu_html = lieu_section.group(1)
+                # Extraire tous les liens
+                lieu_links = re.findall(r'<a[^>]*>([^<]*)</a>', lieu_html)
+                for link_text in lieu_links:
+                    if link_text.strip():
+                        location = link_text.strip()
+                        # Nettoyer les entités HTML
+                        location = location.replace('&rsquo;', "'")
+                        festival['location'] = location
+                        break
+
+            # Extraire la description : entre "Site de l'événement" et "Entrée"
+            # Format: ...Site de l'événement</a><br/>DESCRIPTION<br/>Entrée...
+            desc_pattern = re.search(r'v.nement</a><br/>(.+?)<br/>Entr', p_html, re.IGNORECASE | re.DOTALL)
+            if desc_pattern:
+                description = desc_pattern.group(1).strip()
+                # Nettoyer les balises HTML
+                description = re.sub(r'<[^>]+>', ' ', description)
+                # Nettoyer les entités HTML
+                description = description.replace('&rsquo;', "'").replace('&nbsp;', ' ')
+                description = description.replace('&#8230;', '...').replace('&eacute;', 'é')
+                description = description.replace('&egrave;', 'è').replace('&agrave;', 'à')
+                # Nettoyer les espaces multiples
+                description = re.sub(r'\s+', ' ', description).strip()
+                if len(description) > 20:
+                    festival['description'] = description
+
+            # Extraire les liens
+            links = p_elem.find_all('a')
+            for link in links:
+                href = link.get('href', '')
+                link_text = link.get_text(strip=True).lower()
+
+                # Google Maps
+                if ('google' in href and 'maps' in href) or 'goo.gl' in href or 'maps.app.goo.gl' in href:
+                    festival['googlemap_link'] = href
+                # Website (sur "Site de l'événement")
+                elif 'site' in link_text or 'événement' in link_text:
+                    festival['website'] = href
+
+            sub_festivals.append(festival)
+
+        return sub_festivals
 
     def _split_name_and_dates(self, title_text: str) -> tuple:
         """

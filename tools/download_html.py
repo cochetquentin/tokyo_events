@@ -98,13 +98,30 @@ def download_multiple_months(months_list):
 
 
 if __name__ == "__main__":
-    # Télécharger mars 2025 (pour le debug)
-    print("\n🎯 Téléchargement de mars 2025 pour analyse...\n")
-    download_festival_page(3, 2025)
+    if len(sys.argv) != 3:
+        print("Usage: uv run tools/download_html.py <mois> <année>")
+        print("Exemple: uv run tools/download_html.py mars 2025")
+        sys.exit(1)
 
-    # Décommenter pour télécharger d'autres mois
-    # download_multiple_months([
-    #     (3, 2025),
-    #     (7, 2025),
-    #     (10, 2025)
-    # ])
+    month_name = sys.argv[1].lower()
+    try:
+        year = int(sys.argv[2])
+    except ValueError:
+        print(f"❌ Année invalide: {sys.argv[2]}")
+        sys.exit(1)
+
+    # Mapping des mois
+    months = {
+        'janvier': 1, 'février': 2, 'fevrier': 2, 'mars': 3, 'avril': 4,
+        'mai': 5, 'juin': 6, 'juillet': 7, 'août': 8, 'aout': 8,
+        'septembre': 9, 'octobre': 10, 'novembre': 11, 'décembre': 12, 'decembre': 12
+    }
+
+    month_num = months.get(month_name)
+    if not month_num:
+        print(f"❌ Mois invalide: {month_name}")
+        print(f"Mois valides: {', '.join(months.keys())}")
+        sys.exit(1)
+
+    print(f"\n🎯 Téléchargement de {month_name} {year}...\n")
+    download_festival_page(month_num, year)
