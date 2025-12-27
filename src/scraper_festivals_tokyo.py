@@ -116,6 +116,10 @@ class TokyoFestivalScraper:
             if not name:
                 continue
 
+            # Nettoyer les espaces insécables (nbsp) dans le nom
+            name = name.replace('\xa0', ' ').replace('&nbsp;', ' ')
+            name = re.sub(r'\s+', ' ', name).strip()
+
             # Créer l'entrée du festival
             festival = {
                 'name': name,
@@ -251,6 +255,10 @@ class TokyoFestivalScraper:
                         name_parts.append(text)
 
             name = ' '.join(name_parts)
+
+            # Nettoyer les espaces insécables (nbsp) dans le nom
+            name = name.replace('\xa0', ' ').replace('&nbsp;', ' ')
+            name = re.sub(r'\s+', ' ', name).strip()
 
             # Ignorer si c'est juste un mot simple, vide, ou du texte générique
             if len(name) < 5:
