@@ -348,8 +348,8 @@ class TokyoFestivalScraper:
             desc_pattern = re.search(r'v.nement</a><br/>(.+?)(?:<br/>Entr|</p>)', p_html, re.IGNORECASE | re.DOTALL)
             if desc_pattern:
                 description = desc_pattern.group(1).strip()
-                # Nettoyer les balises HTML
-                description = re.sub(r'<[^>]+>', ' ', description)
+                # Nettoyer les balises HTML sans ajouter d'espaces (pour éviter "hatsumode ," au lieu de "hatsumode,")
+                description = re.sub(r'<[^>]+>', '', description)
                 # Nettoyer les entités HTML
                 description = description.replace('&rsquo;', "'").replace('&nbsp;', ' ')
                 description = description.replace('&#8230;', '...').replace('&eacute;', 'é')
@@ -426,6 +426,10 @@ class TokyoFestivalScraper:
 
         dates_lower = dates_text.lower()
 
+        # Nettoyer les espaces multiples causés par separator=' ' dans get_text()
+        # Ex: "1 ER -2 MARS" → "1 ER-2 MARS"
+        dates_lower = re.sub(r'\s+', ' ', dates_lower).strip()
+
         # Pattern spécial: "31 décembre 2024-1 er janvier 2025" (plage entre deux années)
         # Note: \s* pour "er" séparé par <sup>
         match = re.search(r'(\d{1,2})\s+(\w+)\s+(\d{4})\s*[-–]\s*(\d{1,2})\s*(?:er|e)?\s+(\w+)\s+(\d{4})', dates_lower)
@@ -439,17 +443,21 @@ class TokyoFestivalScraper:
             return f"{annee1}/{mois1}/{jour1} - {annee2}/{mois2}/{jour2}"
 
         # Pattern spécial: "30 juin-1er juillet 2025" (plage entre deux mois, même année)
-        match = re.search(r'(\d{1,2})\s+(\w+)\s*[-–]\s*(\d{1,2})(?:er|e)?\s+(\w+)\s+(\d{4})', dates_lower)
+        # Note: le mois1 doit être un vrai mois (au moins 3 lettres), pas "er"
+        match = re.search(r'(\d{1,2})\s+(\w{3,})\s*[-–]\s*(\d{1,2})(?:er|e)?\s+(\w+)\s+(\d{4})', dates_lower)
         if match:
             jour1 = match.group(1).zfill(2)
             mois1 = mois_mapping.get(match.group(2), '??')
             jour2 = match.group(3).zfill(2)
             mois2 = mois_mapping.get(match.group(4), '??')
             annee = match.group(5)
-            return f"{annee}/{mois1}/{jour1} - {annee}/{mois2}/{jour2}"
+            # Vérifier que mois1 est un vrai mois (pas "er")
+            if mois1 != '??':
+                return f"{annee}/{mois1}/{jour1} - {annee}/{mois2}/{jour2}"
 
-        # Pattern 0: "XER-YMOIS ANNÉE" sans espaces (1er-2mars 2025)
-        match = re.search(r'(\d{1,2})(?:er|e)?\s*[-–]\s*(\d{1,2})\s*(\w+)\s+(\d{4})', dates_lower)
+        # Pattern 0: "X ER-Y MOIS ANNÉE" avec espaces optionnels (1 er-2 mars 2025, 1er-2mars 2025)
+        # Note: \s* avant et après "er" pour gérer <sup>
+        match = re.search(r'(\d{1,2})\s*(?:er|e)?\s*[-–]\s*(\d{1,2})\s+(\w+)\s+(\d{4})', dates_lower)
         if match:
             jour1 = match.group(1).zfill(2)
             jour2 = match.group(2).zfill(2)
@@ -482,16 +490,9 @@ class TokyoFestivalScraper:
             annee = match.group(4)
             return f"{annee}/{mois}/{jour1} - {annee}/{mois}/{jour2}"
 
-        # Pattern 3: "X MOIS ANNÉE" (date simple)
-        match = re.search(r'(\d{1,2})\s+(\w+)\s+(\d{4})', dates_lower)
-        if match:
-            jour = match.group(1).zfill(2)
-            mois = mois_mapping.get(match.group(2), '??')
-            annee = match.group(3)
-            return f"{annee}/{mois}/{jour}"
-
-        # Pattern 4: "XER MOIS ANNÉE" (1er, 2e, etc.)
-        match = re.search(r'(\d{1,2})(?:er|e)?\s+(\w+)\s+(\d{4})', dates_lower)
+        # Pattern 3: "X ER MOIS ANNÉE" (date simple avec espaces optionnels)
+        # Note: \s* avant "er" pour gérer <sup>
+        match = re.search(r'(\d{1,2})\s*(?:er|e)?\s+(\w+)\s+(\d{4})', dates_lower)
         if match:
             jour = match.group(1).zfill(2)
             mois = mois_mapping.get(match.group(2), '??')
