@@ -102,7 +102,8 @@ class TokyoFestivalScraper:
         h2_elements = soup.find_all('h2', class_='wp-block-heading')
 
         for h2 in h2_elements:
-            title_text = h2.get_text(strip=True)
+            # Utiliser separator=' ' pour ajouter des espaces entre les éléments (ex: <sup>)
+            title_text = h2.get_text(separator=' ', strip=True)
 
             # Filtrer le bruit
             if any(keyword in title_text.lower() for keyword in noise_keywords):
@@ -145,9 +146,10 @@ class TokyoFestivalScraper:
 
                 next_elem = next_elem.find_next_sibling()
 
-            # Cas spécial : Si le titre contient "marchés de Noël" ou similaire,
+            # Cas spécial : Si le titre contient "marchés de Noël" ou "hatsumode" ou similaire,
             # chercher les sous-festivals dans les paragraphes <strong>
-            if 'marché' in name.lower() and 'noël' in name.lower():
+            name_lower = name.lower()
+            if ('marché' in name_lower and 'noël' in name_lower) or 'hatsumode' in name_lower:
                 sub_festivals = self._extract_sub_festivals(paragraph_elements, dates, month, year)
                 if sub_festivals:
                     festivals.extend(sub_festivals)
@@ -284,23 +286,46 @@ class TokyoFestivalScraper:
             # Extraire le texte complet du paragraphe avec <br> comme séparateur
             full_text = p_elem.get_text(separator=' ', strip=True)
 
-            # Chercher les dates (format: "Jusqu'au 25 décembre 2025")
-            # Note: \u2019 = ' (RIGHT SINGLE QUOTATION MARK)
-            dates_match = re.search(r'Jusqu[\'\'\u2019]?au\s+(\d{1,2})\s+(\w+)\s+(\d{4})', full_text, re.IGNORECASE)
-            if dates_match:
-                # Mapping des mois
-                mois_mapping = {
-                    'janvier': '01', 'février': '02', 'fevrier': '02', 'mars': '03',
-                    'avril': '04', 'mai': '05', 'juin': '06', 'juillet': '07',
-                    'août': '08', 'aout': '08', 'septembre': '09', 'octobre': '10',
-                    'novembre': '11', 'décembre': '12', 'decembre': '12'
-                }
-                jour = dates_match.group(1).zfill(2)
-                mois = mois_mapping.get(dates_match.group(2).lower(), '??')
-                annee = dates_match.group(3)
+            # Mapping des mois
+            mois_mapping = {
+                'janvier': '01', 'février': '02', 'fevrier': '02', 'mars': '03',
+                'avril': '04', 'mai': '05', 'juin': '06', 'juillet': '07',
+                'août': '08', 'aout': '08', 'septembre': '09', 'octobre': '10',
+                'novembre': '11', 'décembre': '12', 'decembre': '12'
+            }
 
-                # Format: du 1er au 25 décembre
-                festival['dates'] = f"{annee}/{mois}/01 - {annee}/{mois}/{jour}"
+            # Chercher les dates (plusieurs formats possibles)
+            # Format 1: "Du 31 décembre 2024 au 4 janvier 2025" (plage entre deux années)
+            # Note: (?:\s*er)? pour gérer "1 er" avec espace (à cause de <sup>)
+            dates_match = re.search(r'Du\s+(\d{1,2})(?:\s*er)?\s+(\w+)\s+(\d{4})\s+au\s+(\d{1,2})(?:\s*er)?\s+(\w+)\s+(\d{4})', full_text, re.IGNORECASE)
+            if dates_match:
+                jour1 = dates_match.group(1).zfill(2)
+                mois1 = mois_mapping.get(dates_match.group(2).lower(), '??')
+                annee1 = dates_match.group(3)
+                jour2 = dates_match.group(4).zfill(2)
+                mois2 = mois_mapping.get(dates_match.group(5).lower(), '??')
+                annee2 = dates_match.group(6)
+                festival['dates'] = f"{annee1}/{mois1}/{jour1} - {annee2}/{mois2}/{jour2}"
+
+            # Format 1b: "Du 1er au 3 janvier 2025" (même mois et année)
+            if not festival['dates']:
+                dates_match = re.search(r'Du\s+(\d{1,2})(?:\s*er)?\s+au\s+(\d{1,2})(?:\s*er)?\s+(\w+)\s+(\d{4})', full_text, re.IGNORECASE)
+                if dates_match:
+                    jour1 = dates_match.group(1).zfill(2)
+                    jour2 = dates_match.group(2).zfill(2)
+                    mois = mois_mapping.get(dates_match.group(3).lower(), '??')
+                    annee = dates_match.group(4)
+                    festival['dates'] = f"{annee}/{mois}/{jour1} - {annee}/{mois}/{jour2}"
+
+            # Format 2: "Jusqu'au 25 décembre 2025"
+            if not festival['dates']:
+                dates_match = re.search(r'Jusqu[\'\'\u2019]?au\s+(\d{1,2})\s+(\w+)\s+(\d{4})', full_text, re.IGNORECASE)
+                if dates_match:
+                    jour = dates_match.group(1).zfill(2)
+                    mois = mois_mapping.get(dates_match.group(2).lower(), '??')
+                    annee = dates_match.group(3)
+                    # Format: du 1er au 25 décembre
+                    festival['dates'] = f"{annee}/{mois}/01 - {annee}/{mois}/{jour}"
 
             # Chercher le lieu : il est dans un lien après "Lieu :"
             # Il peut y avoir plusieurs liens, prendre le premier non-vide
@@ -317,9 +342,10 @@ class TokyoFestivalScraper:
                         festival['location'] = location
                         break
 
-            # Extraire la description : entre "Site de l'événement" et "Entrée"
-            # Format: ...Site de l'événement</a><br/>DESCRIPTION<br/>Entrée...
-            desc_pattern = re.search(r'v.nement</a><br/>(.+?)<br/>Entr', p_html, re.IGNORECASE | re.DOTALL)
+            # Extraire la description : après "Site de l'événement"
+            # Format 1: ...Site de l'événement</a><br/>DESCRIPTION<br/>Entrée... (marchés de Noël)
+            # Format 2: ...Site de l'événement</a><br/>DESCRIPTION</p> (hatsumode)
+            desc_pattern = re.search(r'v.nement</a><br/>(.+?)(?:<br/>Entr|</p>)', p_html, re.IGNORECASE | re.DOTALL)
             if desc_pattern:
                 description = desc_pattern.group(1).strip()
                 # Nettoyer les balises HTML
@@ -328,6 +354,7 @@ class TokyoFestivalScraper:
                 description = description.replace('&rsquo;', "'").replace('&nbsp;', ' ')
                 description = description.replace('&#8230;', '...').replace('&eacute;', 'é')
                 description = description.replace('&egrave;', 'è').replace('&agrave;', 'à')
+                description = description.replace('&ccedil;', 'ç')
                 # Nettoyer les espaces multiples
                 description = re.sub(r'\s+', ' ', description).strip()
                 if len(description) > 20:
@@ -399,7 +426,19 @@ class TokyoFestivalScraper:
 
         dates_lower = dates_text.lower()
 
-        # Pattern spécial: "30 juin-1er juillet 2025" (plage entre deux mois)
+        # Pattern spécial: "31 décembre 2024-1 er janvier 2025" (plage entre deux années)
+        # Note: \s* pour "er" séparé par <sup>
+        match = re.search(r'(\d{1,2})\s+(\w+)\s+(\d{4})\s*[-–]\s*(\d{1,2})\s*(?:er|e)?\s+(\w+)\s+(\d{4})', dates_lower)
+        if match:
+            jour1 = match.group(1).zfill(2)
+            mois1 = mois_mapping.get(match.group(2), '??')
+            annee1 = match.group(3)
+            jour2 = match.group(4).zfill(2)
+            mois2 = mois_mapping.get(match.group(5), '??')
+            annee2 = match.group(6)
+            return f"{annee1}/{mois1}/{jour1} - {annee2}/{mois2}/{jour2}"
+
+        # Pattern spécial: "30 juin-1er juillet 2025" (plage entre deux mois, même année)
         match = re.search(r'(\d{1,2})\s+(\w+)\s*[-–]\s*(\d{1,2})(?:er|e)?\s+(\w+)\s+(\d{4})', dates_lower)
         if match:
             jour1 = match.group(1).zfill(2)
