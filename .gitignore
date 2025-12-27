@@ -1,0 +1,26 @@
+# Fichiers de données générés par le scraper
+data/
+festivals_*.json
+festivals_*.csv
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
