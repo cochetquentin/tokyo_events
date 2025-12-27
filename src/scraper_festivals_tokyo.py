@@ -399,6 +399,16 @@ class TokyoFestivalScraper:
 
         dates_lower = dates_text.lower()
 
+        # Pattern spécial: "30 juin-1er juillet 2025" (plage entre deux mois)
+        match = re.search(r'(\d{1,2})\s+(\w+)\s*[-–]\s*(\d{1,2})(?:er|e)?\s+(\w+)\s+(\d{4})', dates_lower)
+        if match:
+            jour1 = match.group(1).zfill(2)
+            mois1 = mois_mapping.get(match.group(2), '??')
+            jour2 = match.group(3).zfill(2)
+            mois2 = mois_mapping.get(match.group(4), '??')
+            annee = match.group(5)
+            return f"{annee}/{mois1}/{jour1} - {annee}/{mois2}/{jour2}"
+
         # Pattern 0: "XER-YMOIS ANNÉE" sans espaces (1er-2mars 2025)
         match = re.search(r'(\d{1,2})(?:er|e)?\s*[-–]\s*(\d{1,2})\s*(\w+)\s+(\d{4})', dates_lower)
         if match:
