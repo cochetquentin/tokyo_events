@@ -47,14 +47,34 @@ def compare(month_name: str, year: int):
     scraped = scraper.scrape_festivals(month=month_num, year=year)
 
     print(f"\n📊 Référence: {len(ref_festivals)} festivals")
-    print(f"📊 Scrapé: {len(scraped)} festivals\n")
+    print(f"📊 Scrapé: {len(scraped)} festivals")
 
     # Comparer champ par champ
     def normalize(name):
         return name.upper().strip()
 
+    # Trouver les festivals manquants/en trop
+    scraped_names = set(normalize(f['name']) for f in scraped)
+    ref_names = set(normalize(f['name']) for f in ref_festivals)
+
+    missing = ref_names - scraped_names
+    extra = scraped_names - ref_names
+
+    if missing:
+        print(f"\n❌ Manquants ({len(missing)}):")
+        for name in sorted(missing):
+            print(f"   - {name}")
+
+    if extra:
+        print(f"\n➕ En trop ({len(extra)}):")
+        for name in sorted(extra):
+            print(f"   - {name}")
+
+    print()
+
     perfect = 0
     differences = 0
+    compared = 0
 
     for scraped_fest in scraped:
         name = scraped_fest.get('name', '')
@@ -68,6 +88,8 @@ def compare(month_name: str, year: int):
 
         if not ref_fest:
             continue
+
+        compared += 1
 
         # Comparer les champs
         dates_ok = scraped_fest.get('dates') == ref_fest.get('dates')
@@ -114,8 +136,10 @@ def compare(month_name: str, year: int):
             print()
 
     print(f"{'='*60}")
-    print(f"✅ Parfaits: {perfect}/{len(scraped)} ({perfect*100//len(scraped) if scraped else 0}%)")
-    print(f"⚠️  Différences: {differences}/{len(scraped)}")
+    print(f"✅ Parfaits: {perfect}/{compared} ({perfect*100//compared if compared else 0}%)")
+    print(f"⚠️  Différences: {differences}/{compared}")
+    if missing or extra:
+        print(f"📊 Festivals comparés: {compared}/{len(scraped)} scrapés, {len(ref_festivals)} en référence")
     print(f"{'='*60}")
 
 

@@ -238,12 +238,13 @@ class TokyoFestivalScraper:
             if not first_strong:
                 continue
 
-            # Le nom est dans le premier <strong>
-            # Deux formats possibles:
-            # Format A: <strong>Nom</strong><br>Date... (Hatsumode, Setsubun)
+            # Le nom peut être dans un ou plusieurs <strong>
+            # Trois formats possibles:
+            # Format A: <strong>Nom</strong><br>Date... (Setsubun)
             # Format B: <strong>Nom<br></strong>Date... (Cerisiers)
+            # Format C: <strong>Nom1</strong> <strong>Nom2</strong><br>Date... (Kanda Myojin Hatsumode)
 
-            # Détecter le format en vérifiant si <br> est dans le <strong>
+            # Détecter le format en vérifiant si <br> est dans le premier <strong>
             br_in_strong = first_strong.find('br')
 
             if br_in_strong:
@@ -262,9 +263,18 @@ class TokyoFestivalScraper:
                         name_parts.append(sub_child.get_text(separator=' ', strip=True))
                 name = ' '.join(name_parts)
             else:
-                # Format A: <strong>Nom</strong><br>...
-                # Prendre tout le texte du <strong>
-                name = first_strong.get_text(separator=' ', strip=True)
+                # Format A ou C: <strong>Nom</strong> [<strong>Suite</strong>]<br>...
+                # Collecter tous les <strong> avant le premier <br> au niveau racine
+                name_parts = []
+                for child in p_elem.children:
+                    if child.name == 'br':
+                        break
+                    if child.name == 'strong':
+                        name_parts.append(child.get_text(separator=' ', strip=True))
+                    elif isinstance(child, str):
+                        # Ignorer le texte entre les <strong> (espaces)
+                        pass
+                name = ' '.join(name_parts)
 
             # Nettoyer les espaces insécables (nbsp) dans le nom
             name = name.replace('\xa0', ' ').replace('&nbsp;', ' ')
