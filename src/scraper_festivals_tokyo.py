@@ -94,9 +94,11 @@ class TokyoFestivalScraper:
         festivals = []
 
         # Mots-clés à filtrer (bruit)
+        # Note: Ne pas filtrer "les festivals dédiés" car utilisé pour les sous-festivals (ex: cerisiers)
         noise_keywords = ['articles similaires', 'recherche', 'mon livre', 'mes livres', 'jipangu',
                          'articles recommandés', 'annuler la réponse', 'commentaire',
-                         'guigui', 'réseaux sociaux', 'régions du japon', 'les festivals dédiés']
+                         'guigui', 'réseaux sociaux', 'régions du japon', 'encyclopédie des matsuri',
+                         'la nuit du nouvel an prend vie']
 
         # Trouver tous les h2 avec class="wp-block-heading"
         h2_elements = soup.find_all('h2', class_='wp-block-heading')
