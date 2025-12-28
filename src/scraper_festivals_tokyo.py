@@ -233,10 +233,26 @@ class TokyoFestivalScraper:
         sub_festivals = []
 
         for p_elem in paragraph_elements:
-            # Chercher les paragraphes qui commencent par <strong>
-            first_strong = p_elem.find('strong')
-            if not first_strong:
+            # Chercher les paragraphes qui COMMENCENT par <strong>
+            # (pas juste qui contiennent un <strong> quelque part)
+            first_child = None
+            for child in p_elem.children:
+                if isinstance(child, str):
+                    # Si c'est du texte, vérifier qu'il est vide (espaces)
+                    if child.strip():
+                        # Texte non vide avant le <strong> → pas un sous-festival
+                        break
+                elif child.name == 'strong':
+                    first_child = child
+                    break
+                else:
+                    # Autre tag avant <strong> → pas un sous-festival
+                    break
+
+            if not first_child:
                 continue
+
+            first_strong = first_child
 
             # Le nom peut être dans un ou plusieurs <strong>
             # Trois formats possibles:
