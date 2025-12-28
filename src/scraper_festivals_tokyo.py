@@ -232,28 +232,37 @@ class TokyoFestivalScraper:
 
         for p_elem in paragraph_elements:
             # Chercher les paragraphes qui commencent par <strong>
-            strong = p_elem.find('strong')
-            if not strong:
+            first_strong = p_elem.find('strong')
+            if not first_strong:
                 continue
 
-            # Le nom peut être dans plusieurs <strong> consécutifs
-            # Ex: <strong>Nom <strong>2025</strong></strong> <strong>Winter</strong>
-            # Extraire tout le texte avant le premier <br>
-            name_parts = []
-            for child in p_elem.children:
-                # Arrêter au premier <br>
-                if child.name == 'br':
-                    break
-                # Collecter le texte des <strong> (avec separator=' ' pour les balises imbriquées)
-                if child.name == 'strong':
-                    name_parts.append(child.get_text(separator=' ', strip=True))
-                elif isinstance(child, str):
-                    # Texte brut entre les balises
-                    text = child.strip()
-                    if text:
-                        name_parts.append(text)
+            # Le nom est dans le premier <strong>
+            # Deux formats possibles:
+            # Format A: <strong>Nom</strong><br>Date... (Hatsumode, Setsubun)
+            # Format B: <strong>Nom<br></strong>Date... (Cerisiers)
 
-            name = ' '.join(name_parts)
+            # Détecter le format en vérifiant si <br> est dans le <strong>
+            br_in_strong = first_strong.find('br')
+
+            if br_in_strong:
+                # Format B: <strong>Nom<br></strong>
+                # Extraire uniquement le texte avant le <br>
+                name_parts = []
+                for sub_child in first_strong.children:
+                    if sub_child.name == 'br':
+                        break
+                    if isinstance(sub_child, str):
+                        text = sub_child.strip()
+                        if text:
+                            name_parts.append(text)
+                    elif hasattr(sub_child, 'get_text'):
+                        # Tag imbriqué (ex: <em>, <strong>)
+                        name_parts.append(sub_child.get_text(separator=' ', strip=True))
+                name = ' '.join(name_parts)
+            else:
+                # Format A: <strong>Nom</strong><br>...
+                # Prendre tout le texte du <strong>
+                name = first_strong.get_text(separator=' ', strip=True)
 
             # Nettoyer les espaces insécables (nbsp) dans le nom
             name = name.replace('\xa0', ' ').replace('&nbsp;', ' ')
@@ -263,6 +272,11 @@ class TokyoFestivalScraper:
             if len(name) < 5:
                 continue
 
+            # Filtrer un seul mot en minuscules (probablement un paragraphe d'intro)
+            # Ex: "hatsumode" seul n'est pas un nom de festival
+            if ' ' not in name and name.islower():
+                continue
+
             # Filtrer les textes génériques qui ne sont pas des noms de festivals
             # Caractéristiques des paragraphes d'introduction:
             # - Très longs (>100 caractères)
@@ -270,7 +284,7 @@ class TokyoFestivalScraper:
             if len(name) > 100:
                 continue
 
-            generic_keywords = ['quelques marchés', 'voici une liste', 'dans différents endroits']
+            generic_keywords = ['quelques marchés', 'voici une liste', 'dans différents endroits', 'le mois de']
             if any(keyword in name.lower() for keyword in generic_keywords):
                 continue
 
