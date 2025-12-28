@@ -150,14 +150,13 @@ class TokyoFestivalScraper:
 
                 next_elem = next_elem.find_next_sibling()
 
-            # Cas spécial : Si le titre contient "marchés de Noël" ou "hatsumode" ou similaire,
-            # chercher les sous-festivals dans les paragraphes <strong>
-            name_lower = name.lower()
-            if ('marché' in name_lower and 'noël' in name_lower) or 'hatsumode' in name_lower:
-                sub_festivals = self._extract_sub_festivals(paragraph_elements, dates, month, year)
-                if sub_festivals:
-                    festivals.extend(sub_festivals)
-                    continue  # Ne pas ajouter le h2 parent, seulement les sous-festivals
+            # Détecter automatiquement si ce h2 contient des sous-festivals
+            # Pattern: plusieurs paragraphes consécutifs commençant par <strong>Nom</strong>
+            # Ex: "LES FESTIVALS POUR HATSUMODE", "LES FESTIVALS POUR SETSUBUN", "Marchés de Noël"
+            sub_festivals = self._extract_sub_festivals(paragraph_elements, dates, month, year)
+            if sub_festivals and len(sub_festivals) >= 3:  # Au moins 3 sous-festivals pour confirmer le pattern
+                festivals.extend(sub_festivals)
+                continue  # Ne pas ajouter le h2 parent, seulement les sous-festivals
 
             # Extraire les informations des paragraphes
             if paragraphs:
@@ -334,6 +333,26 @@ class TokyoFestivalScraper:
                     annee = dates_match.group(3)
                     # Format: du 1er au 25 décembre
                     festival['dates'] = f"{annee}/{mois}/01 - {annee}/{mois}/{jour}"
+
+            # Format 3: Date simple "2 février 2025" ou "Du 31 janvier au 2 février 2025"
+            if not festival['dates']:
+                # D'abord chercher les plages "Du X au Y"
+                dates_match = re.search(r'Du\s+(\d{1,2})(?:\s*er)?\s+(\w+)\s+au\s+(\d{1,2})\s+(\w+)\s+(\d{4})', full_text, re.IGNORECASE)
+                if dates_match:
+                    jour1 = dates_match.group(1).zfill(2)
+                    mois1 = mois_mapping.get(dates_match.group(2).lower(), '??')
+                    jour2 = dates_match.group(3).zfill(2)
+                    mois2 = mois_mapping.get(dates_match.group(4).lower(), '??')
+                    annee = dates_match.group(5)
+                    festival['dates'] = f"{annee}/{mois1}/{jour1} - {annee}/{mois2}/{jour2}"
+                else:
+                    # Sinon chercher une date simple "2 février 2025"
+                    dates_match = re.search(r'(\d{1,2})(?:\s*er)?\s+(\w+)\s+(\d{4})', full_text, re.IGNORECASE)
+                    if dates_match:
+                        jour = dates_match.group(1).zfill(2)
+                        mois = mois_mapping.get(dates_match.group(2).lower(), '??')
+                        annee = dates_match.group(3)
+                        festival['dates'] = f"{annee}/{mois}/{jour}"
 
             # Chercher le lieu : il est dans un lien après "Lieu :"
             # Il peut y avoir plusieurs liens, prendre le premier non-vide
