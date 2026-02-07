@@ -1,0 +1,229 @@
+{
+  "festivals": [
+    {
+      "name": "KOBAI MATSURI",
+      "location": "sanctuaire Ushi Tenjin Kitano-jinja",
+      "description": "Ce festival célèbre la floraison des pruniers avec de nombreuses variétés à découvrir et de l’ umeshu (liqueur de prune) préparé sur place. On peut également se procurer des porte-bonheur et des ema spécialement conçus pour l’occasion. Le moment fort, le Kenbai-sai, qui se tient le 2 e ou 3 e dimanche du mois selon l’avancée de la floraison, propose des rituels, des démonstrations de tambours traditionnels, ainsi que des dégustations de thé, d’ amazake et de soupe tonjiru. En souvenir, une branche de prunier est offerte aux participants.",
+      "website": "http://ushitenjin.jp/matsuri/koubaimatsuri.html",
+      "googlemap_link": "https://maps.app.goo.gl/TTjUTUrds7ckBaps7",
+      "start_date": "2025/02/01",
+      "end_date": "2025/02/25"
+    },
+    {
+      "name": "Shimo Kitazawa Tengu Matsuri",
+      "location": "Shimo Kitazawa Ichibangai Shotengai",
+      "description": "Ici, les haricots sont jetés sur des personnes déguisées en Tengu. Des défilés, des spectacles et de nombreux stands de nourriture complètent cet événement vibrant qui se tient sur plusieurs jours.",
+      "website": "https://shimokita1ban.com/tengufestival93/",
+      "googlemap_link": "https://www.google.fr/maps/place/Shimokitazawa+Ichibangai+Shotengai/@35.6641302,139.6648484,17z/data=!3m2!4b1!5s0x6018f36b3a9e5199:0x30633477bc660cf2!4m6!3m5!1s0x6018f3b354164331:0x913b06f45bafd4d0!8m2!3d35.6641259!4d139.6674233!16s%2Fg%2F11ghfq2n8v?entry=ttu&g_ep=EgoyMDI1MDEyMC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/01/31",
+      "end_date": "2025/02/02"
+    },
+    {
+      "name": "Senso-ji Setsubun-sai",
+      "location": "temple Senso-ji",
+      "description": "Au temple Senso-ji, on ne lance pas les haricots en scandant oni wa soto (« dehors les démons »), car on considère que le temple n’abrite aucun démon ! Les participants crient alors senju banzai, fuku wa uchi (« longue vie, dedans le bonheur ») pour accueillir la prospérité. Une procession réunissant les habitants du quartier complète l’événement.",
+      "website": "https://www.senso-ji.jp/annual_event/05.html",
+      "googlemap_link": "https://www.google.fr/maps/place/Sanctuaire+Asakusa/@35.7147694,139.7940804,17z/data=!3m1!4b1!4m6!3m5!1s0x60188ec1a4463df1:0x6c0d289a8292810d!8m2!3d35.7147651!4d139.7966553!16zL20vMDNrOTg3?entry=ttu&g_ep=EgoyMDI1MDEyMC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/02",
+      "end_date": "2025/02/02"
+    },
+    {
+      "name": "Zojo-ji Setsubun-sai",
+      "location": "temple Zojo-ji",
+      "description": "Ici, on célèbre Setsubun au cœur d’une joyeuse foule avec vue sur la Tokyo Tower ! Les bénédictions sont offertes au pied de la statue de Tokugawa Ieyasu, accompagnées de prières pour la paix et la prospérité.",
+      "website": "https://www.zojoji.or.jp/event/ev_setsubun.html",
+      "googlemap_link": "https://www.google.fr/maps/place/Zōjō-ji/@35.6574833,139.7457179,17z/data=!3m2!4b1!5s0x60188bbe939d5501:0x9d2f59016a3252f0!4m6!3m5!1s0x60188bbe91676c0b:0x88a4a86ddb1dbd24!8m2!3d35.657479!4d139.7482928!16zL20vMDQ1Z3h6?entry=ttu&g_ep=EgoyMDI1MDEyMC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/02",
+      "end_date": "2025/02/02"
+    },
+    {
+      "name": "Okunitama-jinja Setsubun-sai",
+      "location": "sanctuaire Okunitama-jinja",
+      "description": "Des célébrités et des sportifs locaux participent à la distribution des haricots au sanctuaire Okunitama-jinja. Le lieu est animé par la vente de fukumame (haricots de fortune), et les visiteurs peuvent acheter des sachets de haricots spéciaux contenant des prières pour attirer la prospérité.",
+      "website": "https://www.ookunitamajinja.or.jp/matsuri/2-setsubun.php",
+      "googlemap_link": "https://www.google.fr/maps/place/Okunitama+Jinja/@35.6673839,139.4764209,17z/data=!3m1!4b1!4m6!3m5!1s0x6018e4e5c601326f:0x4ce9326c81966377!8m2!3d35.6673796!4d139.4789958!16s%2Fm%2F0bmhcwj?entry=ttu&g_ep=EgoyMDI1MDEyMC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/02",
+      "end_date": "2025/02/02"
+    },
+    {
+      "name": "Ikegami Honmon-ji Setsubun-sai",
+      "location": "temple Ikegami Honmon-ji",
+      "description": "Après une prière pour repousser les malheurs et attirer la chance, des personnalités du divertissement et du sport participent au lancer de haricots, et les visiteurs sont invités à rejoindre la procession pour célébrer l’événement au temple Ikegami Honmon-ji.",
+      "website": "https://honmonji.jp/news/schedule.html",
+      "googlemap_link": "https://www.google.fr/maps/place/Temple+Ikegami+Honmonji/@35.5787893,139.7026101,17z/data=!3m1!4b1!4m6!3m5!1s0x6018601a4881981f:0x764d33ce158f662d!8m2!3d35.578785!4d139.705185!16s%2Fg%2F11bwlcvqyt?entry=ttu&g_ep=EgoyMDI1MDEyMC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/02",
+      "end_date": "2025/02/02"
+    },
+    {
+      "name": "Teppozu Inari-jinja Setsubun-sai",
+      "location": "sanctuaire Teppozu Inari-jinja",
+      "description": "Un joli événement pour Setsubun se déroule chaque année au sanctuaire Teppozu Inari-jinja avec des prières pour purifier l’année passée et attirer la chance.",
+      "website": "http://teppozujinja.or.jp/nenkan.html#setubun",
+      "googlemap_link": "https://www.google.fr/maps/place/Teppozu+Inari+Shrine/@35.6724118,139.7774491,17z/data=!3m2!4b1!5s0x601889676f0fc0cd:0x8f5ec4b3aa51fb4d!4m6!3m5!1s0x601889676f73769b:0x8c0747c025caa61c!8m2!3d35.6724075!4d139.780024!16s%2Fg%2F120knh1q?entry=ttu&g_ep=EgoyMDI1MDEyMC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/02",
+      "end_date": "2025/02/02"
+    },
+    {
+      "name": "Suiten-gu Setsubun-sai",
+      "location": "sanctuaire Suiten-gu",
+      "description": "Dédié au bon déroulement des naissances et à la protection des générations futures, le sanctuaire Suiten-gu accueille chaque année Setsubun dans une ambiance festive, avec le traditionnel lancer de graines de soja grillées pour repousser les mauvaises influences et attirer la chance.",
+      "website": "https://www.suitengu.or.jp",
+      "googlemap_link": "https://www.google.fr/maps/place/Suiten-gū/@35.683661,139.7801505,17z/data=!3m2!4b1!5s0x60188945060cbb2f:0x856f2b5cc28edeac!4m6!3m5!1s0x6018894571ce35e9:0x42a794f3696164d8!8m2!3d35.6836567!4d139.7850214!16s%2Fm%2F02z1463?entry=ttu&g_ep=EgoyMDI1MDEyMC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/02",
+      "end_date": "2025/02/02"
+    },
+    {
+      "name": "Taishakuten Setsubun-sai",
+      "location": "temple Taishakuten",
+      "description": "Le temple Taishakuten propose des petites festivités locales pour Setsubun le 2 février, avec deux cérémonies prévues à 14h et 15h (le défilé commence à 13h20). L’événement s’ouvre sur une rencontre dynamique entre des démons rouges et bleus et un singe sacré, considéré comme le messager du temple. Cette scène est suivie par une distribution de sachets de haricots, certains renfermant des tickets gagnants donnant droit à des surprises.",
+      "website": "http://www.taishakuten.or.jp/setubun.html",
+      "googlemap_link": "https://maps.app.goo.gl/TJ4q4pqt4Rinbc547",
+      "start_date": "2025/02/02",
+      "end_date": "2025/02/02"
+    },
+    {
+      "name": "Takahata Fudoson Setsubun-sai",
+      "location": "temple Takahata Fudoson",
+      "description": "Au temple Takahata Fudoson, le festival de Setsubun attire chaque année des milliers de participants venus recevoir la chance et la prospérité. 5 séances de lancer de haricots se succèdent avec la participation de célébrités, de chanteurs et de maiko. En parallèle, une foire aux daruma anime le site avec ses étals colorés, et des porte-bonheur uniques sont proposés, tels que les éventails Honohochiwa.",
+      "website": "https://religion-news.net/2019/03/20/749-2/",
+      "googlemap_link": "https://maps.app.goo.gl/oMzUnXv2nFscnFuh7",
+      "start_date": "2025/02/02",
+      "end_date": "2025/02/02"
+    },
+    {
+      "name": "Nishiarai Daishi Setsubun-kai",
+      "location": "temple Nishiarai Daishi",
+      "description": "Le temple Nishiarai Daishi célèbre Setsubun en suivant la tradition de lancer des haricots pour chasser les mauvais esprits, attirer la fortune et souhaiter une année en bonne santé à tous les participants.",
+      "website": "https://www.nishiaraidaishi.or.jp/event/yearly.html#feb02",
+      "googlemap_link": "https://maps.app.goo.gl/GMNtiRp7SnoW8v2Y6",
+      "start_date": "2025/02/02",
+      "end_date": "2025/02/02"
+    },
+    {
+      "name": "SEKAI RANTEN 2025",
+      "location": "Tokyo Dome",
+      "description": "Ce grand événement floral propose une exposition exceptionnelle d’orchidées. Des concours et des marchés permettent aux visiteurs de découvrir de nouvelles variétés d’orchidées et d’acheter des produits de jardinage. Clairement pas l’événement le plus excitant et animé, mais une joli rendez-vous pour les amateurs de fleurs.",
+      "website": "https://www.event-td.com/orchid/",
+      "googlemap_link": "https://www.google.fr/maps/place/Tokyo+Dome/@35.7056439,139.7493164,17z/data=!3m2!4b1!5s0x60188c4782bdfe39:0xee0b72af9ac2f7c5!4m6!3m5!1s0x60188c4782eed4f3:0x5058b288249e640e!8m2!3d35.7056396!4d139.7518913!16zL20vMDMyY3Rw?entry=ttu&g_ep=EgoyMDI1MDEyMC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/05",
+      "end_date": "2025/02/12"
+    },
+    {
+      "name": "HATSUUMA MATSURI",
+      "location": "sanctuaire Mabashi Inari-jinja",
+      "description": "Ce festival, célébré le premier jour du cheval selon le calendrier lunaire, rend hommage au dieu-renard Inari. Fondé il y a plus de 1 300 ans au sanctuaire Fushimi Inari Taisha de Kyoto, cet événement inclut des rituels tels que des chants et la préparation de mochi rouges et blancs. Ces mochi sont ensuite offerts aux divinités pour prier pour une récolte abondante et la prospérité.",
+      "website": "https://www.mabashiinari.org",
+      "googlemap_link": "https://www.google.com/maps/place/Mabashi+Inari+Shrine/@35.7032567,139.6378458,17z/data=!3m1!4b1!4m6!3m5!1s0x6018f27bac8c0325:0x975c757645c7f686!8m2!3d35.7032524!4d139.6427114!16s%2Fg%2F120wl54g?hl=en&entry=ttu&g_ep=EgoyMDI1MDExNS4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/06",
+      "end_date": "2025/02/06"
+    },
+    {
+      "name": "TAKO ICHI",
+      "location": "sanctuaire Oji Inari-jinja",
+      "description": "Cette foire aux cerfs-volants se déroule tous les jours du cheval en février, c’est-à-dire à 2 reprises, espacées de 12 jours. Le sanctuaire Oji Inari-jinja accueille cet événement local proposant des cerfs-volants joliment décorés servant également de porte-bonheurs pour la nouvelle année.",
+      "website": "http://www.kanko.city.kita.tokyo.jp/event/593-2/",
+      "googlemap_link": "https://maps.app.goo.gl/uSdha5GuhJmsNWDc6",
+      "start_date": "2025/02/18",
+      "end_date": "2025/02/18"
+    },
+    {
+      "name": "BAISHU-SAI",
+      "location": "sanctuaire Kumano-jinja",
+      "description": "Organisé chaque année le 7 février au sanctuaire Kumano-jinja, le Baishu-sai est un rituel traditionnel où l’on chasse les mauvais esprits et prie pour une année prospère. Lors de cette cérémonie, deux archers tirent des flèches sur une grande cible de près de 2 mètres de diamètre portant le caractère oni (« démon »). Percer le centre de la cible symbolise la protection contre les malheurs et la promesse de récoltes abondantes. On peut également profiter de la distribution de shirozake (boisson douce à base de riz fermenté) et de mochi!",
+      "website": "http://www.kanko.city.kita.tokyo.jp/event/597-2/",
+      "googlemap_link": "https://maps.app.goo.gl/6bKGXJwVeQDWgiSp6",
+      "start_date": "2025/02/07",
+      "end_date": "2025/02/07"
+    },
+    {
+      "name": "WASHU FES",
+      "location": "Kabuto One",
+      "description": "Célébrez les saveurs du sake avec des dégustations illimitées: sake pétillant, non filtré, glacé à -5 °C, et bien plus! Savourez des spécialités régionales et assistez à des performances musicales animées par Yuki Aoi, la « sake samurai «. Le billet d’entrée coûte 7,000 yens.",
+      "website": "https://sakefes.com",
+      "googlemap_link": "https://maps.app.goo.gl/QcxaRCEhPgsw3T3i7",
+      "start_date": "2025/02/07",
+      "end_date": "2025/02/08"
+    },
+    {
+      "name": "SETAGAYA UME MATSURI",
+      "location": "parc Hanegi Koen",
+      "description": "Avec ses 650 pruniers en fleurs, le Setagaya Ume Matsuri transforme le parc Hanegi Koen en un lieu magnifique pour les amoureux des fleurs. Des ventes de produits à base de prune et des performances culturelles ponctuent l’événement.",
+      "website": "http://setagaya-umematsuri.com",
+      "googlemap_link": "https://www.google.fr/maps/place/Hanegi-kōen,+4+Chome-38-52+Daita,+Setagaya,+Tokyo,+Japon/@35.6404585,139.6982319,17z/data=!4m5!3m4!1s0x6018f37499a810ad:0x6477d02e1e07ae87!8m2!3d35.6588093!4d139.6548336?entry=ttu&g_ep=EgoyMDI1MDEyMC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/08",
+      "end_date": "2025/03/02"
+    },
+    {
+      "name": "MUKOJIMA HYAKKAEN UME MATSURI",
+      "location": "jardin Mukojima Hyakkaen",
+      "description": "Le jardin Mukojima Hyakkaen, créé à la fin de l’époque d’Edo, est réputé pour ses 360 pruniers représentant près de 20 variétés. Chaque année, ce lieu emblématique célèbre la floraison des pruniers avec un festival haut en couleur, idéal pour les amoureux de nature!",
+      "website": "https://www.metro.tokyo.lg.jp/tosei/hodohappyo/press/2025/01/08/05.html",
+      "googlemap_link": "https://maps.app.goo.gl/jhzrwDQ3LNwYYZ3BA",
+      "start_date": "2025/02/08",
+      "end_date": "2025/03/02"
+    },
+    {
+      "name": "BUNKYO UME MATSURI",
+      "location": "sanctuaire Yushima Tenman-gu",
+      "description": "Le sanctuaire Yushima Tenman-gu est l’un des plus célèbres endroits de la capitale pour profiter des fleurs de pruniers avec ses 300 arbres en fleurs, proposant des stands de nourriture et de jolies illuminations nocturnes.",
+      "website": "https://www.yushimatenjin.or.jp/pc/index.htm",
+      "googlemap_link": "https://www.google.fr/maps/place/Yushima+Tenman-gū/@35.7163368,139.7721012,17z/data=!4m6!3m5!1s0x60188c2179792993:0xbae1fad02c5ee1d5!8m2!3d35.7077406!4d139.7682193!16s%2Fm%2F0bs4wl7?entry=ttu&g_ep=EgoyMDI1MDEyMC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/08",
+      "end_date": "2025/03/08"
+    },
+    {
+      "name": "MEIJI-JINGU KIGENSAI",
+      "location": "sanctuaire Meiji-jingu",
+      "description": "Le 11 février, à l’occasion de Kenkoku Kinen no Hi, le jour de la fondation du Japon, une grande procession a lieu au sanctuaire Meiji-jingu. Ce jour férié commémore l’ascension du premier empereur, Jinmu, qui, selon la mythologie japonaise, serait l’arrière-petit-fils de la déesse du soleil Amaterasu et ancêtre de l’empereur actuel. Le rituel du Kigen-sai est plutôt modeste, mais on peut tout de même profiter d’ une grande parade avec des fanfares et des mikoshi tout au long de la journée.",
+      "website": "https://www.meijijingu.or.jp",
+      "googlemap_link": null,
+      "start_date": "2025/02/11",
+      "end_date": "2025/02/11"
+    },
+    {
+      "name": "ADACHI UME MATSURI",
+      "location": "parc Oyata Koen",
+      "description": "Le parc Oyada Koen célèbre la floraison de ses pruniers avec son festival Adachi Ume Matsuri. Cet événement est l’occasion idéale pour admirer les fleurs de prunier tout en profitant d’activités variées et conviviales. Au programme: vente de fleurs et plantes de saison, découverte d’un jardin biologique, dégustation de spécialités locales proposées par l’association des commerçants du quartier, et de charmantes parades. La fête se tient le dimanche 16 février, mais les 14 et 15 février proposent quant à eux de jolies illuminations nocturnes.",
+      "website": "https://www.city.adachi.tokyo.jp/midori/event/umematuri20250216.html",
+      "googlemap_link": "https://maps.app.goo.gl/G7sr5nsTZ754wPSQ7",
+      "start_date": "2025/02/14",
+      "end_date": "2025/02/16"
+    },
+    {
+      "name": "SOME NO KOMICHI",
+      "location": "quartier de Nakai",
+      "description": "Cette fête de la teinture se déroule dans le charmant quartier de Nakai, autrefois connu pour ses maîtres teinturiers. L’événement permet de mettre en avant les artisans du coin toujours en activité. De superbes pièces sont exposées au-dessus de la rivière, et le quartier est en effervescence le temps d’un week-end de 3 jours.",
+      "website": "https://www.somenokomichi.com/",
+      "googlemap_link": "https://maps.app.goo.gl/G63oWn1rabysZDww5",
+      "start_date": "2025/02/21",
+      "end_date": "2025/02/23"
+    },
+    {
+      "name": "SENGOKU BUSHO",
+      "location": "Takenodai Square au parc Ueno Koen (Taito-ku)",
+      "description": "À Ueno, les samurai sont à l’honneur avec des performances, des reconstitutions historiques et des défilés en costumes traditionnels. L’événement propose également des stands de nourriture et des produits inspirés de la culture des samurai.",
+      "website": "https://samurai-fest.com",
+      "googlemap_link": "https://www.google.fr/maps/place/Takenodai+Square,+Ueno+Park/@35.7163368,139.7721012,17z/data=!3m1!4b1!4m6!3m5!1s0x60188e9d6ac69933:0xa52c6521e2e73186!8m2!3d35.7163325!4d139.7746761!16s%2Fg%2F11c3n_b9vt?entry=ttu&g_ep=EgoyMDI1MDEyMC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/21",
+      "end_date": "2025/02/24"
+    },
+    {
+      "name": "SAKANA & JAPAN FESTIVAL",
+      "location": "parc Yoyogi Koen",
+      "description": "Durant 4 jours, le parc Yoyogi Koen accueille le plus grand festival de fruits de mer du Japon. Ici, on pourra découvrir des kaisendon (bols de riz garnis de fruits de mer frais), des ramen aux fruits de mer, ainsi que d’autres spécialités locales. Avec ses 80 stands et ses plats exclusifs, cette fête est un beau rendez-vous pour les amateurs de gastronomie en plein cœur de la capitale!",
+      "website": "https://37sakana.jp/sakanajapanfes/index.html",
+      "googlemap_link": "https://maps.app.goo.gl/T54fQePJoBZNhr8h8",
+      "start_date": "2025/02/21",
+      "end_date": "2025/02/24"
+    },
+    {
+      "name": "SUMIDA COFFEE FESTIVAL",
+      "location": "parc Kinshi Koen",
+      "description": "Cet événement invite à redécouvrir le café et les friandises de l’est de Tokyo, qu’il s’agisse d’établissements traditionnels ou de torréfacteurs modernes. Dans une ambiance conviviale, on y déguste des cafés accompagnés de desserts tout en explorant les spécialités de chaque adresse. C’est l’occasion d’apprécier le savoir-faire local en torréfaction tout en se promenant dans le quartier.",
+      "website": "https://www.instagram.com/easttokyocoffee",
+      "googlemap_link": "https://maps.app.goo.gl/zz15JxDNmyWp4TnR6",
+      "start_date": "2025/02/23",
+      "end_date": "2025/02/23"
+    }
+  ]
+}

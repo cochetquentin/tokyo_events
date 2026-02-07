@@ -1,0 +1,202 @@
+{
+  "festivals": [
+    {
+      "name": "OJI KITSUNE NO GYORETSU",
+      "location": "sanctuaire Oji Inari-jinja",
+      "description": "Dans le quartier d’Oji, célèbre pour ses dieux-renards, la nuit du Nouvel An prend vie avec la parade Kitsune no Gyoretsu. Les participants, déguisés en renards pour honorer Inari, divinité des céréales, défilent dans les rues, demandant sa bénédiction pour l’année à venir. C’est une façon originale et joyeuse de célébrer le passage à 2025, avec des yatai colorés, des sourires chaleureux et une ambiance festive qui envahit le quartier.",
+      "website": "https://kitsune.tokyo-oji.jp/",
+      "googlemap_link": "https://www.google.fr/maps/place/%C5%8Cji+Inari+Shrine/@35.7561181,139.7308498,17z/data=!3m1!4b1!4m6!3m5!1s0x60189262c7d06085:0x26e0d127f0511069!8m2!3d35.7561181!4d139.7334247!16s%2Fg%2F121xczkv?entry=ttu&g_ep=EgoyMDI0MTExOC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2024/12/31",
+      "end_date": "2025/01/01"
+    },
+    {
+      "name": "Yasukuni-jinja Hatsumode",
+      "location": "sanctuaire Yasukuni-jinja",
+      "description": "À Kudanshita, le célèbre sanctuaire Yasukuni-jinja propose des festivités qui débutent dès la veille du Nouvel An et se poursuivent jusqu’au 4 janvier. On peut assister à des rituels traditionnels, des spectacles artistiques quotidiens et des événements divers comme un tournoi de tir à l’arc le 3 janvier.",
+      "website": "https://fs-event.com/56508/",
+      "googlemap_link": "https://www.google.fr/maps/place/Yasukuni-jinja/@35.6941403,139.7389834,17z/data=!3m1!4b1!4m6!3m5!1s0x60188c680dae43d5:0xb5e754e6bf88ce90!8m2!3d35.694136!4d139.743849!16zL20vMDFtcjdw?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoJLDEwMjExMjMzSAFQAw%3D%3D",
+      "start_date": "2024/12/31",
+      "end_date": "2025/01/04"
+    },
+    {
+      "name": "Okunitama-jinja Hatsumode",
+      "location": "sanctuaire Okunitama-jinja",
+      "description": "Avec près de 1900 ans d’histoire, le sanctuaire Okunitama-jinja est l’un des plus anciens de Tokyo. Connu pour ses bienfaits en matière de protection, d’harmonie et de chance en amour, il accueille chaque année environ 500 000 visiteurs durant les 3 premiers jours de janvier. Un lieu incontournable pour démarrer l’année sous de bons auspices.",
+      "website": "https://www.ookunitamajinja.or.jp/2025_info/",
+      "googlemap_link": "https://www.google.fr/maps/place/Okunitama+Jinja/@35.6673839,139.4764155,17z/data=!3m1!4b1!4m6!3m5!1s0x6018e4e5c601326f:0x4ce9326c81966377!8m2!3d35.6673796!4d139.4789958!16s%2Fm%2F0bmhcwj?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoJLDEwMjExMjMzSAFQAw%3D%3D",
+      "start_date": "2025/01/01",
+      "end_date": "2025/01/03"
+    },
+    {
+      "name": "Nezu-jinja Hatsumode",
+      "location": "sanctuaire Nezu-jinja",
+      "description": "Proche de Ueno et Yanaka Ginza,, le sanctuaire Nezu-jinja offre une ambiance plus intime pour hatsumode. On y apprécie ses jardins et son architecture traditionnelle, tout en priant pour une année prospère.",
+      "website": "https://nedujinja.or.jp/saiten-2/",
+      "googlemap_link": "https://www.google.fr/maps/place/Nezu-jinja/@35.7201381,139.7581895,17z/data=!3m1!4b1!4m6!3m5!1s0x60188c32ce217ef9:0xc0a807378062b0d!8m2!3d35.7201338!4d139.7607698!16s%2Fm%2F046584q?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoJLDEwMjExMjMzSAFQAw%3D%3D",
+      "start_date": "2025/01/01",
+      "end_date": "2025/01/03"
+    },
+    {
+      "name": "Zojo-ji Hatsumode",
+      "location": "temple Zojo-ji",
+      "description": "Avec Tokyo Tower en toile de fond, le temple Zojo-ji célèbre le passage à la nouvelle année par le rituel du jobone, durant lequel les anciennes offrandes telles que les omamori et les ofuda (tablettes) sont symboliquement brûlées pour marquer la fin de l’année écoulée. Ce rituel se déroule à partir de 23h le soir du Nouvel An. À minuit, la célèbre cloche de la nuit  est sonnée 108 fois pour purifier l’esprit et le corps. Les visiteurs peuvent également assister à la réunion de correction, shushoe dans le hall principal, également à partir de minuit. Enfin, les prières pour le Nouvel An se poursuivent dans les jours suivants, et les yatai restent présents jusqu’au 4 janvier.",
+      "website": "https://www.zojoji.or.jp/event/ev_hatsumoude.html",
+      "googlemap_link": "https://www.google.fr/maps/place/Zōjō-ji/@35.6574833,139.7457125,17z/data=!3m2!4b1!5s0x60188bbe939d5501:0x9d2f59016a3252f0!4m6!3m5!1s0x60188bbe91676c0b:0x88a4a86ddb1dbd24!8m2!3d35.657479!4d139.7482928!16zL20vMDQ1Z3h6?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoJLDEwMjExMjMzSAFQAw%3D%3D",
+      "start_date": "2025/01/01",
+      "end_date": "2025/01/04"
+    },
+    {
+      "name": "Kanda Myojin Hatsumode",
+      "location": "sanctuaire Kanda-myojin",
+      "description": "Réputé pour son atmosphère énergique, Kanda Myojin ouvre ses portes à minuit pour accueillir les premiers visiteurs du Nouvel An au rythme des tambours taiko. On peut y acheter des amulettes et des omikuji, disponibles également en ligne, pour garantir chance et succès dans les affaires.",
+      "website": "https://www.kandamyoujin.or.jp/event/detail/?id=2",
+      "googlemap_link": "https://www.google.fr/maps/place/Kanda-myōjin/@35.7020229,139.7630287,17z/data=!3m1!4b1!4m6!3m5!1s0x60188c1ecc161bed:0xf397e4b6bf417c8b!8m2!3d35.7020186!4d139.7678943!16s%2Fm%2F0463qs6?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoJLDEwMjExMjMzSAFQAw%3D%3D",
+      "start_date": "2025/01/01",
+      "end_date": "2025/01/05"
+    },
+    {
+      "name": "Hie-jinja Hatsumode",
+      "location": "sanctuaire Hie-jinja",
+      "description": "Un peu plus calme que d’autres lieux, le sanctuaire Hie constitue un écrin idéal pour hatsumode, avec ses torii vermillon et sa belle ambiance sur les hauteurs d’Akasaka. Le festival Wakamizu, célébrant la « première eau de l’année » comme symbole de purification et de renouveau, débutera à minuit le 1er janvier.",
+      "website": "https://www.kandamyoujin.or.jp/event/detail/?id=2",
+      "googlemap_link": "https://www.google.fr/maps/place/Hie+Shrine/@35.6746699,139.7373576,17z/data=!3m1!4b1!4m6!3m5!1s0x601fa6c4e4114317:0xef431afda2747c8f!8m2!3d35.6746656!4d139.7399379!16s%2Fm%2F03c0rhv?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoJLDEwMjExMjMzSAFQAw%3D%3D",
+      "start_date": "2025/01/01",
+      "end_date": "2025/01/05"
+    },
+    {
+      "name": "Meiji-jingu Hatsumode",
+      "location": "sanctuaire Meiji-jingu",
+      "description": "Très populaire pour hatsumode, le grand sanctuaire Meiji-jingu reste ouvert toute la nuit du Nouvel an pour accueillir les visiteurs. D’autres événements sont prévus au mois de janvier comme l’exposition kakizome, présentant les calligraphies d’étudiants, prévue du 5 au 31 janvier 2025.",
+      "website": "https://www.meijijingu.or.jp/en/whattosee/rites/",
+      "googlemap_link": "https://www.google.fr/maps/place/Meiji-jingū/@35.6764019,139.6967456,17z/data=!3m1!4b1!4m6!3m5!1s0x60188cb79a4c26e5:0x8fca893849103f73!8m2!3d35.6763976!4d139.6993259!16zL20vMDFxX2s5?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoJLDEwMjExMjMzSAFQAw%3D%3D",
+      "start_date": "2025/01/01",
+      "end_date": "2025/01/05"
+    },
+    {
+      "name": "Senso-ji Hatsumode",
+      "location": "temple Senso-ji",
+      "description": "Au cœur d’Asakusa, les visiteurs affluent en masse vers le temple Senso-ji pour le Nouvel An, empruntant la rue Nakamise-dori, joliment décorée pour l’occasion. Les très nombreux visiteurs se réchauffent le palais grâce aux différents yatai qui s’installent pour l’occasion. Un lieu très bondé qu’il vaut mieux visiter à des moments plus calmes, comme par exemple en fin de journée.",
+      "website": "https://rinnma.com/sensouji-hatumoude/",
+      "googlemap_link": "https://www.google.fr/maps/place/Sanctuaire+Asakusa/@35.7147694,139.794075,17z/data=!3m1!4b1!4m6!3m5!1s0x60188ec1a4463df1:0x6c0d289a8292810d!8m2!3d35.7147651!4d139.7966553!16zL20vMDNrOTg3?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoJLDEwMjExMjMzSAFQAw%3D%3D",
+      "start_date": "2025/01/01",
+      "end_date": "2025/01/07"
+    },
+    {
+      "name": "DAIKON MATSURI",
+      "location": "temple Matsuchiyama Shoden",
+      "description": "Organisé chaque année le 7 janvier depuis 1974, le Daikon matsuri célèbre le radis blanc ( daikon ), considéré comme un aliment pur et bénéfique pour la santé. Le daikon symbolise les vertus de la divinité Shoten-sama, notamment sa capacité à neutraliser les toxines et à favoriser la digestion. Pendant le festival, les radis offerts au sanctuaire depuis le Nouvel An sont cuisinés en furofuki daikon (radis mijoté) et servis aux visiteurs accompagnés de sake sacré. Un événement très local qui s’étend de 11h à 13h30.",
+      "website": "http://www.matsuchiyama.jp/daikon.html",
+      "googlemap_link": "https://www.google.fr/maps/place/Matsuchiyama+Shoden/@35.7174915,139.8004487,17z/data=!3m1!4b1!4m6!3m5!1s0x60188ec2d70a9d4b:0x44034dcf66fc80c7!8m2!3d35.7174872!4d139.803029!16s%2Fg%2F122n0hc1?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoJLDEwMjExMjMzSAFQAw%3D%3D",
+      "start_date": "2025/01/07",
+      "end_date": "2025/01/07"
+    },
+    {
+      "name": "TORIGOE-JINJA TONDOYAKI",
+      "location": "sanctuaire Torigoe-jinja",
+      "description": "Au sanctuaire Torigoe-jinja, près d’Asakusa, on effectue le rituel Tondoyaki qui consiste à brûler les décorations du Nouvel An, comme les kadomatsu et shimekazari, dans un grand feu purificateur. Les visiteurs se rassemblent autour du brasier, bercés par le son des tambours, jetant les ornements tout en formulant des vœux pour la santé et le renouveau. Pour les gourmands, le mochi grillé sur les braises ajoute une touche de douceur à la fête.",
+      "website": "https://www.facebook.com/torikoej",
+      "googlemap_link": "https://www.google.fr/maps/place/Torigoe+Shrine/@35.7020126,139.7832475,17z/data=!3m1!4b1!4m6!3m5!1s0x60188eb061986d8f:0x3599c97492a9e029!8m2!3d35.7020083!4d139.7858278!16s%2Fg%2F122vls8x?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoJLDEwMjExMjMzSAFQAw%3D%3D",
+      "start_date": "2025/01/08",
+      "end_date": "2025/01/08"
+    },
+    {
+      "name": "KANCHU MISOGI",
+      "location": "sanctuaire Teppozu Inari-jinja",
+      "description": "Au sanctuaire Teppozu Inari, on commence l’année avec une tradition qui donne des frissons rien qu’à la regarder: Kanchu Misogi, le tournoi de bain d’hiver. Chaque deuxième dimanche de janvier à 11h, les prêtres ouvrent la cérémonie par des prières, pendant que les participants se préparent à plonger dans une cuve remplie d’eau glaciale. Vêtus de pagnes ou de tenues légères, ils bravent le froid pour se purifier et souhaiter une année prospère.",
+      "website": "http://teppozujinja.or.jp/nenkan.html#suiyoku",
+      "googlemap_link": "https://www.google.fr/maps/place/Teppozu+Inari+Shrine/@35.6724118,139.7751584,17z/data=!3m2!4b1!5s0x601889676f0fc0cd:0x8f5ec4b3aa51fb4d!4m6!3m5!1s0x601889676f73769b:0x8c0747c025caa61c!8m2!3d35.6724075!4d139.780024!16s%2Fg%2F120knh1q?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoJLDEwMjExMjMzSAFQAw%3D%3D",
+      "start_date": "2025/01/12",
+      "end_date": "2025/01/12"
+    },
+    {
+      "name": "OME DARUMA ICHI",
+      "location": "autour du sanctuaire Sumiyoshi-jinja",
+      "description": "Trouvant ses origines il y a plus de 400 ans, ce grand marché de début d’année met à l’honneur les daruma, ces figurines bouddhiques que l’on utilise pour faire un vœu. Autour du sanctuaire Sumiyoshi-jinja, ce sont de nombreux stands qui proposent des daruma, mais également des spécialités à déguster de 13h30 à 20h.",
+      "website": "https://www.gotokyo.org/en/spot/ev117/index.html",
+      "googlemap_link": "https://maps.app.goo.gl/DMFih4g1onhLgD9v9",
+      "start_date": "2025/01/12",
+      "end_date": "2025/01/12"
+    },
+    {
+      "name": "KODOKAN KAGAMI BIRAKI",
+      "location": "Kodokan (Korakuen)",
+      "description": "Chaque année début janvier, le mythique dojo de judo Kodokan organise un événement ouvert à tous à partir de 10h. Une cérémonie, des démonstrations, du chant et une distribution de manju, des brioches fourrées aux haricots rouges. Un événement incontournables pour tous les amateurs d’arts martiaux!",
+      "website": "https://kdkjudo.org/2024/12/17/%e3%80%90news%e3%80%91%e4%bb%a4%e5%92%8c7%e5%b9%b4-%e8%ac%9b%e9%81%93%e9%a4%a8%e9%8f%a1%e9%96%8b%e5%bc%8f%e3%81%ae%e3%81%94%e6%a1%88%e5%86%85/",
+      "googlemap_link": "https://maps.app.goo.gl/sPBiaGJEWEPXsmFm6",
+      "start_date": "2025/01/12",
+      "end_date": "2025/01/12"
+    },
+    {
+      "name": "GRAND TOURNOI DE SUMO DE JANVIER",
+      "location": "Ryogoku Kokugikan Sumo Stadium (Sumida-ku)",
+      "description": "Chaque mois de janvier, le premier grand tournoi de sumo de l’année se tient à Tokyo chaque jour durant 2 semaines. Avec les classements des lutteurs dévoilés quelques semaines avant, c’est l’occasion de vivre l’intensité de ce sport traditionnel en direct. Bien que les combats soient retransmis en direct quotidiennement sur NHK, rien ne surpasse l’ambiance unique des matchs de fin de journée, où les spectateurs, enflammés, acclament les lutteurs!",
+      "website": "https://www.sumo.or.jp/En/",
+      "googlemap_link": "https://www.google.fr/maps/place/Ryōgoku+Kokugikan+Sumo+Stadium/@35.6969775,139.7906943,17z/data=!3m2!4b1!5s0x60188ecaa8867447:0x82148216dac4dc70!4m6!3m5!1s0x6018893554b8eb19:0x70237cc76b1dfa74!8m2!3d35.6969732!4d139.7932746!16zL20vMGdfZm0x?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoJLDEwMjExMjMzSAFQAw%3D%3D",
+      "start_date": "2025/01/12",
+      "end_date": "2025/01/26"
+    },
+    {
+      "name": "HASHIGO NORI",
+      "location": "temple Ikegami Honmon-ji",
+      "description": "Hérité des pompiers de l’époque d’Edo, le hashigo nori est une spectaculaire tradition acrobatique qui se déroule chaque année le 2e lundi de janvier au temple Ikegami Honmon-ji. Perchés à 6 mètres de hauteur sur une échelle en bambou, les acrobates, surnommés noriko, exécutent des figures impressionnantes avec la précaution de leurs équipes au sol, qui veillent à maintenir l’équilibre. Appelées dezomeshiki, les parades de pompiers sont nées à une époque où la prévention des incendies était cruciale en raison des constructions en bois. C’est aujourd’hui l’occasion pour plus de 2 000 spectateurs de découvrir un spectacle unique. Des explications en anglais et en japonais sont fournies pour permettre à tous de comprendre la richesse de cette tradition. Après la performance, des bonbons sont lancés dans le public, et les visiteurs peuvent prendre des photos avec les acrobates ou tenter, sur une petite échelle, de reproduire quelques mouvements.",
+      "website": "https://unique-ota.city.ota.tokyo.jp/en/charm/culture/hashigonori/",
+      "googlemap_link": "https://www.google.fr/maps/place/Temple+Ikegami+Honmonji/@35.5787893,139.7026047,17z/data=!3m1!4b1!4m6!3m5!1s0x6018601a4881981f:0x764d33ce158f662d!8m2!3d35.578785!4d139.705185!16s%2Fg%2F11bwlcvqyt?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoJLDEwMjExMjMzSAFQAw%3D%3D",
+      "start_date": "2025/01/13",
+      "end_date": "2025/01/13"
+    },
+    {
+      "name": "SETAGAYA BORO ICHI",
+      "location": "quartier de Setagaya",
+      "description": "700 vendeurs prennent part à ce grand marché de début d’année qui existe depuis 1578. Une occasion de chiner des objets anciens tout en profitant d’une jolie balade et de quelques douceurs proposées par les stands de nourriture. Le marché se déroulait également le mois dernier, les 15 et 16 décembre.",
+      "website": "https://www.gotokyo.org/en/spot/ev114/index.html",
+      "googlemap_link": "https://maps.app.goo.gl/NpemiNNpg3NBxhmX6",
+      "start_date": "2025/01/15",
+      "end_date": "2025/01/16"
+    },
+    {
+      "name": "KONNYAKU ENMA REITAISAI",
+      "location": "temple Genkaku-ji",
+      "description": "Au temple Genkaku-ji, situé près de Tokyo Dome, ce petit événement discret célèbre une légende racontant qu’Enma, le gardien des enfers, aurait guéri une vieille dame amatrice de konnyaku (konjac) de ses problèmes de vue. Durant le festival, du konnyaku est offert dans l’enceinte du temple, et le 16 janvier, une spectaculaire cérémonie de purification invite les participants à marcher sur des braises pour écarter la malchance. Un moment spirituel dans un tout petit temple méconnu.",
+      "website": "https://www.visiting-japan.com/ja/articles/events/j13bu-genkakuji-hiwatari.htm",
+      "googlemap_link": "https://www.google.fr/maps/place/Genkaku-ji/@35.7108398,139.746284,17z/data=!3m1!4b1!4m6!3m5!1s0x60188c49bf7731f3:0x5c689e6727938f55!8m2!3d35.7108355!4d139.7511496!16s%2Fg%2F122dyftq?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoJLDEwMjExMjMzSAFQAw%3D%3D",
+      "start_date": "2025/01/15",
+      "end_date": "2025/01/16"
+    },
+    {
+      "name": "DAIKOKU MATSURI",
+      "location": "sanctuaire Kanda-myojin",
+      "description": "Au sanctuaire Kanda-myojin, le Daikoku Matsuri est l’occasion de célébrer la divinité de la bonne fortune et de s’attirer de la chance pour l’année à venir. On assiste à une cérémonie de purification où des participants se plongent dans de l’eau glacée pour marquer leur passage à l’âge adulte. Le dimanche, on peut aussi découvrir le hocho-shiki, un art culinaire ancestral qui voit des maîtres réaliser une découpe cérémoniale d’un grand poisson. Une belle manière de commencer l’année en célébrant tradition et chance en vibrant devant de nombreuses animations.",
+      "website": "https://www.kandamyoujin.or.jp/event/",
+      "googlemap_link": "https://www.google.fr/maps/place/Kanda-myōjin/@35.7020229,139.7630287,17z/data=!3m1!4b1!4m6!3m5!1s0x60188c1ecc161bed:0xf397e4b6bf417c8b!8m2!3d35.7020186!4d139.7678943!16s%2Fm%2F0463qs6?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoJLDEwMjExMjMzSAFQAw%3D%3D",
+      "start_date": "2025/01/17",
+      "end_date": "2025/01/19"
+    },
+    {
+      "name": "HANDMADE IN JAPAN FES",
+      "location": "Tokyo Big Sight",
+      "description": "Durant 2 jours, plus de 3000 créateurs de tout le Japon se réunissent à Tokyo pour proposer ce salon dédié à l’artisanat. Diverses animations et expériences sont proposées, quelques douceurs régalent les visiteurs, et on se plonge dans du 100% fait main! L’entrée coûte 1,500 yens (9€) sur place.",
+      "website": "https://lp.creema.jp/event/hmj/en",
+      "googlemap_link": "https://maps.app.goo.gl/2EjenhdhCqYZrzC28",
+      "start_date": "2025/01/18",
+      "end_date": "2025/01/19"
+    },
+    {
+      "name": "USOKAE SHINJI",
+      "location": "sanctuaire Kameido Tenjin (Koto-ku)",
+      "description": "Autour du 25 janvier, de nombreux sanctuaires Tenman-gu (dédiés à Tenjin la divinité des études et de la connaissance) proposent un événement spécial appelé Usokae. On vient y acheter une petite figurine en forme de bouvreuil et prier pour que les mensonges et conspirations restent loin de soi. À Tokyo, l’un des lieux les plus connus pour cela est le sanctuaire Kameido Tenjin. Il n’y a pas de grandes festivités particulières, mais simplement un peu d’animation et une foule qui vient espérer faire fuir les mensonges autour de soi.",
+      "website": "http://kameidotenjin.or.jp/events/#event01",
+      "googlemap_link": "https://maps.app.goo.gl/aKNHs2pNRt96bszF9",
+      "start_date": "2025/01/24",
+      "end_date": "2025/01/25"
+    },
+    {
+      "name": "FUYU MATSURI",
+      "location": "parc Yoyogi Koen",
+      "description": "Du 24 au 26 janvier, le Fuyu Matsuri s’installe au parc Yoyogi Koen et propose de savourer des sake locaux et des mets régionaux du Japon, notamment du poisson et des fruits de mer. Un festival qui permet de prolonger les festivités du Nouvel An et de découvrir des spécialités culinaires hivernales japonaises.",
+      "website": "https://fuyumatsuri-japan.com/",
+      "googlemap_link": "https://maps.app.goo.gl/QMpm1v3zfs1k5HpB6",
+      "start_date": "2025/01/24",
+      "end_date": "2025/01/26"
+    }
+  ]
+}

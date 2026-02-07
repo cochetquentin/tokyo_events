@@ -1,0 +1,184 @@
+{
+  "festivals": [
+    {
+      "name": "Tokyo Solamachi Christmas Market",
+      "location": "4e étage de la Tokyo Skytree",
+      "description": "La tête dans les nuages, on plonge dans la magie de Noël avec des décorations scintillantes, une maison en pain d’épice géante, du vin chaud et des sucreries. Entrée gratuite, de 11h à 22h.",
+      "website": "https://en.www.tokyo-solamachi.jp/xmas/",
+      "googlemap_link": "https://www.google.fr/maps/place/Tokyo+Skytree/@35.7100627,139.8081255,17z/data=!3m1!4b1!4m6!3m5!1s0x60188ed0d12f9adf:0x7d1d4fb31f43f72a!8m2!3d35.7100627!4d139.8107004!16zL20vMDd0aGty?entry=ttu&g_ep=EgoyMDI0MTExOS4yIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/12/01",
+      "end_date": "2025/12/25"
+    },
+    {
+      "name": "Marunouchi Street Park 2025 Winter",
+      "location": "Marunouchi Street Park",
+      "description": "Des illuminations dorées le long d’une grande avenue et des spécialités allemandes au cœur de Tokyo, avec une petite patinoire qui s’installe devant le bâtiment historique de la gare de Tokyo. Entrée gratuite, de 11h à 21h.",
+      "website": "https://marunouchi-streetpark.com/",
+      "googlemap_link": "https://www.google.fr/maps/place/Marunouchi+Street+Park/@35.6800674,139.7602776,17z/data=!3m1!4b1!4m6!3m5!1s0x60188b0050b297c7:0x3c9a70333caac53f!8m2!3d35.6800674!4d139.7628525!16s%2Fg%2F11vx1_9sq_?entry=ttu&g_ep=EgoyMDI0MTExOS4yIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/12/01",
+      "end_date": "2025/12/25"
+    },
+    {
+      "name": "Tokyo Christmas Market à Meij-jingu Gaien",
+      "location": "stade Meiji-jingu Gaien",
+      "description": "Un marché animé mais payant avec une pyramide de Noël de 14 mètres. Cette année, elle se pare de décorations rappelant les contes de Grimm. On peut savourer des spécialités allemandes, boire une bière ou un vin chaud, et profiter de musique live dans une belle ambiance. Entrée : de 1 000 yens (6€) à 2 000 yens (12€) selon la date, de 11h à 21h30.",
+      "website": "https://tokyochristmas.net/",
+      "googlemap_link": "https://www.google.com/maps/place/Meiji+Jing%C5%AB+Gaien+Rubber+Baseball+Field/@35.676622,139.718792,15z/data=!4m6!3m5!1s0x60188c90b94b717f:0x614db9ca2c93b616!8m2!3d35.6766221!4d139.7187921!16s%2Fg%2F121slhvs?hl=en&entry=ttu&g_ep=EgoyMDI0MTExOS4yIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/12/01",
+      "end_date": "2025/12/25"
+    },
+    {
+      "name": "Azabudai Hills Christmas Market",
+      "location": "Azabudai Hills",
+      "description": "Un joli marché moderne avec des chocolats artisanaux et un immense sapin. On en fait vite le tour car il est très petit, mais on peut en profiter pour découvrir le centre commercial d’Azabudai. Entrée gratuite, de 11h à 21h.",
+      "website": "https://visit-minato-city.tokyo/en/events/3107",
+      "googlemap_link": "https://www.google.fr/maps/place/Azabudai+Hills+Gallery/@35.6626103,139.7381526,17z/data=!3m2!4b1!5s0x60188b96de2716c9:0x5064815a2bd775ff!4m6!3m5!1s0x60188bd52ec49b79:0x645c6d5556f9ac66!8m2!3d35.6626104!4d139.7430235!16s%2Fg%2F11vc863fvs?entry=ttu&g_ep=EgoyMDI0MTExOC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/12/01",
+      "end_date": "2025/12/25"
+    },
+    {
+      "name": "Christmas Hills 2025",
+      "location": "Roppongi Hills Arena (Minato-ku)",
+      "description": "Un marché de Noël inspiré de Stuttgart, où décorations traditionnelles, cadeaux artisanaux et spécialités allemandes comme le stollen et les ragoûts sont à l’honneur. À taille humaine et proche d’illuminations éclatantes, c’est l’endroit idéal pour une ambiance chaleureuse… à condition de supporter les longues files d’attente, surtout à l’approche de Noël ! Entrée gratuite, de 11h à 21h",
+      "website": "https://www.christmas.hills-site.com/illumination-event/roppongi/101/",
+      "googlemap_link": "https://maps.app.goo.gl/P46PQoSQmKCKn8yw6",
+      "start_date": "2025/12/01",
+      "end_date": "2025/12/25"
+    },
+    {
+      "name": "Yebisu Garden Place Illumination & Christmas Marche",
+      "location": "Yebisu Garden Place",
+      "description": "Un marché de Noël chic et moderne avec des lustres Baccarat, un sapin géant et divers stands dans une ambiance calme. Entrée gratuite, de 17h à 20h (12h à 20h le week-end).",
+      "website": "https://gardenplace.jp/event/detail/783",
+      "googlemap_link": "https://www.google.fr/maps/place/Yebisu+Garden+Place/@35.6421978,139.7085542,17z/data=!3m2!4b1!5s0x60188b15db5530ff:0x2f1d670f105ffda0!4m6!3m5!1s0x60188b15d77d1725:0xb5bcd9d507694b0e!8m2!3d35.6421979!4d139.7134251!16s%2Fg%2F1pz2tw7gf?entry=ttu&g_ep=EgoyMDI0MTExOC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/12/01",
+      "end_date": "2025/12/25"
+    },
+    {
+      "name": "Asakusa Culture & Lights 2025",
+      "location": "temple Senso-ji",
+      "description": "Le temple Senso-ji accueille pour la première fois un spectacle de projection mapping à grande échelle. Les portes Hoomon et Nitenmon ainsi que la pagode à cinq étages s’illuminent chaque soir de projections digitales inspirées de l’histoire et de la culture du temple. En parallèle, des visites payantes permettent d’accéder à des lieux habituellement fermés, comme le jardin Denboin ou la salle des tablettes votives.",
+      "website": "https://www.asakusaculturelights.com/",
+      "googlemap_link": "https://www.google.com/maps/place/Sanctuaire+Asakusa/@35.7147694,139.7940804,17z/data=!3m1!4b1!4m6!3m5!1s0x60188ec1a4463df1:0x6c0d289a8292810d!8m2!3d35.7147651!4d139.7966553!16zL20vMDNrOTg3?entry=ttu&g_ep=EgoyMDI1MTExNy4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/12/03",
+      "end_date": "2025/12/07"
+    },
+    {
+      "name": "Belgian Beer Weekend",
+      "location": "Shinjuku Sumitomo Building (Shinjuku-ku)",
+      "description": "Des dizaines de bières belges, un verre collector à emporter et des stands en plein air: le Belgian Beer Weekend revient à Shinjuku pour une nouvelle édition hivernale. En achetant un starter kit, les visiteurs reçoivent un verre officiel et des jetons à échanger contre des dégustations. L’ambiance est conviviale, brassée au cœur de Tokyo entre spécialités belges et bière de caractère.",
+      "website": "https://belgianbeerweekend.jp/en/shinjuku",
+      "googlemap_link": "https://www.google.com/maps/place/Shinjuku+Sumitomo+Building+Triangle+Square/@35.6912609,139.6900221,17z/data=!3m2!4b1!5s0x601ca67d0f980997:0xa19d4156a24e8ef6!4m6!3m5!1s0x60188de12b669017:0x12b96528f3fd0d54!8m2!3d35.6912566!4d139.692597!16s%2Fg%2F11fmh6lpl4?entry=ttu&g_ep=EgoyMDI1MTExNy4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/12/03",
+      "end_date": "2025/12/07"
+    },
+    {
+      "name": "Oji Kumade Ichi",
+      "location": "sanctuaire Oji-jinja",
+      "description": "Si le mois de novembre est marqué par les foires Tori no Ichi, des événements organisés le jour du coq en novembre durant lesquels on achète des râteaux porte-bonheur appelés kumade, ces foires s’invitent aussi en décembre dans quelques rares lieux. Et c’est le cas dans le quartier d’Oji qui accueille le dernier Tori no Ichi de l’année à Tokyo! On profite d’une belle ambiance festive avec des stands de nourriture et de kumade.",
+      "website": "http://ojijinja.tokyo.jp/saijiki/index.html",
+      "googlemap_link": "https://maps.app.goo.gl/Rb22noKgKDW5vANk7",
+      "start_date": "2025/12/06",
+      "end_date": "2025/12/06"
+    },
+    {
+      "name": "Seki no Boro Ichi",
+      "location": "temple Honryu-ji",
+      "description": "Chaque année, ce sont 300 stands qui s’alignent durant 2 jours de 10h à 22h dans l’enceinte du temple Honryu-ji, dans l’arrondissement de Nerima. Le 9 décembre, un défilé entraînant a lieu de 19h à 21h, commémorant la mort de Nichiren, figure bouddhique importante au Japon. Cet événement rappelle fortement les événements Oeshiki qui ont lieu au mois d’octobre.",
+      "website": "https://www.city.nerima.tokyo.jp/kankomoyoshi/annai/rekishiwoshiru/rekishibunkazai/bunkazai/b043.html",
+      "googlemap_link": "https://maps.app.goo.gl/mQBXeRRazLiy3g51A",
+      "start_date": "2024/12/09",
+      "end_date": "2024/12/10"
+    },
+    {
+      "name": "Gishisai",
+      "location": "temple Sengaku-ji",
+      "description": "C’est au temple Sengaku-ji que se trouvent les tombes des 47 ronin, disposées autour de celle de leur maître qui fut exécuté à Edo. Il s’agissait de leur dernière volonté au moment de se rendre, après leur vengeance. Ce festival, qui se déroule sur 3 jours, est dédié à l’histoire de ces samurai. En plus d’un service commémoratif avec lecture de sutras devant la tombe de Takuminokami Naganori Asano, une cérémonie du thé est organisée dans le hall principal.",
+      "website": "https://sengakuji.or.jp/event/akougishi.html",
+      "googlemap_link": "https://maps.app.goo.gl/i8LJLnrzq76yLLVd6",
+      "start_date": "2025/12/12",
+      "end_date": "2025/12/14"
+    },
+    {
+      "name": "Suginami Hanagasa Matsuri",
+      "location": "sanctuaire Omiya Hachiman-gu",
+      "description": "En plein hiver, le sanctuaire Omiya Hachiman-gu devient le théâtre d’un événement d’été: une reproduction à petite échelle du Hanagasa Matsuri, un grand festival d’été du Tohoku, la région au nord du Japon. Les danses et animations proposées nous replongent quelques mois en arrière.",
+      "website": "https://prtimes.jp/main/html/rd/p/000000403.000047928.html",
+      "googlemap_link": "https://maps.app.goo.gl/en5xtHPDaYeNVNwC7",
+      "start_date": "2025/12/13",
+      "end_date": "2025/12/13"
+    },
+    {
+      "name": "Setagaya Boro Ichi",
+      "location": "quartier de Setagaya",
+      "description": "700 vendeurs prennent part à ce grand marché de fin d’année qui existe depuis 1578. Une occasion de chiner des objets anciens tout en profitant d’une jolie balade. Le marché se déroule également un mois plus tard, les 15 et 16 janvier.",
+      "website": "https://www.gotokyo.org/en/spot/ev114/index.html",
+      "googlemap_link": "https://maps.app.goo.gl/NpemiNNpg3NBxhmX6",
+      "start_date": "2025/12/15",
+      "end_date": "2025/12/16"
+    },
+    {
+      "name": "Asakusa Toshi No Ichi",
+      "location": "temple Senso-ji",
+      "description": "Durant 3 jours, le célèbre temple Senso-ji accueille un élégant marché de fin d’année spécialisé dans les hagoita, des raquettes décoratives traditionnelles du Nouvel An. Une belle ambiance de fête règne dans l’enceinte du temple, et les hagoita très joliment décorées constituent de beaux souvenirs originaux à ramener!",
+      "website": "https://www.asakusa-toshinoichi.com/",
+      "googlemap_link": "https://maps.app.goo.gl/ziy1MQi88qFLdhmNA",
+      "start_date": "2025/12/17",
+      "end_date": "2025/12/19"
+    },
+    {
+      "name": "Osame no Daishi",
+      "location": "temple Nishiarai Daishi",
+      "description": "Le joli temple Nishiarai Daishi fête la fin de l’année avec la foire Osame no Daishi proposant des objets qui portent bonheur en vue de la prochaine année. Le temple propose un marché aux puces le 21 de chaque mois, mais le dernier de l’année prend ici une saveur particulière et un engouement encore plus important.",
+      "website": "https://www.nishiaraidaishi.or.jp/event/yearly.html#dec01",
+      "googlemap_link": "https://maps.app.goo.gl/tpSRYENHGqse5K5v7",
+      "start_date": "2025/12/21",
+      "end_date": "2025/12/21"
+    },
+    {
+      "name": "Toji Sai",
+      "location": "temple Ana Hachiman-gu et temple Hojo-ji",
+      "description": "Chaque année à Waseda, le sanctuaire Ana Hachinman-gu et le temple Hojo-ji célèbrent Toji, le solstice d’hiver, la journée la plus courte de l’année. Ce n’est pas un événement très animé, mais les foules se pressèrent pour acheter des amulettes protectrices, les ichiyo raifuku, apportant chance et protection. Le festival comprend également un marché hivernal avec des produits locaux, notamment du yuzu, l’ agrume japonais qui est la star du jour car il est de coutume de prendre un bain de yuzu pour marquer Toji.",
+      "website": "https://event-checker.info/anahachimangu/",
+      "googlemap_link": "https://www.google.fr/maps/place/H%C5%8Dj%C5%8Dji+Temple/@35.7067629,139.7151763,17z/data=!3m1!4b1!4m6!3m5!1s0x60188d1c1588a5f7:0x5d321d43f28e88e8!8m2!3d35.7067629!4d139.7177512!16s%2Fg%2F1237vz1r?entry=ttu&g_ep=EgoyMDI0MTExOC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/12/22",
+      "end_date": "2025/12/22"
+    },
+    {
+      "name": "Ningyocho Toshi no Ichi",
+      "location": "quartier de Ningyocho",
+      "description": "Le charmant quartier méconnu de Ningyocho accueille la fin de l’année avec un petit marché proposant des décorations traditionnelles du Nouvel An. De 10h à 19h, différents stands s’installent dans les rues du quartier et invitent à se préparer à l’aube de la nouvelle année.",
+      "website": "https://www.ningyocho.or.jp/contents/event/index.html",
+      "googlemap_link": "https://maps.app.goo.gl/4dENqxd9LTHtGt3K8",
+      "start_date": "2025/12/25",
+      "end_date": "2025/12/31"
+    },
+    {
+      "name": "Comiket",
+      "location": "Tokyo Big Sight",
+      "description": "Cet événement est l’une des plus importantes manifestations de l’année en lien avec la culture anime et manga. Des auteurs amateurs comme professionnels s’y retrouvent, et les excellents cosplayers qui défilent accaparent souvent toute l’attention… surtout celle des nombreux photographes!",
+      "website": "https://www.gotokyo.org/en/spot/ev114/index.html",
+      "googlemap_link": "https://maps.app.goo.gl/X5Rzix4v16e8b3Th9",
+      "start_date": "2025/12/30",
+      "end_date": "2025/12/31"
+    },
+    {
+      "name": "Misoka Ichi",
+      "location": "sanctuaire Okunitama-jinja",
+      "description": "Pour profiter des derniers instants de l’année avant de passer aux festivités du Nouvel An, le Misoka Ichi est un marché qui se tient les 2 derniers jours de l’année de 10h à 18h au sanctuaire Okunitama-jinja. Divers stands proposent des objets traditionnels de toutes sortes.",
+      "website": "https://at-tama.tokyo/lang_jp/festival/misokaichi/",
+      "googlemap_link": "https://maps.app.goo.gl/pMBUZUdrrt1RD49Y9",
+      "start_date": "2025/12/30",
+      "end_date": "2025/12/31"
+    },
+    {
+      "name": "Oji Kitsune no Gyoretsu",
+      "location": "sanctuaire Oji Inari-jinja",
+      "description": "Dans le quartier d’Oji, célèbre pour ses dieux-renards, la nuit du Nouvel An prend vie avec la parade Kitsune no Gyoretsu. Les participants, déguisés en renards pour honorer Inari, divinité des céréales, défilent dans les rues, demandant sa bénédiction pour l’année à venir. C’est une façon originale et joyeuse de célébrer le passage à 2026, avec des yatai colorés, des sourires chaleureux et une ambiance festive qui envahit le quartier.",
+      "website": "https://kitsune.tokyo-oji.jp/",
+      "googlemap_link": "https://www.google.fr/maps/place/%C5%8Cji+Inari+Shrine/@35.7561181,139.7308498,17z/data=!3m1!4b1!4m6!3m5!1s0x60189262c7d06085:0x26e0d127f0511069!8m2!3d35.7561181!4d139.7334247!16s%2Fg%2F121xczkv?entry=ttu&g_ep=EgoyMDI0MTExOC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/12/31",
+      "end_date": "2025/12/31"
+    }
+  ]
+}

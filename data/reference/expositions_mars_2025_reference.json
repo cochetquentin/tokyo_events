@@ -1,0 +1,184 @@
+{
+  "expositions": [
+    {
+      "name": "JOAN MIRÓ",
+      "location": "musée d’art métropolitain de Tokyo",
+      "description": "Peintre majeur du XX e siècle, Joan Miró a su transformer les formes de la nature en un langage visuel unique, poétique et abstrait. Cette grande rétrospective revient sur son œuvre, de ses premières expérimentations à ses dernières créations, en mettant en lumière ses peintures, céramiques et sculptures. Un voyage fascinant dans l’univers d’un artiste dont l’influence continue de rayonner.",
+      "website": "https://miro2025.exhibit.jp/",
+      "googlemap_link": "https://www.google.fr/maps/place/Musée+d'art+métropolitain+de+Tokyo/@35.7172113,139.7703638,17z/data=!3m2!4b1!5s0x60188e82a6ac77bb:0x522ddc847aa7839c!4m6!3m5!1s0x60188c281e3bfa6f:0x8418dfeeb8bcab50!8m2!3d35.7172113!4d139.7729387!16s%2Fm%2F04jpnzf?entry=ttu&g_ep=EgoyMDI1MDIwMy4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/03/01",
+      "end_date": "2025/07/06"
+    },
+    {
+      "name": "LET’S DECODE CALENDARS BY HOKUSAI AND OTHERS!",
+      "location": "musée de Sumida Hokusai",
+      "description": "Une exposition originale qui présente les daish o, des calendriers populaires de l’époque d’Edo, utilisés avant l’adoption du calendrier grégorien au Japon en 1873. Ces calendriers, appelés aussi egoyomi, indiquaient les mois longs ou courts de manière cachée, au milieu de dessins humoristiques et astucieux. Ces œuvres, souvent imprimées sur bois, étaient commandées à titre privé pour aider à se repérer dans le calendrier luni-solaire de l’époque.",
+      "website": "https://hokusai-museum.jp/modules/Exhibition/exhibitions/view/3735",
+      "googlemap_link": "https://www.google.fr/maps/place/The+Sumida+Hokusai+Museum/@35.6963313,139.7978391,17z/data=!3m1!4b1!4m6!3m5!1s0x60188933b7d31881:0x7a02011fb48182aa!8m2!3d35.6963313!4d139.800414!16s%2Fg%2F1pzpdhfkx?entry=ttu&g_ep=EgoyMDI0MTExOS4yIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2024/12/18",
+      "end_date": "2025/03/02"
+    },
+    {
+      "name": "HILMA AF KLINT: THE BEYOND",
+      "location": "National Museum of Modern Art",
+      "description": "Avant Kandinsky ou Mondrian, Hilma af Klint posait déjà les bases de l’abstraction. Restée longtemps méconnue, son œuvre connaît aujourd’hui une reconnaissance internationale. Cette exposition inédite en Asie rassemble 140 de ses créations, dont la série emblématique The Paintings for the Temple. Un parcours en cinq chapitres qui explore son art visionnaire, nourri par le spiritisme et les mouvements féminins de son époque.",
+      "website": "https://www.momat.go.jp/en/exhibitions/561",
+      "googlemap_link": "https://www.google.fr/maps/place/National+Museum+of+Modern+Art-Crafts+Gallery/@35.6905431,139.7498223,17z/data=!3m2!4b1!5s0x60188c0d7df3dcd7:0x22996b3c798e7ada!4m6!3m5!1s0x60188c0d7e12492f:0x6667d99d5f4afe2a!8m2!3d35.6905432!4d139.7546932!16s%2Fm%2F02qpdvy?entry=ttu&g_ep=EgoyMDI1MDIwMy4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/03/04",
+      "end_date": "2025/06/15"
+    },
+    {
+      "name": "BACK TO MODERN – GRAPHIC DESIGN FROM WEST GERMANY",
+      "location": "Tokyo Metropolitan Teien Art Museum",
+      "description": "Le graphisme d’après-guerre en Allemagne de l’Ouest s’inscrit dans l’héritage du Bauhaus et de l’école d’Ulm, tout en ouvrant de nouvelles voies créatives. Cette exposition met en lumière l’impact du design graphique sur l’identité visuelle des grandes manifestations culturelles et sportives de l’époque, comme les Jeux olympiques de Munich 1972 ou l’exposition Documenta. À travers des affiches, brochures et magazines issus de la A5 Collection Düsseldorf, découvrez comment l’esthétique moderne a façonné une époque en pleine reconstruction.",
+      "website": "https://www.teien-art-museum.ne.jp/en/exhibition/250308-0518_backtomodern/",
+      "googlemap_link": "https://www.google.fr/maps/place/Tokyo+Metropolitan+Teien+Art+Museum/@35.6369465,139.7164659,17z/data=!3m2!4b1!5s0x60188b1afa5132dd:0x55cb2270ea5d124!4m6!3m5!1s0x60188b1b07ef2e41:0xdc7a7c82eae46af8!8m2!3d35.6369465!4d139.7190408!16s%2Fm%2F02q2fkp?entry=ttu&g_ep=EgoyMDI1MDIwMy4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/03/08",
+      "end_date": "2025/05/18"
+    },
+    {
+      "name": "I WOULD OVERCOME DEATH AND GO ON LIVING",
+      "location": "musée Yayoi Kusama",
+      "description": "Cette exposition présente la vision évolutive de la vie et de la mort chez l’artiste mondialement célèbre Yayoi Kusama, âgée de 95 ans aujourd’hui. On peut notamment y admirer ses toutes dernières œuvres.",
+      "website": "https://yayoikusamamuseum.jp/en/exhibition/upcoming/",
+      "googlemap_link": "https://maps.app.goo.gl/Y1EjYQoeKC7fyQWQ7",
+      "start_date": "2024/10/17",
+      "end_date": "2025/03/09"
+    },
+    {
+      "name": "A MINIATURE WORLD X HYAKUDAN KAIDAN",
+      "location": "hôtel Meguro Gajoen (Meguro-ku)",
+      "description": "Une exposition surprenante et poétique mettant en scène de nombreux éléments de la vie quotidienne japonaise miniaturisés et superbement disposés dans l’impressionnante galerie de l’hôtel Meguro Gajoen.",
+      "website": "https://en.hotelgajoen-tokyo.com/exhibition/a-miniature-world-x-hyakudan-kaidan/",
+      "googlemap_link": "https://maps.app.goo.gl/Y1EjYQoeKC7fyQWQ7",
+      "start_date": "2025/01/18",
+      "end_date": "2025/03/09"
+    },
+    {
+      "name": "FLOWERS: FLORAL MASTERPIECES",
+      "location": "musée des collections impériales",
+      "description": "Les fleurs de saison ont toujours inspiré les poètes et les artistes au Japon, devenant un motif incontournable dans l’art et la littérature. À travers 45 chefs-d’œuvre réalisés du XI e siècle à nos jours, cette exposition célèbre la richesse de l’art floral japonais sous différentes formes: peinture, calligraphie et arts décoratifs. Une belle manière de plonger dans l’univers poétique des fleurs, au moment même où la nature s’éveille au printemps.",
+      "website": "https://shozokan.nich.go.jp/en/exhibitions/2025flowers.html",
+      "googlemap_link": "https://www.google.fr/maps/place/Musée+des+collections+impériales/@35.6864261,139.7566693,17z/data=!3m1!4b1!4m6!3m5!1s0x60188c13425af13d:0xf3264e7ee9a0f84d!8m2!3d35.6864261!4d139.7592442!16s%2Fm%2F03nww5g?entry=ttu&g_ep=EgoyMDI1MDIwMy4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/03/11",
+      "end_date": "2025/05/06"
+    },
+    {
+      "name": "HOKUSAI AND THE PRODUCERS: FROM TSUTAYA JUZABURO TO TODAY",
+      "location": "The Sumida Hokusai Museum",
+      "description": "L’ ukiyo-e ne serait rien sans ses éditeurs, véritables maîtres d’œuvre de la production artistique. Cette exposition explore le rôle crucial des éditeurs d’Edo, comme Tsutaya Juzaburo et Nishimuraya Yohachi, qui ont contribué à façonner la renommée de Hokusai. Des estampes historiques aux créations contemporaines inspirées de cette tradition, un regard inédit sur les coulisses du monde de l’ ukiyo-e.",
+      "website": "https://hokusai-museum.jp/modules/Exhibition/exhibitions/view/4319",
+      "googlemap_link": "https://www.google.fr/maps/place/The+Sumida+Hokusai+Museum/@35.6963313,139.7978391,17z/data=!3m1!4b1!4m6!3m5!1s0x60188933b7d31881:0x7a02011fb48182aa!8m2!3d35.6963313!4d139.800414!16s%2Fg%2F1pzpdhfkx?entry=ttu&g_ep=EgoyMDI1MDIwMy4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/03/18",
+      "end_date": "2025/05/25"
+    },
+    {
+      "name": "1200 YEARS OF JAPANESE PRINTS: RECEIVING, INTERACTING, AND EMERGING",
+      "location": "Machida City Museum of Graphic Arts (Machida-shi)",
+      "description": "Des premières estampes du VIII e siècle aux créations contemporaines, cette exposition retrace l’évolution des gravures japonaises sous l’angle des échanges culturel s. Un voyage à travers les styles et les influences qui ont marqué l’histoire de cet art emblématique du Japon.",
+      "website": "https://hanga-museum.jp/english/exhibition/2025-564",
+      "googlemap_link": "https://www.google.fr/maps/place/Machida+City+Museum+of+Graphic+Arts+(Printmaking)/@35.5440275,139.4502014,17z/data=!3m1!4b1!4m6!3m5!1s0x6018f9484521f24d:0x3178d050938619ca!8m2!3d35.5440276!4d139.4550723!16s%2Fg%2F120nw02t?entry=ttu&g_ep=EgoyMDI1MDIwMy4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/03/20",
+      "end_date": "2025/06/15"
+    },
+    {
+      "name": "KABUKI PRINTS",
+      "location": "Seikado Bunko Art Museum",
+      "description": "Une plongée dans l’univers coloré des acteurs de théâtre kabuki à travers des estampes rares, des premières estampes ukiyo-e jusqu’à celles de l’ère Meiji (1868-1912). Une exposition au Saikado Bunko Art Museum qui promet d’en mettre plein les yeux!",
+      "website": "https://www.seikado.or.jp/english/english-exhibition/",
+      "googlemap_link": "https://www.google.fr/maps/place/Musée+d'Art+Seikadō-Bunko/@35.678945,139.7590756,17z/data=!3m2!4b1!5s0x60188bf0bba9befb:0xc3bcf43db19707e0!4m6!3m5!1s0x6018f4060164e6cf:0xa3914b79e0a3df2d!8m2!3d35.6789407!4d139.7616559!16s%2Fm%2F0h1gnr1?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoJLDEwMjExMjMzSAFQAw%3D%3D",
+      "start_date": "2025/01/25",
+      "end_date": "2025/03/23"
+    },
+    {
+      "name": "KAZUHIKO SHIMAMOTO",
+      "location": "Tokiwaso Manga Museum",
+      "description": "Dans le quartier de Shiinamachi, le Tokiwaso Manga Museum est un petit musée qui plonge dans le monde du manga des années 1960 à 1980, dans une résidence où vivaient ensemble plusieurs grands mangaka de légende. L’exposition temporaire du moment est dédiée à Kazuhiko Shimamoto, un auteur peu connu en France, auteur notamment de Skull Man et Cyborg 009. On peut admirer de superbes planches originales exposées.",
+      "website": "https://tokiwasomm.jp/exhibition/2024/11/ver3.php",
+      "googlemap_link": "https://maps.app.goo.gl/Q7KBP2ci29C1vqVi7",
+      "start_date": "2024/12/07",
+      "end_date": "2025/03/23"
+    },
+    {
+      "name": "TOYOHARA KUNICHIKA",
+      "location": "Ota Memorial Museum of Art",
+      "description": "On découvre l’univers vibratoire de Toyohara Kunichika, maître de l’ukiyo-e. À travers une sélection de ses plus grandes œuvres, plongez dans l’art de l’époque d’Edo, riche en portraits dramatiques de kabuki et de scènes de combats. Un hommage à l’un des plus grands artistes de l’estampe japonaise du XIXe siècle.",
+      "website": "https://www.ukiyoe-ota-muse.jp/eng",
+      "googlemap_link": "https://www.google.com/maps/place/Ōta+Memorial+Museum+of+Art/@35.6694002,139.7024005,17z/data=!3m1!4b1!4m6!3m5!1s0x60188ca4ea5ac8c5:0x75513e1c088d3a9!8m2!3d35.6693959!4d139.7049808!16s%2Fm%2F0j266v0?entry=ttu&g_ep=EgoyMDI1MDExNC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/03/26",
+      "end_date": "2025/03/26"
+    },
+    {
+      "name": "LEGACY OF ZEN TEMPLES : SHOKOKU-JI, KINKAKU-JI ET GINKAKU-JI",
+      "location": "université des arts de Tokyo",
+      "description": "Cette exposition exceptionnelle réunit plus de 40 Trésors Nationaux et Biens Culturels Importants issus de plusieurs temples de Kyoto. Une immersion dans l’esthétique et l’héritage des temples zen de l’ancienne capitale impériale, entre histoire et contemplation.",
+      "website": "https://museum.geidai.ac.jp/en/exhibit/2025/03/Shokoku-ji%20.html",
+      "googlemap_link": "https://www.google.fr/maps/place/Ueno+Pavilion,+University+Art+Museum,+Tokyo+University+of+the+Arts/@35.7192079,139.7693114,17z/data=!3m2!4b1!5s0x60188c29eaf4e8cb:0x4f857a8b9e75365d!4m6!3m5!1s0x60188c29eacc3d75:0x2fd3720c3b03a306!8m2!3d35.7192079!4d139.7718863!16s%2Fg%2F121g1xgd?entry=ttu&g_ep=EgoyMDI1MDIwMy4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/03/29",
+      "end_date": "2025/05/25"
+    },
+    {
+      "name": "RYUICHI SAKAMOTO | SEEING SOUND, HEARING TIME",
+      "location": "musée d’art moderne de Tokyo",
+      "description": "Le musée d’art moderne de Tokyo présente une exposition rétrospective dédiée à Ryuichi Sakamoto (1952-2023), pianiste de légende. L’exposition explore ses installations sonores en trois dimensions, mettant en avant ses œuvres phares ainsi que de nouvelles créations, imaginées avant son décès, intégrées dans l’espace du musée.",
+      "website": "https://www.mot-art-museum.jp/en/exhibitions/RS/",
+      "googlemap_link": "https://maps.app.goo.gl/aUYsw29jRz3oLbjk7",
+      "start_date": "2024/12/21",
+      "end_date": "2025/03/30"
+    },
+    {
+      "name": "AUBREY BEARDSLEY EXHIBITION",
+      "location": "Mitsubishi Ichigokan Museum",
+      "description": "La magie du noir et blanc prend forme à travers les œuvres du génie britannique Aubrey Beardsley. On découvre 200 œuvres de cet artiste révolutionnaire, des dessins élégants aux illustrations d’œuvres littéraires comme Salomé et Morte d’Arthur. Un voyage visuel qui plonge dans l’esthétique de la fin du XIX e siècle, riche en lignes précises et en contrastes saisissants.",
+      "website": "https://mimt.jp/ex/beardsley/",
+      "googlemap_link": "https://www.google.com/maps/place/Mitsubishi+Ichigokan+Museum/@35.6785329,139.7607544,17z/data=!3m2!4b1!5s0x60188bfa73c23fad:0x541df7ffbc26b992!4m6!3m5!1s0x60188bfa653e26bb:0xf45c085d037d8411!8m2!3d35.6785286!4d139.7633347!16s%2Fm%2F05pcg6j?entry=ttu&g_ep=EgoyMDI1MDExNC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/15",
+      "end_date": "2025/05/11"
+    },
+    {
+      "name": "HOKUSAI: ANOTHER STORY IN TOKYO",
+      "location": "Tokyu Plaza Shibuya (Shibuya-ku)",
+      "description": "On entre dans un voyage sensoriel au cœur des œuvres de Katsushika Hokusai, où l’image, le son et la sensation se rencontrent. L’exposition propose de plonger dans l’univers de l’artiste à travers des technologies immersives et des collaborations exclusives, qui vous permettent de ressentir la beauté de ses célèbres estampes tout en explorant l’ambiance du Japon d’Edo.",
+      "website": "https://hokusai.anotherstory.world/en/",
+      "googlemap_link": "https://www.google.com/maps/place/Tokyu+Plaza+Shibuya/@35.6575947,139.6975715,17z/data=!3m2!4b1!5s0x60188b57985e3c21:0x7f1c5ee96b16b7cf!4m6!3m5!1s0x60188b5798fff0eb:0xbd5b31da1618069e!8m2!3d35.6575904!4d139.7001518!16s%2Fg%2F1yfdrlt20?entry=ttu&g_ep=EgoyMDI1MDExNC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/06/01",
+      "end_date": "2025/06/01"
+    },
+    {
+      "name": "MACHINE LOVE: VIDEO GAME, AI AND CONTEMPORARY ART",
+      "location": "Mori Art Museum",
+      "description": "L’art rencontre l’intelligence artificielle dans un univers où les jeux vidéo et la réalité virtuelle redéfinissent la création contemporaine! Découvrez des œuvres captivantes qui mêlent moteurs de jeux, IA et VR, abordant des questions essentielles de notre époque comme par exemple les enjeux environnementaux.",
+      "website": "https://www.mori.art.museum/en/exhibitions/machine_love/index.html",
+      "googlemap_link": "https://www.google.com/maps/place/Musée+d'art+Mori/@35.6604664,139.7266982,17z/data=!3m2!4b1!5s0x60188b770968fbdd:0xade6fa826b6e383d!4m6!3m5!1s0x60188b770f429483:0xff33d131dc8d6e9!8m2!3d35.6604621!4d139.7292785!16s%2Fm%2F0g5t56r?entry=ttu&g_ep=EgoyMDI1MDExNC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/13",
+      "end_date": "2025/06/08"
+    },
+    {
+      "name": "MAM RESEARCH 011: TOKYO UNDERGROUND 1960-1970s – A TURNING POINT IN POSTWAR JAPANESE CULTURE",
+      "location": "Mori Art Museum",
+      "description": "L’underground tokyoïte, un phénomène artistique bref mais intense. Découvrez une époque où l’art se réinvente dans les rues et les espaces alternatifs de Tokyo, propulsé par la contre-culture des années 60 et 70. Cette exposition vous plonge dans l’univers de l’art angura, entre performances et manifestations éphémères, offrant un regard fascinant sur cette période unique de l’histoire japonaise.",
+      "website": "https://www.mori.art.museum/en/exhibitions/mamresearch011/index.html",
+      "googlemap_link": "https://www.google.com/maps/place/Musée+d'art+Mori/@35.6604664,139.7266982,17z/data=!3m2!4b1!5s0x60188b770968fbdd:0xade6fa826b6e383d!4m6!3m5!1s0x60188b770f429483:0xff33d131dc8d6e9!8m2!3d35.6604621!4d139.7292785!16s%2Fm%2F0g5t56r?entry=ttu&g_ep=EgoyMDI1MDExNC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/13",
+      "end_date": "2025/06/08"
+    },
+    {
+      "name": "TOP 30TH ANNIVERSARY TAKANO RYUDAI: KASUBABA LIVING THROUGH THE ORDINARY",
+      "location": "Tokyo Photographic Art Museum",
+      "description": "Le quotidien à travers l’objectif du photographe Takano Ryudai. Entre intimité et réalité brute, cette exposition présente des clichés saisissants qui capturent les fragilités de notre époque. Des moments de la vie de tous les jours, du tremblement de terre à l’évolution urbaine, Takano nous invite à une réflexion sur la beauté cachée dans l’ordinaire.",
+      "website": "https://topmuseum.jp/contents/exhibition/index-4826.html",
+      "googlemap_link": "https://www.google.com/maps/place/Musée+métropolitain+de+photographie+de+Tokyo/@35.6416454,139.7084237,17z/data=!3m2!4b1!5s0x60188b15db5530ff:0x2f1d670f105ffda0!4m6!3m5!1s0x60188b1676daaaab:0x79ac21eb1980e9db!8m2!3d35.6416411!4d139.7132893!16s%2Fm%2F0261s6z?entry=ttu&g_ep=EgoyMDI1MDExNC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/27",
+      "end_date": "2025/06/08"
+    },
+    {
+      "name": "FEMINISM AND THE MOVING IMAGE",
+      "location": "The National Museum of Modern Art",
+      "description": "Un voyage dans l’histoire du féminisme à travers l’objectif des vidéastes. De la fin des années 60 aux années 70, une vague de vidéo-artistes s’est levée pour dénoncer les inégalités de genre, tout en utilisant ce nouveau média pour défier les normes sociales.",
+      "website": "https://www.momat.go.jp/en/exhibitions/r6-3-g4",
+      "googlemap_link": "https://www.google.com/maps/place/National+Museum+of+Modern+Art-Crafts+Gallery/@35.6905475,139.7498276,17z/data=!3m2!4b1!5s0x60188c0d7df3dcd7:0x22996b3c798e7ada!4m6!3m5!1s0x60188c0d7e12492f:0x6667d99d5f4afe2a!8m2!3d35.6905432!4d139.7546932!16s%2Fm%2F02qpdvy?entry=ttu&g_ep=EgoyMDI1MDExNC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/11",
+      "end_date": "2025/06/15"
+    }
+  ]
+}

@@ -1,0 +1,240 @@
+{
+  "month": "mars",
+  "year": 2025,
+  "festivals": [
+    {
+      "name": "AKATSUKA UME MATSURI",
+      "location": "parc Akatsuka Tameike Koen",
+      "description": "Au parc Akatsuka Tameike Koen, quelque 150 pruniers offrent un spectacle éblouissant. Outre l’observation des fleurs, c’est une petite fête culturelle et locale qui se tient le temps d’une journée.",
+      "website": "https://www.city.itabashi.tokyo.jp/kusei/profile/event/sakura/1006863.html",
+      "googlemap_link": "https://www.google.fr/maps/place/Akatsuka+Tameike+Park/@35.7855462,139.6413925,17z/data=!3m1!4b1!4m6!3m5!1s0x6018eb87101c7e85:0x51f61de0f97ec6dd!8m2!3d35.7855462!4d139.6439674!16s%2Fg%2F1w0h_n0s?entry=ttu&g_ep=EgoyMDI1MDIwNS4xIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/03/01",
+      "end_date": "2025/03/01"
+    },
+    {
+      "name": "FARMERS AND KIDS FESTA",
+      "location": "parc Yoyogi Koen",
+      "description": "Ce festival agricole en plein cœur de Tokyo initie les enfants aux joies de la ferme à travers des ateliers interactifs, comme la récolte des épinards ou le battage du riz. Un petit événement familial au parc Yoyogi Koen.",
+      "website": "https://farmerskids.jp/",
+      "googlemap_link": "https://maps.app.goo.gl/Sj8ev8jmYdMn1HRD9",
+      "start_date": "2025/03/01",
+      "end_date": "2025/03/02"
+    },
+    {
+      "name": "MARATHON DE TOKYO",
+      "location": "départ au siège du gouvernement métropolitain de Tokyo",
+      "description": "Événement phare du calendrier sportif, le marathon de Tokyo traverse les sites emblématiques de la ville. Même sans courir, l’ambiance le long du parcours s’apprécie en cette journée spéciale.",
+      "website": "https://www.marathon.tokyo/en/",
+      "googlemap_link": "https://www.google.fr/maps/place/Siège+du+gouvernement+métropolitain+de+Tokyo/@35.6894807,139.6891114,17z/data=!3m2!4b1!5s0x60188cd498eb5371:0x46cb7b987c5bc5b7!4m6!3m5!1s0x60188cd4b71a37a1:0xf1665c37f38661e8!8m2!3d35.6894807!4d139.6916863!16zL20vMDNrNzh3?entry=ttu&g_ep=EgoyMDI1MDIwNS4xIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/03/02",
+      "end_date": "2025/03/02"
+    },
+    {
+      "name": "IRUGI-JINJA REITAISAI",
+      "location": "sanctuaire Irugi-jinja",
+      "description": "Après une cérémonie solennelle rendant hommage aux divinités du sanctuaire Irugi-jinja, l’ambiance se transforme avec la sortie des mikoshi, ces sanctuaires portatifs transportés en procession. Des festivités sont prévues pour les enfants, qui recevront des friandises.",
+      "website": "https://irugijinjya.jp/saijireki/",
+      "googlemap_link": "https://www.google.fr/maps/place/Sanctuaire+Irugi/@35.6198814,139.7227001,17z/data=!3m1!4b1!4m6!3m5!1s0x60188af16e64e7f7:0xfa7e6ac5965d2734!8m2!3d35.6198814!4d139.725275!16s%2Fg%2F121xqn30?entry=ttu&g_ep=EgoyMDI1MDIwNS4xIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/03/02",
+      "end_date": "2025/03/02"
+    },
+    {
+      "name": "SETAGAYA UME MATSURI",
+      "location": "parc Hanegi Koen",
+      "description": "Avec ses 650 pruniers en fleurs, le Setagaya Ume Matsuri transforme le parc Hanegi Koen en un lieu magnifique pour les amoureux des fleurs. Des ventes de produits à base de prune et des performances culturelles ponctuent l’événement.",
+      "website": "http://setagaya-umematsuri.com",
+      "googlemap_link": "https://www.google.fr/maps/place/Hanegi-kōen,+4+Chome-38-52+Daita,+Setagaya,+Tokyo,+Japon/@35.6404585,139.6982319,17z/data=!4m5!3m4!1s0x6018f37499a810ad:0x6477d02e1e07ae87!8m2!3d35.6588093!4d139.6548336?entry=ttu&g_ep=EgoyMDI1MDEyMC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/08",
+      "end_date": "2025/03/02"
+    },
+    {
+      "name": "MUKOJIMA HYAKKAEN UME MATSURI",
+      "location": "jardin Mukojima Hyakkaen",
+      "description": "Le jardin Mukojima Hyakkaen, créé à la fin de l’époque d’Edo, est réputé pour ses 360 pruniers représentant près de 20 variétés. Chaque année, ce lieu emblématique célèbre la floraison des pruniers avec un festival haut en couleur, idéal pour les amoureux de nature !",
+      "website": "https://www.metro.tokyo.lg.jp/tosei/hodohappyo/press/2025/01/08/05.html",
+      "googlemap_link": "https://maps.app.goo.gl/jhzrwDQ3LNwYYZ3BA",
+      "start_date": "2025/02/08",
+      "end_date": "2025/03/02"
+    },
+    {
+      "name": "JINDAI-JI DARUMA ICHI",
+      "location": "temple Jindai-ji",
+      "description": "Le temple Jindai-ji accueille chaque année une grande foire aux daruma avec plus de 300 stands qui vendent ces petites poupées bouddhiques qui permettent de faire un voeu et de chaque jour garder la motivation jusqu’à ce qu’il se réalise.",
+      "website": "https://www.gotokyo.org/en/spot/ev162/index.html",
+      "googlemap_link": "https://maps.app.goo.gl/jVKZTiYvjMzrahpFA",
+      "start_date": "2025/03/03",
+      "end_date": "2025/03/04"
+    },
+    {
+      "name": "BUNKYO UME MATSURI",
+      "location": "sanctuaire Yushima Tenman-gu",
+      "description": "Le sanctuaire Yushima Tenman-gu est l’un des plus célèbres endroits de la capitale pour profiter des fleurs de pruniers avec ses 300 arbres en fleurs, proposant des stands de nourriture et de jolies illuminations nocturnes.",
+      "website": "https://www.yushimatenjin.or.jp/pc/index.htm",
+      "googlemap_link": "https://www.google.fr/maps/place/Yushima+Tenman-gū/@35.7163368,139.7721012,17z/data=!4m6!3m5!1s0x60188c2179792993:0xbae1fad02c5ee1d5!8m2!3d35.7077406!4d139.7682193!16s%2Fm%2F0bs4wl7?entry=ttu&g_ep=EgoyMDI1MDEyMC4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/08",
+      "end_date": "2025/03/08"
+    },
+    {
+      "name": "TAKAOSAN HIWATARI",
+      "location": "mont Takao",
+      "description": "Le mont Takao offre tout au long de l’année de jolies promenades un peu à l’écart de la folie urbaine de la capitale. En mars, ce festival du feu voit des moines guerriers (yamabushi) marcher pieds nus sur des braises afin de se purifier et de souhaiter la paix dans le monde.",
+      "website": "https://www.takaosan.or.jp/taiken/hiwatari.html",
+      "googlemap_link": "https://maps.app.goo.gl/CQextdsYS66X3JDm7",
+      "start_date": "2025/03/09",
+      "end_date": "2025/03/09"
+    },
+    {
+      "name": "WAKU WAKU MATSURI",
+      "location": "Honancho Ginza (Chuo-ku)",
+      "description": "Ce festival local animé et délirant se déroule sur plusieurs sites, dont l’avenue commerçante Honancho Ginza. Au programme : spectacles, ateliers de fabrication et même une initiation à l’équitation, une expérience rare en plein Tokyo. Un rallye de tampons et une grande loterie viennent compléter cette journée festive, où petits et grands trouveront de quoi s’amuser.",
+      "website": "https://www.honancho.net/",
+      "googlemap_link": "https://www.google.fr/maps/place/Honancho+Ginza+Shopping+Street/@35.6834691,139.6545356,17z/data=!3m2!4b1!5s0x6018f2fc789cbc97:0x38c322815a21b12e!4m6!3m5!1s0x6018f2fc7ded1dc1:0x4d252877a0c93e3f!8m2!3d35.6834691!4d139.6571105!16s%2Fg%2F11hbnvlx5f?entry=ttu&g_ep=EgoyMDI1MDIwNS4xIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/03/09",
+      "end_date": "2025/03/09"
+    },
+    {
+      "name": "ARAKAWA SEINEN TAIKAI – ARISTOCK",
+      "location": "Alice’s Square",
+      "description": "Un événement local organisé par les jeunes du quartier d’Arakawa. Sur place, des stands de restauration proposent des spécialités locales tandis que des performances de danse et de taiko animent la journée. Des ateliers permettent également d’essayer des activités originales, comme de l’origami en fil métallique !",
+      "website": "https://www.city.arakawa.tokyo.jp/a016/shougaigakushuu/seinen/seinentaikai_arice.html",
+      "googlemap_link": "https://www.google.fr/maps/place/Alice's+Square/@35.7541848,139.7536183,17z/data=!3m1!4b1!4m6!3m5!1s0x60188d504a7b8aed:0x18dddd9a3545e5bd!8m2!3d35.7541849!4d139.7584892!16s%2Fg%2F11fm7zdqkf?entry=ttu&g_ep=EgoyMDI1MDIwNS4xIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/03/16",
+      "end_date": "2025/03/16"
+    },
+    {
+      "name": "SENSO-JI JIMAI",
+      "location": "temple Senso-ji",
+      "description": "Au temple Senso-ji, un dragon doré de 18 mètres de long et 88 kg contrôlé par 8 personnes danse pour célébrer la prospérité et commémorer la construction de la salle principale du temple. Une performance spectaculaire qui attire chaque année de nombreux visiteurs.",
+      "website": "https://www.senso-ji.jp/annual_event/23.html",
+      "googlemap_link": "https://www.google.fr/maps/place/Sanctuaire+Asakusa/@35.7147651,139.7940804,17z/data=!3m1!4b1!4m6!3m5!1s0x60188ec1a4463df1:0x6c0d289a8292810d!8m2!3d35.7147651!4d139.7966553!16zL20vMDNrOTg3?entry=ttu&g_ep=EgoyMDI1MDIwNS4xIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/03/18",
+      "end_date": "2025/03/18"
+    },
+    {
+      "name": "SAKURA FES NIHOMBASHI",
+      "location": "quartier de Nihombashi",
+      "description": "Le quartier Nihombashi célèbre le printemps avec des installations d’art numérique interactives et une offre gastronomique inspirée des cerisiers. De nombreux restaurants proposent des menus éphémères sur le thème des sakura.",
+      "website": "https://www.nihonbashi-sakurafes.art/",
+      "googlemap_link": "https://maps.app.goo.gl/N3LgAf349uaziVWc9",
+      "start_date": "2025/03/19",
+      "end_date": "2025/04/06"
+    },
+    {
+      "name": "YOSHINO BAIGO UME MATSURI",
+      "location": "parc Umeno Koen",
+      "description": "Durant plus d’un mois, la région de Baigo, dans la campagne de la préfecture de Tokyo, célèbre la floraison des pruniers avec des visites guidées et des marchés locaux. L’occasion d’admirer les paysages colorés et sentir les premières notes du printemps dans une ambiance très calme et locale.",
+      "website": "https://www.omekanko.gr.jp/event/8659/",
+      "googlemap_link": "https://www.google.fr/maps/place/Umeno+Park/@35.7852757,139.2167695,17z/data=!4m6!3m5!1s0x601924dcc75513e7:0x9cd005550756ccd2!8m2!3d35.7852757!4d139.2193444!16s%2Fg%2F11gfkjcwkg?entry=ttu&g_ep=EgoyMDI1MDIwNS4xIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/02/15",
+      "end_date": "2025/03/20"
+    },
+    {
+      "name": "ODEN & JIZAKE FES",
+      "location": "quartier de Shin Koiwa",
+      "description": "Un événement gourmet pour se remplir à la fois la panse et le gosier avec du nihonshu de tout le pays à déguster en compagnie de délicieux bols d’oden, sorte de pot-au-feu japonais. Une belle ambiance de fête du matin au soir dans la quartier de Shin Koiwa.",
+      "website": "https://oden-jizakefes.com/",
+      "googlemap_link": "https://maps.app.goo.gl/JSihDn63iTcPR5ot6",
+      "start_date": "2025/03/20",
+      "end_date": "2025/03/23"
+    },
+    {
+      "name": "FAMILY ANIME FESTA 2025",
+      "location": "Tokyo Big Sight",
+      "description": "Pensée pour les familles et les jeunes enfants, cette convention plonge petits et grands dans l’univers de l’animation japonaise. Au programme : rencontres avec des personnages populaires comme Maruko-chan et Détective Conan, spectacles sur scène et activités créatives. Une aire de restauration proposera également des plats inspirés de l’univers des anime.",
+      "website": "https://www.family-animefesta.jp/",
+      "googlemap_link": "https://www.google.fr/maps/place/Tokyo+Big+Sight/@35.6321411,139.7948889,17z/data=!3m1!4b1!4m6!3m5!1s0x601889dc629d1e7b:0xa4d1509a76045a01!8m2!3d35.6321411!4d139.7974638!16s%2Fm%2F027qfk3?entry=ttu&g_ep=EgoyMDI1MDIwNS4xIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/03/22",
+      "end_date": "2025/03/23"
+    },
+    {
+      "name": "ANIME JAPAN 2025",
+      "location": "Tokyo Big Sight",
+      "description": "L’un des plus grands rendez-vous de l’animation au Japon, réunissant studios, expositions et événements en direct. Des doubleurs célèbres, des produits exclusifs et des performances animeront les trois scènes principales. Les cosplayers devront acheter un ticket spécial pour accéder aux vestiaires et espaces dédiés.",
+      "website": "https://www.anime-japan.jp/",
+      "googlemap_link": "https://www.google.fr/maps/place/Tokyo+Big+Sight/@35.6321411,139.7948889,17z/data=!3m1!4b1!4m6!3m5!1s0x601889dc629d1e7b:0xa4d1509a76045a01!8m2!3d35.6321411!4d139.7974638!16s%2Fm%2F027qfk3?entry=ttu&g_ep=EgoyMDI1MDIwNS4xIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/03/22",
+      "end_date": "2025/03/23"
+    },
+    {
+      "name": "SHIBUYA OMOTESANDO WOMEN’S RUN 2025",
+      "location": "quartier de Shibuya (Shibuya-ku)",
+      "description": "Chaque année, 5000 coureuses traversent les rues emblématiques de Shibuya lors de cette course de 10 km. Le parcours débute à l’amphithéâtre du parc Yoyogi Koen et passe par Omotesando et le sanctuaire Meiji-jingu. Vestiaires et casiers sont disponibles sur place. Une belle occasion de vivre Tokyo autrement, que l’on participe ou que l’on vienne simplement encourager.",
+      "website": "https://womensrun.jp/english/",
+      "googlemap_link": "https://maps.app.goo.gl/cyS3GL7THNu3z2r96",
+      "start_date": "2025/03/23",
+      "end_date": "2025/03/23"
+    },
+    {
+      "name": "NORABO MATSURI",
+      "location": "sanctuaire Konaji-jinja",
+      "description": "Dans la ville d’Akiruno, appartenant à la préfecture de Tokyo, le sanctuaire Konaji-jinja met à l’honneur le norabo, légume emblématique de la région, à travers des dégustations et la ventes de produits artisanaux. Une célébration où musique traditionnelle et gastronomie se rencontrent dans une ambiance locale agréable.",
+      "website": "https://www.city.akiruno.tokyo.jp/category/23-0-0-0-0-0-0-0-0-0.html",
+      "googlemap_link": null,
+      "start_date": "2025/03/29",
+      "end_date": "2025/03/29"
+    },
+    {
+      "name": "Chiyoda Sakura Matsuri",
+      "location": "parc Chidorigafuchi Koen",
+      "description": "L’un des moments les plus enchanteurs du Chiyoda Sakura Matsuri 2025 est sans aucun doute l’illumination nocturne des 700 mètres de sakura qui bordent le chemin de Chidori-ga-fuchi. Chaque soir, 260 cerisiers scintillent sous des lumières LED, offrant un spectacle féerique. Pour une vue encore plus spectaculaire, il est possible de louer une barque et de naviguer sur les douves, une expérience magique… à condition d’être patient, car l’attente peut être longue ! L’ambiance festive gagne aussi les arcades commerçantes, où animations et événements viennent compléter cette célébration du hanami.",
+      "website": "https://visit-chiyoda.tokyo/en/sakura/",
+      "googlemap_link": "https://maps.app.goo.gl/7rEKp3WMTimcRPXDA",
+      "start_date": "2025/03/12",
+      "end_date": "2025/04/23"
+    },
+    {
+      "name": "Sakura Fes Nihonbashi 2025",
+      "location": "COREDO Muromachi",
+      "description": "Pendant 19 jours, Nihonbashi se met aux couleurs du printemps. Comme les cerisiers aux formes et teintes variées, cet événement rassemble des influences et des inspirations multiples sous le signe du sakura. Au programme : illuminations qui transforment le quartier à la nuit tombée, menus et articles spéciaux aux accents printaniers dans les restaurants et boutiques. On retrouve des créations gourmandes inspirées des cerisiers en fleurs, du sucré au salé, des bento aux pâtisseries.",
+      "website": "https://www.nihonbashi-sakurafes.art/",
+      "googlemap_link": "https://www.google.com/maps/place/COREDO+Muromachi+1/@35.6865187,139.7740345,17z/data=!3m1!4b1!4m6!3m5!1s0x601889550adb06df:0x6fa909ec52487b1d!8m2!3d35.6865187!4d139.7740345!16s%2Fg%2F121xkg01?entry=ttu",
+      "start_date": "2025/03/19",
+      "end_date": "2025/04/06"
+    },
+    {
+      "name": "Ueno Sakura Matsuri",
+      "location": "parc Ueno Koen (Taito-ku)",
+      "description": "Le parc Ueno fait partie des endroits incontournables de Tokyo pour admirer les cerisiers en fleurs. L’affluence y est importante à cette période, mais l’espace reste vaste et l’ambiance animée se prolonge jusqu’au soir.",
+      "website": "https://ueno.or.jp/",
+      "googlemap_link": "https://www.google.com/maps/place//data=!4m2!3m1!1s0x60188e9b45906ac3:0xb1cb3623124e645a?sa=X&ved=2ahUKEwi4vd_ls-mEAxVaVaQEHW2SDMAQ4kB6BAgQEAA",
+      "start_date": "2025/03/18",
+      "end_date": "2025/04/06"
+    },
+    {
+      "name": "Haru no Soyokaze Tsunagaru Fesu 2025",
+      "location": "parc Sumida Koen",
+      "description": "Autre événement incontournable de la capitale en cette période : des stands de nourriture régalent une foule qui vient en nombre profiter de plus de 400 cerisiers en fleurs au parc Sumida Koen à Asakusa. On peut notamment bénéficier d’une jolie vue sur la Tokyo Skytree.",
+      "website": "https://visit-sumida.jp/event/soyokaze-fes2025/",
+      "googlemap_link": "https://maps.app.goo.gl/mTHUyvj1PuGhY9xs8",
+      "start_date": "2025/03/15",
+      "end_date": "2025/04/13"
+    },
+    {
+      "name": "Edo Fukagawa Sakura Matsuri",
+      "location": "quartier de Monzen Nakacho",
+      "description": "Le vieux quartier de Monzen Nakacho se transforme au printemps avec ses nombreux cerisiers en fleurs le long de la rivière. Le week-end, on peut profiter de balades en barque, d’illuminations nocturnes, d’animations et de stands de nourriture. Une belle occasion de (re)découvrir ce quartier dans une ambiance teintée de rose !",
+      "website": "https://fukagawa-sakura.com/",
+      "googlemap_link": "https://maps.app.goo.gl/sQUTBgNmXbYtAQCo6",
+      "start_date": "2025/03/22",
+      "end_date": "2025/04/06"
+    },
+    {
+      "name": "Omiya Hachiman-gu Sakura Matsuri",
+      "location": "sanctuaire Omiya Hachiman-gu",
+      "description": "À l’ouest de Tokyo, le joli sanctuaire Omiya Hachiman-gu célèbre la beauté des cerisiers à travers des animations le week-end, avec notamment quelques stands de nourriture et des illuminations nocturnes jusqu’à 20h.",
+      "website": "https://www.ohmiya-hachimangu.or.jp/10212#container",
+      "googlemap_link": "https://maps.app.goo.gl/wV7iCKXD2aWCNU9Y8",
+      "start_date": "2025/03/29",
+      "end_date": "2025/04/06"
+    },
+    {
+      "name": "Waseda Sakura Matsuri",
+      "location": "parc Kansen-en",
+      "description": "Un événement très local dédié aux cerisiers dans le quartier de Waseda, proche de Shinjuku. De 10h à 15h, des stands de nourriture s’installent aux alentours de la gare, un marché aux puces se tient au parc Kanse-en, et divers spectacles de danse et de musique se déroulent sur scène.",
+      "website": "https://www.city.shinjuku.lg.jp/soshiki/totsuka01_002023.html",
+      "googlemap_link": "https://maps.app.goo.gl/oZMGdZrhBxq3xRWb6",
+      "start_date": "2025/03/30",
+      "end_date": "2025/03/30"
+    }
+  ]
+}

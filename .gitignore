@@ -1,5 +1,7 @@
 # Fichiers de données générés par le scraper
-data/
+data/*.json
+data/*.csv
+!data/reference/
 festivals_*.json
 festivals_*.csv
 

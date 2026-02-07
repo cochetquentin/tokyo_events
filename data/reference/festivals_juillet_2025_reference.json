@@ -1,0 +1,346 @@
+{
+  "festivals": [
+    {
+      "name": "Jujo Fuji-jinja Taisai",
+      "location": "sanctuaire Jujo Fuji-jinja (Kita-ku)",
+      "description": "Chaque année, pour célébrer le début de la saison d’ascension du mont Fuji, on peut assister au grand festival du sanctuaire Jujo Fuji-jinja. Ce festival se déroule sur la colline de Jujo Fuji, une réplique du mont Fuji. Plus de 200 stands bordent les rues autour du sanctuaire, offrant une variété de plats délicieux et attirant de nombreux visiteurs.",
+      "website": "https://www.visiting-japan.com/ja/articles/events/j13ki-jujo-fuji-taisai.htm",
+      "googlemap_link": "https://www.google.com/maps/place/Jujo+Fuji-jinja+Shrine/@35.7628363,139.7227719,17z/data=!3m1!4b1!4m6!3m5!1s0x601892f314074b8d:0x1d8dd29c1c4d7a4!8m2!3d35.762832!4d139.7253522!16s%2Fg%2F11h0zsdk6?entry=ttu",
+      "start_date": "2025/06/30",
+      "end_date": "2025/07/01"
+    },
+    {
+      "name": "Kamodai Bon Odori",
+      "location": "université Taisho",
+      "description": "En juillet, on peut participer au Kamodai Bon Odori, organisé sur le campus de l’université Taisho à Sugamo. Cet événement, l’un des premiers festivals de danse Bon Odori de la saison, propose diverses animations réalisées par les étudiants, créant une ambiance locale et touchante.",
+      "website": "https://www.tais.ac.jp/region_international/contribution_society/ohdai_bonodori/",
+      "googlemap_link": "https://www.google.com/maps/place/Universit%C3%A9+Taisho/@35.7430062,139.7245861,17z/data=!3m1!4b1!4m6!3m5!1s0x60188d7e646e82a5:0x6cac2c6aa6cc85fd!8m2!3d35.7430019!4d139.7271664!16s%2Fm%2F04cxc36?entry=ttu",
+      "start_date": "2025/07/04",
+      "end_date": "2025/07/05"
+    },
+    {
+      "name": "Koiwa Ada Odori",
+      "location": "sortie nord de la gare de Koiwa",
+      "description": "Début juillet, le quartier de Koiwa à Tokyo s’anime au rythme de l’ Awa Odori, célèbre danse traditionnelle originaire de Tokushima. La fête se déroule devant la sortie nord de la gare de Koiwa, avec plusieurs troupes de danseurs qui envahissent les rues dans une ambiance festive. On peut aussi participer à des ateliers d’initiation pour apprendre les bases de cette danse mythique.",
+      "website": "https://koiwa-awaodri.jimdofree.com/",
+      "googlemap_link": "https://www.google.com/maps/place/Koiwa+Station/@35.7333046,139.8793831,17z/data=!3m1!4b1!4m6!3m5!1s0x601885d89635313d:0x2cc6e1ec3d96cc8d!8m2!3d35.7333003!4d139.881958!16s%2Fm%2F043r4sm?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/07/05",
+      "end_date": "2025/07/05"
+    },
+    {
+      "name": "Fuchu Bon Odori Taikai",
+      "location": "sanctuaire Okunitama-jinja",
+      "description": "À l’est de la préfecture de Tokyo, le sanctuaire Okunitama-jinja accueille un bel événement de danse Bon Odori durant toute une journée. Les festivités commencent à partir de 15h, et c’est de 18h à 21h que tout le monde est invité à participer à la danse pour un joli moment de communion.",
+      "website": "https://machidukuri-fuchu.jp/event/14371/",
+      "googlemap_link": "https://maps.app.goo.gl/5xrV4qY2bW2mJFi76",
+      "start_date": "2025/07/05",
+      "end_date": "2025/07/05"
+    },
+    {
+      "name": "Hebikubo-jinja Natsu Fes Bon Odori",
+      "location": "sanctuaire Hebikubo-jinja",
+      "description": "Au sud de Shinagawa, le petit sanctuaire Hebikubo-jinja organise un festival d’été durant tout un week-end, de 12h à 21h. Le point culminant de la fête est la danse Bon Odori de 17h à 18h, puis de 19h30 à 21h. Le reste du temps, des concerts et animations locales sont proposées au public.",
+      "website": "https://www.facebook.com/hebikubo",
+      "googlemap_link": "https://maps.app.goo.gl/LRVtdCt3DHLTMdLZ8",
+      "start_date": "2025/07/05",
+      "end_date": "2025/07/06"
+    },
+    {
+      "name": "Design Festa Vol. 61",
+      "location": "Tokyo Big Sight",
+      "description": "Pendant deux jours, le Tokyo Big Sight accueille la 61e édition de Design Festa, l’un des plus grands festivals créatifs d’Asie. Cet événement réunit des milliers de créateurs venus exposer et vendre leurs œuvres dans des domaines variés comme la peinture, l’illustration, l’artisanat, la mode ou le design. Le salon propose également des ateliers accessibles aux enfants, une zone de live painting avec de grandes fresques créées en direct, des scènes de spectacles de danse, de musique ou de performance artistique.",
+      "website": "https://designfesta.com/",
+      "googlemap_link": "https://www.google.com/maps/place/Tokyo+Big+Sight/@35.6291269,139.7921665,17z/data=!3m1!4b1!4m6!3m5!1s0x601889dc629d1e7b:0xa4d1509a76045a01!8m2!3d35.6291226!4d139.7947414!16s%2Fm%2F027qfk3?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/07/05",
+      "end_date": "2025/07/06"
+    },
+    {
+      "name": "Shitamachi Tanabata Matsuri",
+      "location": "Kappabashi",
+      "description": "Début juillet, le Shitamachi Tanabata Matsuri célèbre avec éclat Tanabata, la fête des étoiles. Durant 2 jours, on peut profiter de danses, de mets locaux et de spectacles incluant des performances de shamisen et de taiko. Le point culminant de la fête est la somptueuse parade du dimanche, où les rues sont ornées de bambous chargés de vœux inscrits sur des papiers colorés par les participants.",
+      "website": "https://www.city.taito.lg.jp/event/kanko/shitamathitanabata.html",
+      "googlemap_link": "https://maps.app.goo.gl/NocPRKsYNk58tJgp9",
+      "start_date": "2025/07/05",
+      "end_date": "2025/07/06"
+    },
+    {
+      "name": "Zojo-ji Tanabata Matsuri",
+      "location": "temple Zojo-ji",
+      "description": "Les 6 et 7 juillet à partir de 18h, le temple Zojo-ji accueille Tanabata, la fête des étoiles durant laquelle on vient faire un vœu. Pour l’occasion, on peut y admirer une Voie Lactée représentée par des lanternes de papier washi fabriquées par des étudiants. Un événement assez sobre, sans réelle festivité, mais qui propose un joli spectacle avec la Tokyo Tower en toile de fond.",
+      "website": "https://www.zojoji.or.jp/event/ev_tanabata.html",
+      "googlemap_link": "https://maps.app.goo.gl/b4XyA9ckZ2mgEzkm9",
+      "start_date": "2025/07/06",
+      "end_date": "2025/07/07"
+    },
+    {
+      "name": "Asagao Matsuri",
+      "location": "autour du temple Shingen-ji",
+      "description": "Le temple Shingen-ji, vénéré pour sa protection des mères et des enfants, accueille le célèbre Asagao Matsuri chaque année. Plus de 150 stands, dont des marchands de fleurs asagao (volubilis, une fleur emblématique du début de l’été japonais) et des stands de nourriture, animent les environs du sanctuaire. Avec environ 100 000 pots d ‘ asagao vendus sur 3 jours, la foule peut parfois être si dense qu’il est difficile de se frayer un chemin.",
+      "website": "https://www.asagao-maturi.com/",
+      "googlemap_link": "https://www.google.com/maps/place/Shingen-ji+(Kishi-Mojin+of+Iriya)/@35.7198864,139.7778162,17z/data=!3m1!4b1!4m6!3m5!1s0x60188e9aae9bffff:0xe24b9e9866f57da5!8m2!3d35.7198821!4d139.7826818!16s%2Fg%2F120yrrfb?entry=ttu",
+      "start_date": "2025/07/06",
+      "end_date": "2025/07/08"
+    },
+    {
+      "name": "Asakusa Hozuki Ichi",
+      "location": "temple Senso-ji",
+      "description": "Début juillet, on peut vivre une tradition estivale à Asakusa avec le Hozuki Ichi. Cette fête se déroule au temple Senso-ji où l’on vient acheter des hozuki (physalis), des plantes médicinales en forme de lanternes. Le 10 juillet, considéré comme un jour de très bon augure, on y effectue une prière qui, selon la croyance, serait multipliée par 46 000.",
+      "website": "https://www.senso-ji.jp/annual_event/13.html",
+      "googlemap_link": "https://www.google.com/maps/place/Sanctuaire+Asakusa/@35.7147694,139.794075,17z/data=!3m1!4b1!4m6!3m5!1s0x60188ec1a4463df1:0x6c0d289a8292810d!8m2!3d35.7147651!4d139.7966553!16zL20vMDNrOTg3?entry=ttu",
+      "start_date": "2025/07/09",
+      "end_date": "2025/07/10"
+    },
+    {
+      "name": "Tokyo Hula Festa Ikebukuro",
+      "location": "parc Ikebukuro Nishi-guchi Koen (Toshima-ku)",
+      "description": "Le quartier d’Ikebukuro se transforme en petit Hawaï pour le Tokyo Hula Festa, un événement qui se déroule sur 4 sites autour de la gare d’Ikebukuro, avec des spectacles de hula, de la musique hawaïenne, et des stands de nourriture. La fête commence avec une soirée d’ouverture animée par un groupe hawaïen au parc Nishi-Ikebukuro.",
+      "website": "https://hulafesta.tokyo",
+      "googlemap_link": "https://maps.app.goo.gl/AdE52TzZL85EuNdZ8",
+      "start_date": "2025/07/11",
+      "end_date": "2025/07/13"
+    },
+    {
+      "name": "Nihonshu Fair 2025",
+      "location": "centre commercial Sunshine City",
+      "description": "Le salon du sake est de retour cette année à Ikebukuro! Plus grand événement mondial dédié au fameux nihonshu, c’est le lieu de rassemblements des amateurs de ce breuvage de brave! L’entrée coûte 3,000 yens, et on peut ensuite profiter de dégustations des meilleurs sake du monde, de séminaires et conférences, et de diverses animations avec notamment la présence de Miss Sake Japan.",
+      "website": "https://sakefair.com/index_en.html",
+      "googlemap_link": "https://maps.app.goo.gl/5fLbtmA7og8wRWJW7",
+      "start_date": "2025/07/12",
+      "end_date": "2025/07/12"
+    },
+    {
+      "name": "Kokusai Toshi Shinjuku Odori no Saiten",
+      "location": "Yotsuya Kumin Hall",
+      "description": "La 16e édition de cet événement se tiendra cette année à la salle communale de Yotsuya. Cette fête a pour but de mettre en avant la diversité culturelle de Shinjuku, où plus de 12% des habitants sont d’origine étrangère. Tout au long de la journée, des groupes de danse venus du Japon et de l’étranger présenteront leurs danses traditionnelles: hula, danses mexicaines, danses d’Asie centrale, d’Europe ou encore du sous-continent indien.",
+      "website": "https://www.regasu-shinjuku.or.jp/bunka-center/odorinosaiten/",
+      "googlemap_link": "https://www.google.com/maps/place/Yotsuya+Civic+Hall/@35.6875908,139.7118599,17z/data=!3m2!4b1!5s0x60188cebce45bb4d:0xcc9b345babfa1577!4m6!3m5!1s0x60188cebce151fff:0x9303b39f2a470b84!8m2!3d35.6875865!4d139.7144348!16s%2Fg%2F1tjdlr9b?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/07/12",
+      "end_date": "2025/07/12"
+    },
+    {
+      "name": "Otsuka Haisai Carnival",
+      "location": "gare d’Otsuka",
+      "description": "Durant tout un week-end, le charmant quartier d’Otsuka prend des airs de vacances tropicales avec cette fête annuelle sur le thème d’Okinawa. Des danses traditionnelles, des concerts, de l’alcool awamori et des stands de nourriture proposant des spécialités d’Okinawa font voyager depuis Tokyo.",
+      "website": "https://www.instagram.com/otsuka_haisai_carnival/",
+      "googlemap_link": "https://maps.app.goo.gl/LYkEt3Fq7aJYKR1B6",
+      "start_date": "2025/07/12",
+      "end_date": "2025/07/13"
+    },
+    {
+      "name": "Irugi Jinja Noryosai",
+      "location": "Sanctuaire Irugi-jinja",
+      "description": "Chaque été, le sanctuaire Irugi à Osaki accueille un festival nocturne pour célébrer la saison chaude autour de danses traditionnelles bon odori. Sur l’estrade centrale, des musiciens jouent du taiko pendant que les participants, en yukata ou en tenue décontractée, dansent sous les lanternes. L’ambiance est joyeuse et familiale, avec de nombreux stands de nourriture installés dans l’enceinte du sanctuaire. Le point culminant du festival est un feu d’artifice tiré le dernier soir, pour conclure deux jours d’été comme on les aime au Japon.",
+      "website": "https://irugijinjya.jp/saijireki/",
+      "googlemap_link": "https://www.google.com/maps/place/Sanctuaire+Irugi/@35.6198857,139.7227001,17z/data=!3m1!4b1!4m6!3m5!1s0x60188af16e64e7f7:0xfa7e6ac5965d2734!8m2!3d35.6198814!4d139.725275!16s%2Fg%2F121xqn30?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/07/13",
+      "end_date": "2025/07/14"
+    },
+    {
+      "name": "Mitama Matsuri",
+      "location": "sanctuaire Yasukuni-jinja",
+      "description": "Mi-juillet au sanctuaire Yasukuni-jinja, on peut découvrir le Mitama Matsuri, l’un des festivals d’été les plus importants de Tokyo. Durant 4 jours, des milliers de lanternes illuminent les allées, créant une atmosphère mystique et solennelle. On rend hommage aux âmes des défunts à travers des danses et des performances musicales traditionnelles.",
+      "website": "https://www.yasukuni.or.jp/english/festivals.html",
+      "googlemap_link": "https://www.google.com/maps/place/Yasukuni-jinja/@35.6941403,139.7412687,17z/data=!3m1!4b1!4m6!3m5!1s0x60188c680dae43d5:0xb5e754e6bf88ce90!8m2!3d35.694136!4d139.743849!16zL20vMDFtcjdw?entry=ttu",
+      "start_date": "2025/07/13",
+      "end_date": "2025/07/16"
+    },
+    {
+      "name": "Kan’ei-ji Ryutokai",
+      "location": "temple Kanei-ji",
+      "description": "Chaque année le 17 juillet, le temple Kan’ei-ji organise une cérémonie de lanternes flottantes appelée Ryutokai. Situé dans le parc Ueno Koen à Tokyo, ce grand temple bouddhiste accueille les fidèles venus prier pour que les esprits de leurs ancêtres regagnent en paix le paradis de Bouddha. Après une cérémonie religieuse tenue le 12 juillet pour préparer l’arrivée d’ O-Bon, les lanternes sont déposées sur l’eau le 17 juillet, accompagnées de prières et de remerciements.",
+      "website": "https://kaneiji.jp/about4#gsc.tab=0",
+      "googlemap_link": "https://www.google.com/maps/place/Kan'ei-ji/@35.7217573,139.7720413,17z/data=!3m1!4b1!4m6!3m5!1s0x60188e818f384bb3:0x37e58f8927830467!8m2!3d35.721753!4d139.7746162!16s%2Fm%2F03c4g6r?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/07/17",
+      "end_date": "2025/07/17"
+    },
+    {
+      "name": "Kishimojindo Bon Odori",
+      "location": "temple Kishimojindo",
+      "description": "Un événement local très touchant qui se tient durant 2 soirs au temple Kishimojindo: de la danse Bon Odori en communion au milieu de nombreux stands de nourriture installés pour l’occasion.",
+      "website": "https://www.kishimojin.jp/",
+      "googlemap_link": "https://maps.app.goo.gl/toar5LWJBYiov52p6",
+      "start_date": "2025/07/18",
+      "end_date": "2025/07/19"
+    },
+    {
+      "name": "Kami-Ikebukuro Sakura Koen Bon Odori Taisai",
+      "location": "parc Kami-Ikebukuro Sakura Koen (Toshima-ku)",
+      "description": "Au nord du quartier animé d’Ikebukuro, ce petit parc méconnu invite à vivre un beau moment local avec cet événement de danse Bon Odori qui se tient deux soirs de suite. De 19h à 21h, chacun peut venir participer à la jolie communion dansante. Des stands de nourriture et de jeux ouvrent à partir de 17h.",
+      "website": "https://www.kamiike.org/2025/07/08/%E4%B8%8A%E6%B1%A0%E8%A2%8B%E3%81%95%E3%81%8F%E3%82%89%E5%85%AC%E5%9C%92-%E7%9B%86%E8%B8%8A%E3%82%8A/",
+      "googlemap_link": null,
+      "start_date": "2025/07/18",
+      "end_date": "2025/07/19"
+    },
+    {
+      "name": "Mita Noryo Carnival",
+      "location": "rue commerçante Mita Shotengai",
+      "description": "Chaque été, la rue principale de Mita s’anime pour ce festival populaire organisé en fin de journée. Dès 16h, une parade d’ouverture avec motos, fanfare et voiture de police donne le ton. Ensuite, place aux stands de yakisoba, de bières bien fraîches, aux jeux pour enfants et à la scène centrale où se succèdent les spectacles en plein air. L’ambiance est détendue, parfaite pour une soirée d’été dans un quartier convivial.",
+      "website": "https://mitashotengai.jp/carnival.html",
+      "googlemap_link": "https://www.google.com/maps/place/Mita,+Minato-ku,+Tokyo+108-0073,+Japon/@35.647299,139.7302112,15z/data=!3m1!4b1!4m6!3m5!1s0x60188baf89335f5d:0x78b83958b7c60a47!8m2!3d35.647202!4d139.7409333!16s%2Fm%2F03gtf_t?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/07/19",
+      "end_date": "2025/07/19"
+    },
+    {
+      "name": "Brasil & Latino Festival",
+      "location": "parc Yoyogi Koen",
+      "description": "Cette fête est le plus grand festival brésilien du Japon: chaque année, ce sont de la musique, de la danse (avec notamment de la capoeira ), ou encore de la cuisine brésilienne et d’Amérique latine qui attendent les visiteurs pour transpirer en plein été!",
+      "website": "https://festivalbrasil.jp/",
+      "googlemap_link": "https://maps.app.goo.gl/DnknqFKd3q3W9qhV9",
+      "start_date": "2025/07/19",
+      "end_date": "2025/07/20"
+    },
+    {
+      "name": "Nakano Chanpuru Festa",
+      "location": "parc Shiki no Mori Koen",
+      "description": "Pendant 2 jours, les rues de Nakano se transforment aux couleurs de l’ archipel d’Okinawa. Danse Eisa, tambours, sanshin, concerts et défilés animent le quartier autour de la gare et du parc Shiki no Mori Koen. Plus de 30 groupes se succèdent sur scène et dans les rues pour faire vibrer l’été au son des traditions okinawaïennes.",
+      "website": "https://nakanocf.com/",
+      "googlemap_link": "https://www.google.com/maps/place/Nakano+Shiki+no+Mori+Park/@35.7078416,139.6588423,17z/data=!3m1!4b1!4m6!3m5!1s0x6018f290093ae19b:0xd222637dc385b7ea!8m2!3d35.7078416!4d139.6614172!16s%2Fg%2F1hdz7940y?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/07/19",
+      "end_date": "2025/07/20"
+    },
+    {
+      "name": "Jiyugaoka Bon Odori Taikai",
+      "location": "quartier de Jiyugaoka",
+      "description": "Le charmant quartier de Jiyugaoka s’anime durant 3 jours de fête avec cet événement convivial qui invite les foules à effectuer la danse Bon Odori en communion, de 18h à 21h. En plus des musiques traditionnelles, des tubes de J-Pop seront également joués.",
+      "website": "https://www.enjoytokyo.jp/event/873680/",
+      "googlemap_link": "https://maps.app.goo.gl/xjjLm2zPSRwJwibt6",
+      "start_date": "2025/07/19",
+      "end_date": "2025/07/21"
+    },
+    {
+      "name": "TV Asahi · Roppongi Hills Summer Station",
+      "location": "TV Asahi et Roppongi Hills (Minato-ku)",
+      "description": "Chaque été, TV Asahi organise un grand festival dans ses locaux de Roppongi Hills. Pendant un mois, des concerts, ateliers, expositions et animations thématiques sont proposés dans tout le quartier. L’événement met en avant les émissions de la chaîne, ainsi que des personnages populaires de l’univers des anime ou des programmes jeunesse. On y trouve aussi des espaces de jeux, des activités pour les familles et des stands de nourriture. Le festival attire chaque année un large public venu de tout le Japon.",
+      "website": "https://www.tv-asahi.co.jp/summerstation/",
+      "googlemap_link": "https://www.google.com/maps/place/Roppongi+Hills+Mori+Tower/@35.6596183,139.7282571,17z/data=!4m6!3m5!1s0x60188b771049dc33:0x5bfe0248594cc802!8m2!3d35.6607397!4d139.7292319!16zL20vMDFyMl9r?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/07/19",
+      "end_date": "2025/08/17"
+    },
+    {
+      "name": "Sumomo Matsuri",
+      "location": "sanctuaire Okunitama-jinja",
+      "description": "Dans la préfecture de Tokyo, au sanctuaire Okunitama-jinja, vénéré pour sa protection contre les épidémies et ses bénédictions de fertilité, cette fête des prunes se déroule chaque année le 20 juillet. L’origine de cette fête remonte à l’époque où les guerriers Minamoto no Yoshiie et son fils Yoritomo ont offert des prunes en remerciement de leurs victoires militaires. Plein de stands de nourriture attendent les nombreux visiteurs de ce festival à l’ouest de Tokyo.",
+      "website": "https://www.ookunitamajinja.or.jp/matsuri/7-sumomo.php",
+      "googlemap_link": "https://maps.app.goo.gl/ezLmkXzg6JvZmLnR6",
+      "start_date": "2025/07/20",
+      "end_date": "2025/07/20"
+    },
+    {
+      "name": "Otori-jinja Shishimai",
+      "location": "sanctuaire Otori-Jinja",
+      "description": "Chaque année à la mi-juillet, la danse du lion est offerte au sanctuaire Otori-jinja, dans le quartier de Hanahata à Tokyo. Classée bien culturel immatériel par la ville, cette danse ancienne se déroule la veille d’ Umi no Hi, le jour de la mer. Trois lions (un grand, un moyen et un petit) exécutent six danses traditionnelles dans un espace délimité au cœur du sanctuaire. Tambours et flûtes accompagnent ces rituels censés assurer paix, abondance des récoltes, guérison des maladies et pluie bienfaisante.",
+      "website": "https://ootori-jinja.or.jp/saiji.html",
+      "googlemap_link": "https://www.google.com/maps/place/Hanahata+Ōtori-jinja+Shrine/@35.8092844,139.8176829,17z/data=!3m1!4b1!4m6!3m5!1s0x60189051c2f3cde1:0xf69f2c7af9810294!8m2!3d35.8092801!4d139.8202578!16s%2Fg%2F121wt0xm?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/07/20",
+      "end_date": "2025/07/20"
+    },
+    {
+      "name": "Umi no Hi Marine Festival Tokyo Cruise Termina",
+      "location": "Tokyo International Cruise Terminal",
+      "description": "À l’occasion d’ Umi no Hi, le jour de la mer, un grand événement familial est organisé au Tokyo International Cruise Terminal. De nombreuses animations sont proposées tout au long de la journée, autour du thème de la mer et des métiers maritimes. L’un des temps forts est la visite d’un immense bateau-cargo automobile, accessible sur inscription préalable, qui permet aux enfants de monter à bord et de découvrir le monde maritime de l’intérieur. Sur place, on peut également assister à des concerts de fanfares de la garde côtière et de la marine d’autodéfense, explorer des stands pédagogiques et échanger avec des professionnels du secteur.",
+      "website": "https://www.yurikamome.co.jp/sightseeing/event/45843.html",
+      "googlemap_link": "https://www.google.com/maps/place/Tokyo+International+Cruise+Terminal/@35.61774,139.7685278,17z/data=!3m1!4b1!4m6!3m5!1s0x60188b66ae284093:0x71f33a1a64eaf01f!8m2!3d35.6177357!4d139.7711027!16s%2Fg%2F11h0s8xnkz?entry=ttu&g_ep=EgoyMDI1MDYxMS4wIKXMDSoASAFQAw%3D%3D",
+      "start_date": "2025/07/21",
+      "end_date": "2025/07/21"
+    },
+    {
+      "name": "Kagurazaka Matsuri",
+      "location": "quartier de Kagurazaka",
+      "description": "Fin juillet, c’est un superbe festival d’été qui se tient dans le quartier de Kagurazaka. Les 2 premiers jours de la fête sont dédiés au marché de hozuki (physalis), des plantes médicinales en forme de lanternes qu’on achète pour la cérémonie d’ O-Bon en été. Puis, le vendredi et le samedi, c’est la danse Awa Odori, originaire de la préfecture de Tokushima, qui émerveille les visiteurs. Des stands de nourriture seront présents tout au long des 4 jours de l’événement.",
+      "website": "https://www.kagurazaka.in/event/%e7%ac%ac51%e5%9b%9e%e7%a5%9e%e6%a5%bd%e5%9d%82%e3%81%be%e3%81%a4%e3%82%8a%e3%82%92%e9%96%8b%e5%82%ac%e3%81%97%e3%81%be%e3%81%99%e3%80%82/",
+      "googlemap_link": "https://maps.app.goo.gl/Ri9AkqL5rz3YQ93q8",
+      "start_date": "2025/07/23",
+      "end_date": "2025/07/26"
+    },
+    {
+      "name": "Shimbashi Koichi Matsuri",
+      "location": "quartier de Shimbashi",
+      "description": "On célèbre à la fois l’été et le quartier de Shimbashi lors de ce festival animé par les commerçants locaux. Vous pourrez essayer de porter un yukata (il y a d’ailleurs un concours du plus beau yukata sur scène), participer aux danses Bon Odori et savourer les nombreux plats de rue proposés pour l’occasion.",
+      "website": "http://www.shinbashi.net/top/koichi/2025/",
+      "googlemap_link": "https://maps.app.goo.gl/bDj1L6tgRensn9Km9",
+      "start_date": "2025/07/24",
+      "end_date": "2025/07/25"
+    },
+    {
+      "name": "Fukagawa Kawasegaki",
+      "location": "embarcadère de Takahashi",
+      "description": "Chaque été à Fukagawa, une cérémonie bouddhiste appelée kawasegaki est organisée pour honorer les esprits, notamment ceux des victimes du grand séisme du Kanto de 1923 et des bombardements pendant la guerre. Le 25 juillet 2025 à 19h, des moines montent à bord d’une barque depuis l’embarcadère de Takahashi, près de la station Kiyosumi‑Shirakawa, pour réciter des sutra et déposer des lanternes funéraires sur la rivière.",
+      "website": "https://www.town.chiyoda.gunma.jp/keizai/syoko/syoko007.html",
+      "googlemap_link": "https://maps.app.goo.gl/ZpTbFPhEC2iqvEEW6",
+      "start_date": "2025/07/25",
+      "end_date": "2025/07/25"
+    },
+    {
+      "name": "Ebisu Bon Odori",
+      "location": "gare d’Ebisu (Shibuya-ku)",
+      "description": "Au cœur de Tokyo, ce festival de danse Bon Odori est l’un des plus grands mais aussi l’un des moins connus de la capitale. Il se déroule autour du rond-point de bus à l’ouest de la gare JR d’Ebisu. Les participants, vêtus de yukata, forment un immense cercle de danse autour de la scène yagura, illuminée de lanternes.",
+      "website": "https://www.ebisu-bonodori.jp",
+      "googlemap_link": "https://www.google.com/maps/place/Gare+d'Ebisu/@35.6467188,139.7075015,17z/data=!3m1!4b1!4m6!3m5!1s0x60188b4046e3f71d:0x85ab1d92ef294edf!8m2!3d35.6467145!4d139.7100818!16zL20vMDIya2hk?entry=ttu",
+      "start_date": "2025/07/25",
+      "end_date": "2025/07/26"
+    },
+    {
+      "name": "Sugamo Noryo Bon Odori",
+      "location": "temple Kogan-ji",
+      "description": "Dans le charmant quartier de Sugamo et sa rue des papis et mamies, ce festival de danse Bon Odori réserve chaque année de très beaux moments dans un Tokyo chaleureux et local. De 18h à 20h45, tout le monde est inviter à danser en communion au cœur du temple Kogan-ji.",
+      "website": "https://www.ebisu-bonodori.jp",
+      "googlemap_link": "https://www.google.com/maps/place/Gare+d'Ebisu/@35.6467188,139.7075015,17z/data=!3m1!4b1!4m6!3m5!1s0x60188b4046e3f71d:0x85ab1d92ef294edf!8m2!3d35.6467145!4d139.7100818!16zL20vMDIya2hk?entry=ttu",
+      "start_date": "2025/07/25",
+      "end_date": "2025/07/27"
+    },
+    {
+      "name": "Taiwan Festa",
+      "location": "parc Yoyogi Koen",
+      "description": "Grâce à cet événement, on peut se perdre dans un marché de nuit taïwanais au cœur de Tokyo et découvrir la culture, l’art et la gastronomie taïwanaise durant 3 jours jusqu’à 22h au parc Yoyogi Koen.",
+      "website": "https://taiwan-festa.com/",
+      "googlemap_link": "https://maps.app.goo.gl/JBUCU6bX7JH65hjbA",
+      "start_date": "2025/07/25",
+      "end_date": "2025/07/27"
+    },
+    {
+      "name": "Shinjuku Eisa Odori",
+      "location": "quartier de Shinjuku (Shinjuku-ku)",
+      "description": "Haisai! Plongeons dans la chaleur d’Okinawa avec ce festival annuel qui anime tout Shinjuku avec la danse traditionnelle d’Okinawa, l’ Eisa Odori. Quelques stands de nourriture proposant des spécialités d’Okinawa s’installent dans le quartier, mais c’est surtout la grande parade qui attire toute l’attention.",
+      "website": "https://www.shinjuku-eisa.com/",
+      "googlemap_link": "https://maps.app.goo.gl/BVeZXTMpHL6BqsQn9",
+      "start_date": "2025/07/26",
+      "end_date": "2025/07/26"
+    },
+    {
+      "name": "Haneda Matsuri",
+      "location": "sanctuaire Haneda-jinja",
+      "description": "Lors du dernier week-end de juillet, on peut découvrir le festival Haneda Matsuri près de l’aéroport de Haneda. Le sanctuaire Haneda-jinja est en fête et voit plusieurs mikoshi défiler dans les rues, portés de manière unique, évoquant un bateau qui tangue sur les vagues.",
+      "website": "https://www.andtrip.jp/article/004940.html",
+      "googlemap_link": "https://www.google.com/maps/place/Haneda+Shrine/@35.5469783,139.7377286,17z/data=!3m1!4b1!4m6!3m5!1s0x601861229d0fd53b:0xb40521efcb28db79!8m2!3d35.546974!4d139.7403089!16s%2Fg%2F1tk9qr88?entry=ttu",
+      "start_date": "2025/07/26",
+      "end_date": "2025/07/27"
+    },
+    {
+      "name": "Chidorigafuchi Toro Nagashi",
+      "location": "jetée de Chidorigafuchi",
+      "description": "Cette fête des lanternes au fossé de Chidorigafuchi est une célébration annuelle à Tokyo, où 2000 lanternes illuminent le paysage aquatique avec leurs lumières douces et chaleureuses. Attention: pour déposer sa propre lanterne, il faut pour cela effectuer une réservation en ligne au préalable. Même chose pour la balade en barque qui est extrêmement prisée à cette occasion.",
+      "website": "https://visit-chiyoda.tokyo/en/floating.lantern/",
+      "googlemap_link": "https://maps.app.goo.gl/vkhKz3oGmdYCjyrG9",
+      "start_date": "2025/07/30",
+      "end_date": "2025/07/31"
+    },
+    {
+      "name": "Tsukiji Hongan-ji Bon Odori",
+      "location": "temple Tsukiji Hongan-ji (Chuo-ku)",
+      "description": "Durant 4 jours, le quartier de Tsukiji vibre au rythme des tambours taiko! Chaque soir de 19h à 21h (jusqu’à 20h30 le dernier jour), on se laisse emporter par la musique et l’énergie contagieuse de la danse Bon Odori qui invite chacun à participer pour partager un moment de communion!",
+      "website": "https://tsukijihongwanji.jp/news/9141/",
+      "googlemap_link": "https://maps.app.goo.gl/cFTnp8aP6a916pmt5",
+      "start_date": "2025/07/30",
+      "end_date": "2025/08/02"
+    },
+    {
+      "name": "Sunshine City Noryo Bon Odori Taisai",
+      "location": "Sunshine Plaza",
+      "description": "Depuis l’ouverture du grand centre commercial Sunshine City il y a 46 ans, cette fête d’été se tient chaque année et invite tout le monde à venir danser en communion de 19h à 21h15: un rendez-vous estival immanquable à Ikebukuro!",
+      "website": "https://sunshinecity.jp/event/entry-33500.html",
+      "googlemap_link": "https://maps.app.goo.gl/ZtBAfzEYrPaMYXye6",
+      "start_date": "2025/07/31",
+      "end_date": "2025/08/02"
+    }
+  ]
+}
