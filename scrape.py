@@ -16,6 +16,7 @@ if sys.platform == 'win32':
 from src.scraper_festivals_tokyo import TokyoFestivalScraper
 from src.scraper_expositions_tokyo import TokyoExpositionScraper
 from src.scraper_hanabi_kanto import KantoHanabiScraper
+from src.scraper_marches_tokyo import TokyoMarcheScraper
 from datetime import datetime
 
 
@@ -25,15 +26,16 @@ def main():
         print("Exemples:")
         print("  uv run scrape.py festivals mars 2025")
         print("  uv run scrape.py expositions janvier 2026")
+        print("  uv run scrape.py marches  # Scrape tous les marchés aux puces")
         print("  uv run scrape.py hanabi [mois_avance]  # Par défaut: 6 mois")
         sys.exit(1)
 
     scrape_type = sys.argv[1].lower()
 
     # Valider le type
-    if scrape_type not in ['festivals', 'expositions', 'hanabi']:
+    if scrape_type not in ['festivals', 'expositions', 'hanabi', 'marches']:
         print(f"❌ Type invalide: {scrape_type}")
-        print("Types valides: festivals, expositions, hanabi")
+        print("Types valides: festivals, expositions, marches, hanabi")
         sys.exit(1)
 
     # Handle hanabi (different parameter structure)
@@ -67,6 +69,26 @@ def main():
         print(f"  • Total de dates individuelles: {total_dates}")
         print(f"  • Avec horaires: {sum(1 for e in events if e.get('start_time'))}/{len(events)}")
         print(f"  • Avec nb de feux: {sum(1 for e in events if e.get('fireworks_count'))}/{len(events)}")
+        print(f"  • Avec Google Maps: {sum(1 for e in events if e.get('googlemap_link'))}/{len(events)}")
+        return
+
+    # Handle marches (no date parameter - scrapes all)
+    if scrape_type == 'marches':
+        print(f"🛍️ Scraping des marchés aux puces de Tokyo...\n")
+        scraper = TokyoMarcheScraper()
+        events = scraper.scrape_marches()
+
+        filename = 'data/marches_tokyo.json'
+        scraper.save_to_json(events, filename)
+
+        # Résumé
+        print(f"\n✅ {len(events)} marchés sauvegardés dans {filename}")
+        print(f"\n📊 Résumé:")
+        print(f"  • Marchés trouvés: {len(events)}")
+        print(f"  • Avec dates: {sum(1 for e in events if e.get('start_date'))}/{len(events)}")
+        print(f"  • Avec lieu: {sum(1 for e in events if e.get('location'))}/{len(events)}")
+        print(f"  • Avec horaires: {sum(1 for e in events if e.get('hours'))}/{len(events)}")
+        print(f"  • Avec tarif: {sum(1 for e in events if e.get('fee'))}/{len(events)}")
         print(f"  • Avec Google Maps: {sum(1 for e in events if e.get('googlemap_link'))}/{len(events)}")
         return
 

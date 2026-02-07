@@ -9,6 +9,9 @@ import sys
 import unicodedata
 
 from src.date_utils import split_date_range, format_date_range
+from src.date_utils_fr import parse_french_date_range, is_complex_date_pattern, expand_complex_dates
+from src.location_utils import normalize_district, extract_location_with_district
+from src.metadata_extractors import extract_hours, extract_fee
 
 
 class TokyoExpositionScraper:
@@ -229,10 +232,12 @@ class TokyoExpositionScraper:
                 'name': name,
                 'start_date': start_date,
                 'end_date': end_date,
-                'location': location,
+                'location': normalize_district(location) if location else None,
                 'description': description,
                 'website': website,
-                'googlemap_link': googlemap_link
+                'googlemap_link': googlemap_link,
+                'hours': extract_hours(metadata_text),
+                'fee': extract_fee(metadata_text)
             }
 
             if self._is_valid_exposition(exposition):
@@ -291,7 +296,9 @@ class TokyoExpositionScraper:
                 'location': None,
                 'description': '',
                 'website': None,
-                'googlemap_link': None
+                'googlemap_link': None,
+                'hours': None,
+                'fee': None
             }
 
             # Collecter tous les paragraphes et liens suivants
@@ -340,7 +347,7 @@ class TokyoExpositionScraper:
                     # Chercher le lieu avec pattern "Lieu :"
                     location_from_lieu = self._extract_location_from_lieu_field(meta_paragraph)
                     if location_from_lieu:
-                        exposition['location'] = location_from_lieu
+                        exposition['location'] = normalize_district(location_from_lieu)
 
                     # Chercher dates complètes "Du X au Y"
                     # Toujours donner la priorité au paragraphe de métadonnées car il contient les dates les plus complètes
@@ -350,29 +357,29 @@ class TokyoExpositionScraper:
                         exposition['start_date'] = start
                         exposition['end_date'] = end
 
-                    # Extraire les liens du paragraphe de métadonnées
-                    links = meta_paragraph_elem.find_all('a')
-                    for link in links:
-                        href = link.get('href', '')
-                        link_text = link.get_text(strip=True).lower()
+                    # Extraire heures et tarifs
+                    exposition['hours'] = extract_hours(meta_paragraph)
+                    exposition['fee'] = extract_fee(meta_paragraph)
 
-                        # Google Maps link (format long ou court: google.*/maps ou goo.gl)
-                        if ('google' in href and 'maps' in href) or 'goo.gl' in href:
-                            exposition['googlemap_link'] = href
-                        # Website (sur "Site de l'événement" ou "Site de l'exposition")
-                        elif 'site' in link_text or 'officiel' in link_text:
-                            exposition['website'] = href
-                        # Sinon, si c'est un lien http et pas Google Maps, c'est probablement le website
-                        elif 'http' in href and 'google' not in href and 'goo.gl' not in href and not exposition['website']:
-                            exposition['website'] = href
+                    # Extraire les liens avec hiérarchie de fallback
+                    exposition['website'] = self._extract_official_url_with_fallback(meta_paragraph_elem)
+                    exposition['googlemap_link'] = self._extract_googlemap_link(meta_paragraph_elem)
 
                 # Si pas trouvé de lieu, chercher dans tous les paragraphes
                 if not exposition['location']:
                     for p in paragraphs:
                         location = self._extract_location(p)
                         if location:
-                            exposition['location'] = location
+                            exposition['location'] = normalize_district(location)
                             break
+
+                # Si pas trouvé d'heures/tarifs, chercher dans tous les paragraphes
+                if not exposition['hours'] or not exposition['fee']:
+                    for p in paragraphs:
+                        if not exposition['hours']:
+                            exposition['hours'] = extract_hours(p)
+                        if not exposition['fee']:
+                            exposition['fee'] = extract_fee(p)
 
                 # Description: extraire le texte descriptif avant les métadonnées
                 # Si le paragraphe de métadonnées contient aussi la description (séparée par <br><br>),
@@ -530,7 +537,9 @@ class TokyoExpositionScraper:
                 'location': None,
                 'description': '',
                 'website': None,
-                'googlemap_link': None
+                'googlemap_link': None,
+                'hours': None,
+                'fee': None
             }
 
             # Extraire le HTML brut pour parser plus finement
@@ -616,7 +625,7 @@ class TokyoExpositionScraper:
                         location = link_text.strip()
                         # Nettoyer les entités HTML
                         location = location.replace('&rsquo;', "'")
-                        exposition['location'] = location
+                        exposition['location'] = normalize_district(location)
                         break
 
             # Extraire la description : après "Site de l'événement" ou "Site de l'exposition"
@@ -638,18 +647,13 @@ class TokyoExpositionScraper:
                 if len(description) > 20:
                     exposition['description'] = description
 
-            # Extraire les liens
-            links = p_elem.find_all('a')
-            for link in links:
-                href = link.get('href', '')
-                link_text = link.get_text(strip=True).lower()
+            # Extraire heures et tarifs
+            exposition['hours'] = extract_hours(full_text)
+            exposition['fee'] = extract_fee(full_text)
 
-                # Google Maps
-                if ('google' in href and 'maps' in href) or 'goo.gl' in href or 'maps.app.goo.gl' in href:
-                    exposition['googlemap_link'] = href
-                # Website (sur "Site de l'événement" ou "Site de l'exposition")
-                elif 'site' in link_text or 'événement' in link_text or 'exposition' in link_text:
-                    exposition['website'] = href
+            # Extraire les liens avec hiérarchie de fallback
+            exposition['website'] = self._extract_official_url_with_fallback(p_elem)
+            exposition['googlemap_link'] = self._extract_googlemap_link(p_elem)
 
             sub_expositions.append(exposition)
 
@@ -1036,6 +1040,72 @@ class TokyoExpositionScraper:
             if paren_match:
                 location += ' ' + paren_match.group(0)
             return location
+
+        return None
+
+    def _extract_official_url_with_fallback(self, paragraph_elem) -> Optional[str]:
+        """
+        Extrait l'URL officielle avec hiérarchie de fallback
+
+        Priority:
+        1. "Site de l'événement" / "Site officiel" / "Site de l'exposition"
+        2. Lien avec "site" dans le texte
+        3. Lien HTTP non-Google Maps
+
+        Args:
+            paragraph_elem: Élément BeautifulSoup du paragraphe
+
+        Returns:
+            URL officielle ou None
+        """
+        if not paragraph_elem:
+            return None
+
+        links = paragraph_elem.find_all('a')
+
+        # Priority 1: "Site de l'événement", "Site officiel", "Site de l'exposition"
+        for link in links:
+            href = link.get('href', '')
+            link_text = link.get_text(strip=True).lower()
+            if 'site' in link_text and ('événement' in link_text or 'officiel' in link_text or 'exposition' in link_text):
+                if href and href.startswith('http'):
+                    return href
+
+        # Priority 2: Lien avec "site" dans le texte
+        for link in links:
+            href = link.get('href', '')
+            link_text = link.get_text(strip=True).lower()
+            if 'site' in link_text:
+                if href and href.startswith('http'):
+                    return href
+
+        # Priority 3: Tout lien HTTP qui n'est pas Google Maps
+        for link in links:
+            href = link.get('href', '')
+            if href.startswith('http') and 'google' not in href and 'goo.gl' not in href:
+                return href
+
+        return None
+
+    def _extract_googlemap_link(self, paragraph_elem) -> Optional[str]:
+        """
+        Extrait le lien Google Maps
+
+        Args:
+            paragraph_elem: Élément BeautifulSoup du paragraphe
+
+        Returns:
+            Lien Google Maps ou None
+        """
+        if not paragraph_elem:
+            return None
+
+        links = paragraph_elem.find_all('a')
+        for link in links:
+            href = link.get('href', '')
+            # Google Maps (formats: google.*/maps, goo.gl, maps.app.goo.gl)
+            if ('google' in href and 'maps' in href) or 'goo.gl' in href or 'maps.app.goo.gl' in href:
+                return href
 
         return None
 

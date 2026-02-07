@@ -6,8 +6,12 @@ from datetime import datetime
 from typing import List, Dict, Optional
 import re
 import sys
+import unicodedata
 
 from src.date_utils import split_date_range, format_date_range
+from src.date_utils_fr import parse_french_date_range, is_complex_date_pattern, expand_complex_dates
+from src.location_utils import normalize_district, extract_location_with_district
+from src.metadata_extractors import extract_hours, extract_fee
 
 
 class TokyoFestivalScraper:
@@ -104,6 +108,9 @@ class TokyoFestivalScraper:
             # Utiliser separator=' ' pour ajouter des espaces entre les éléments (ex: <sup>)
             title_text = h2.get_text(separator=' ', strip=True)
 
+            # Normaliser Unicode (gère superscripts automatiquement)
+            title_text = unicodedata.normalize("NFKC", title_text)
+
             # Filtrer le bruit
             if any(keyword in title_text.lower() for keyword in noise_keywords):
                 continue
@@ -128,7 +135,9 @@ class TokyoFestivalScraper:
                 'location': None,
                 'description': '',
                 'website': None,
-                'googlemap_link': None
+                'googlemap_link': None,
+                'hours': None,
+                'fee': None
             }
 
             # Collecter tous les paragraphes et liens suivants
@@ -169,7 +178,7 @@ class TokyoFestivalScraper:
                     # Chercher le lieu avec pattern "Lieu :"
                     location_from_lieu = self._extract_location_from_lieu_field(p2)
                     if location_from_lieu:
-                        festival['location'] = location_from_lieu
+                        festival['location'] = normalize_district(location_from_lieu)
 
                     # Chercher dates complètes "Du X au Y"
                     dates_from_p2 = self._extract_dates_from_paragraph(p2)
@@ -178,29 +187,29 @@ class TokyoFestivalScraper:
                         festival['start_date'] = start
                         festival['end_date'] = end
 
-                    # Extraire les liens du paragraphe 2
-                    links = p2_elem.find_all('a')
-                    for link in links:
-                        href = link.get('href', '')
-                        link_text = link.get_text(strip=True).lower()
+                    # Extraire heures et tarifs du paragraphe
+                    festival['hours'] = extract_hours(p2)
+                    festival['fee'] = extract_fee(p2)
 
-                        # Google Maps link (format long ou court: google.*/maps ou goo.gl)
-                        if ('google' in href and 'maps' in href) or 'goo.gl' in href:
-                            festival['googlemap_link'] = href
-                        # Website (sur "Site de l'événement")
-                        elif 'site' in link_text:
-                            festival['website'] = href
-                        # Sinon, si c'est un lien http et pas Google Maps, c'est probablement le website
-                        elif 'http' in href and 'google' not in href and 'goo.gl' not in href and not festival['website']:
-                            festival['website'] = href
+                    # Extraire les liens du paragraphe 2 avec hiérarchie de fallback
+                    festival['website'] = self._extract_official_url_with_fallback(p2_elem)
+                    festival['googlemap_link'] = self._extract_googlemap_link(p2_elem)
 
                 # Si pas trouvé de lieu, chercher dans tous les paragraphes
                 if not festival['location']:
                     for p in paragraphs:
                         location = self._extract_location(p)
                         if location:
-                            festival['location'] = location
+                            festival['location'] = normalize_district(location)
                             break
+
+                # Si pas trouvé d'heures/tarifs, chercher dans tous les paragraphes
+                if not festival['hours'] or not festival['fee']:
+                    for p in paragraphs:
+                        if not festival['hours']:
+                            festival['hours'] = extract_hours(p)
+                        if not festival['fee']:
+                            festival['fee'] = extract_fee(p)
 
                 # Description: prendre les paragraphes descriptifs (pas celui avec "Lieu :")
                 description_parts = []
@@ -328,7 +337,9 @@ class TokyoFestivalScraper:
                 'location': None,
                 'description': '',
                 'website': None,
-                'googlemap_link': None
+                'googlemap_link': None,
+                'hours': None,
+                'fee': None
             }
 
             # Extraire le HTML brut pour parser plus finement
@@ -421,7 +432,7 @@ class TokyoFestivalScraper:
 
                 if locations:
                     # Joindre avec "et" si plusieurs lieux
-                    festival['location'] = ' et '.join(locations)
+                    festival['location'] = normalize_district(' et '.join(locations))
 
             # Extraire la description : après "Site de l'événement"
             # Format 1: ...Site de l'événement</a><br/>DESCRIPTION<br/>Entrée... (marchés de Noël)
@@ -441,18 +452,13 @@ class TokyoFestivalScraper:
                 if len(description) > 20:
                     festival['description'] = description
 
-            # Extraire les liens
-            links = p_elem.find_all('a')
-            for link in links:
-                href = link.get('href', '')
-                link_text = link.get_text(strip=True).lower()
+            # Extraire heures et tarifs
+            festival['hours'] = extract_hours(full_text)
+            festival['fee'] = extract_fee(full_text)
 
-                # Google Maps
-                if ('google' in href and 'maps' in href) or 'goo.gl' in href or 'maps.app.goo.gl' in href:
-                    festival['googlemap_link'] = href
-                # Website (sur "Site de l'événement")
-                elif 'site' in link_text or 'événement' in link_text:
-                    festival['website'] = href
+            # Extraire les liens avec hiérarchie de fallback
+            festival['website'] = self._extract_official_url_with_fallback(p_elem)
+            festival['googlemap_link'] = self._extract_googlemap_link(p_elem)
 
             sub_festivals.append(festival)
 
@@ -554,8 +560,8 @@ class TokyoFestivalScraper:
             annee = match.group(3)
             return f"{annee}/{mois}/{jour}"
 
-        # Pattern 1: "JUSQU'AU X MOIS ANNÉE"
-        match = re.search(r'jusqu[\'\']?au\s+(\d{1,2})\s+(\w+)\s+(\d{4})', dates_lower)
+        # Pattern 1: "JUSQU'AU X MOIS ANNÉE" ou "(jusqu'au X mois année)"
+        match = re.search(r'\(?jusqu[\'\'\u2019]?au\s+(\d{1,2})\s+(\w+)\s+(\d{4})\)?', dates_lower)
         if match:
             jour = match.group(1).zfill(2)
             mois = mois_mapping.get(match.group(2), '??')
@@ -747,6 +753,72 @@ class TokyoFestivalScraper:
             match = re.search(pattern, text, re.IGNORECASE)
             if match:
                 return match.group(0)
+
+        return None
+
+    def _extract_official_url_with_fallback(self, paragraph_elem) -> Optional[str]:
+        """
+        Extrait l'URL officielle avec hiérarchie de fallback
+
+        Priority:
+        1. "Site de l'événement" / "Site officiel"
+        2. Lien avec "site" dans le texte
+        3. Lien HTTP non-Google Maps
+
+        Args:
+            paragraph_elem: Élément BeautifulSoup du paragraphe
+
+        Returns:
+            URL officielle ou None
+        """
+        if not paragraph_elem:
+            return None
+
+        links = paragraph_elem.find_all('a')
+
+        # Priority 1: "Site de l'événement" ou "Site de l'événement"
+        for link in links:
+            href = link.get('href', '')
+            link_text = link.get_text(strip=True).lower()
+            if 'site' in link_text and ('événement' in link_text or 'officiel' in link_text):
+                if href and href.startswith('http'):
+                    return href
+
+        # Priority 2: Lien avec "site" dans le texte
+        for link in links:
+            href = link.get('href', '')
+            link_text = link.get_text(strip=True).lower()
+            if 'site' in link_text:
+                if href and href.startswith('http'):
+                    return href
+
+        # Priority 3: Tout lien HTTP qui n'est pas Google Maps
+        for link in links:
+            href = link.get('href', '')
+            if href.startswith('http') and 'google' not in href and 'goo.gl' not in href:
+                return href
+
+        return None
+
+    def _extract_googlemap_link(self, paragraph_elem) -> Optional[str]:
+        """
+        Extrait le lien Google Maps
+
+        Args:
+            paragraph_elem: Élément BeautifulSoup du paragraphe
+
+        Returns:
+            Lien Google Maps ou None
+        """
+        if not paragraph_elem:
+            return None
+
+        links = paragraph_elem.find_all('a')
+        for link in links:
+            href = link.get('href', '')
+            # Google Maps (formats: google.*/maps, goo.gl, maps.app.goo.gl)
+            if ('google' in href and 'maps' in href) or 'goo.gl' in href or 'maps.app.goo.gl' in href:
+                return href
 
         return None
 

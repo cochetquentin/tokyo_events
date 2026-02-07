@@ -6,7 +6,14 @@
       "Bash(bash:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(cat:*)",
+      "Bash(wc:*)",
+      "Bash(python3:*)",
+      "Bash(find:*)",
+      "Bash(git checkout -b feature/improve-scrapers-100pct)",
+      "Bash(uv pip install:*)",
+      "Bash(git rm:*)"
     ]
   }
 }
