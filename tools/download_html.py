@@ -17,11 +17,12 @@ import requests
 from datetime import datetime
 
 
-def download_festival_page(month, year):
+def download_page(page_type, month, year):
     """
-    Télécharge le HTML d'une page de festival
+    Télécharge le HTML d'une page de festival ou exposition
 
     Args:
+        page_type: Type de page ("festivals" ou "expositions")
         month: Numéro du mois (1-12)
         year: Année
     """
@@ -38,7 +39,7 @@ def download_festival_page(month, year):
         return
 
     # Construire l'URL
-    url = f"https://ichiban-japan.com/festivals-tokyo-{month_name}-{year}/"
+    url = f"https://ichiban-japan.com/{page_type}-tokyo-{month_name}-{year}/"
 
     print(f"📥 Téléchargement de: {url}")
 
@@ -55,7 +56,7 @@ def download_festival_page(month, year):
         os.makedirs(output_dir, exist_ok=True)
 
         # Nom du fichier
-        filename = f"{output_dir}/festivals_{month_name}_{year}.html"
+        filename = f"{output_dir}/{page_type}_{month_name}_{year}.html"
 
         # Sauvegarder le HTML
         with open(filename, 'w', encoding='utf-8') as f:
@@ -69,6 +70,28 @@ def download_festival_page(month, year):
     except requests.RequestException as e:
         print(f"❌ Erreur lors du téléchargement: {e}")
         return None
+
+
+def download_festival_page(month, year):
+    """
+    Télécharge le HTML d'une page de festival
+
+    Args:
+        month: Numéro du mois (1-12)
+        year: Année
+    """
+    return download_page("festivals", month, year)
+
+
+def download_exposition_page(month, year):
+    """
+    Télécharge le HTML d'une page d'exposition
+
+    Args:
+        month: Numéro du mois (1-12)
+        year: Année
+    """
+    return download_page("expositions", month, year)
 
 
 def download_multiple_months(months_list):
@@ -98,16 +121,36 @@ def download_multiple_months(months_list):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Usage: uv run tools/download_html.py <mois> <année>")
-        print("Exemple: uv run tools/download_html.py mars 2025")
+    if len(sys.argv) not in [3, 4]:
+        print("Usage: uv run tools/download_html.py [type] <mois> <année>")
+        print("  type: festivals ou expositions (par défaut: festivals)")
+        print("Exemples:")
+        print("  uv run tools/download_html.py mars 2025")
+        print("  uv run tools/download_html.py festivals mars 2025")
+        print("  uv run tools/download_html.py expositions mars 2025")
         sys.exit(1)
 
-    month_name = sys.argv[1].lower()
+    # Déterminer le type et les arguments
+    if len(sys.argv) == 4:
+        page_type = sys.argv[1].lower()
+        month_name = sys.argv[2].lower()
+        year_str = sys.argv[3]
+    else:
+        page_type = "festivals"  # Par défaut
+        month_name = sys.argv[1].lower()
+        year_str = sys.argv[2]
+
+    # Valider le type
+    if page_type not in ["festivals", "expositions"]:
+        print(f"❌ Type invalide: {page_type}")
+        print("Type valides: festivals, expositions")
+        sys.exit(1)
+
+    # Valider l'année
     try:
-        year = int(sys.argv[2])
+        year = int(year_str)
     except ValueError:
-        print(f"❌ Année invalide: {sys.argv[2]}")
+        print(f"❌ Année invalide: {year_str}")
         sys.exit(1)
 
     # Mapping des mois
@@ -123,5 +166,5 @@ if __name__ == "__main__":
         print(f"Mois valides: {', '.join(months.keys())}")
         sys.exit(1)
 
-    print(f"\n🎯 Téléchargement de {month_name} {year}...\n")
-    download_festival_page(month_num, year)
+    print(f"\n🎯 Téléchargement {page_type} de {month_name} {year}...\n")
+    download_page(page_type, month_num, year)

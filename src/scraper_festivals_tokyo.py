@@ -7,10 +7,7 @@ from typing import List, Dict, Optional
 import re
 import sys
 
-# Fix encoding issues on Windows
-if sys.platform == 'win32':
-    import io
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+from src.date_utils import split_date_range, format_date_range
 
 
 class TokyoFestivalScraper:
@@ -123,9 +120,11 @@ class TokyoFestivalScraper:
             name = re.sub(r'\s+', ' ', name).strip()
 
             # Créer l'entrée du festival
+            start_date, end_date = split_date_range(dates) if dates else (None, None)
             festival = {
                 'name': name,
-                'dates': dates,
+                'start_date': start_date,
+                'end_date': end_date,
                 'location': None,
                 'description': '',
                 'website': None,
@@ -174,8 +173,10 @@ class TokyoFestivalScraper:
 
                     # Chercher dates complètes "Du X au Y"
                     dates_from_p2 = self._extract_dates_from_paragraph(p2)
-                    if dates_from_p2 and len(dates_from_p2) > len(dates or ''):
-                        festival['dates'] = dates_from_p2
+                    if dates_from_p2 and len(dates_from_p2) > len(format_date_range(festival['start_date'], festival['end_date']) or ''):
+                        start, end = split_date_range(dates_from_p2)
+                        festival['start_date'] = start
+                        festival['end_date'] = end
 
                     # Extraire les liens du paragraphe 2
                     links = p2_elem.find_all('a')
@@ -211,7 +212,7 @@ class TokyoFestivalScraper:
                     festival['description'] = ' '.join(description_parts[:2])
 
             # Ne garder que les festivals valides (qui ont au moins des dates ou une description)
-            if festival['dates'] or (festival['description'] and len(festival['description']) > 20):
+            if festival.get('end_date') or (festival['description'] and len(festival['description']) > 20):
                 festivals.append(festival)
 
         return festivals
@@ -322,7 +323,8 @@ class TokyoFestivalScraper:
             # Créer l'entrée du festival
             festival = {
                 'name': name,
-                'dates': None,
+                'start_date': None,
+                'end_date': None,
                 'location': None,
                 'description': '',
                 'website': None,
@@ -354,30 +356,33 @@ class TokyoFestivalScraper:
                 jour2 = dates_match.group(4).zfill(2)
                 mois2 = mois_mapping.get(dates_match.group(5).lower(), '??')
                 annee2 = dates_match.group(6)
-                festival['dates'] = f"{annee1}/{mois1}/{jour1} - {annee2}/{mois2}/{jour2}"
+                festival['start_date'] = f"{annee1}/{mois1}/{jour1}"
+                festival['end_date'] = f"{annee2}/{mois2}/{jour2}"
 
             # Format 1b: "Du 1er au 3 janvier 2025" (même mois et année)
-            if not festival['dates']:
+            if not festival.get('end_date'):
                 dates_match = re.search(r'Du\s+(\d{1,2})(?:\s*er)?\s+au\s+(\d{1,2})(?:\s*er)?\s+(\w+)\s+(\d{4})', full_text, re.IGNORECASE)
                 if dates_match:
                     jour1 = dates_match.group(1).zfill(2)
                     jour2 = dates_match.group(2).zfill(2)
                     mois = mois_mapping.get(dates_match.group(3).lower(), '??')
                     annee = dates_match.group(4)
-                    festival['dates'] = f"{annee}/{mois}/{jour1} - {annee}/{mois}/{jour2}"
+                    festival['start_date'] = f"{annee}/{mois}/{jour1}"
+                    festival['end_date'] = f"{annee}/{mois}/{jour2}"
 
             # Format 2: "Jusqu'au 25 décembre 2025"
-            if not festival['dates']:
+            if not festival.get('end_date'):
                 dates_match = re.search(r'Jusqu[\'\'\u2019]?au\s+(\d{1,2})\s+(\w+)\s+(\d{4})', full_text, re.IGNORECASE)
                 if dates_match:
                     jour = dates_match.group(1).zfill(2)
                     mois = mois_mapping.get(dates_match.group(2).lower(), '??')
                     annee = dates_match.group(3)
                     # Format: du 1er au 25 décembre
-                    festival['dates'] = f"{annee}/{mois}/01 - {annee}/{mois}/{jour}"
+                    festival['start_date'] = f"{annee}/{mois}/01"
+                    festival['end_date'] = f"{annee}/{mois}/{jour}"
 
             # Format 3: Date simple "2 février 2025" ou "Du 31 janvier au 2 février 2025"
-            if not festival['dates']:
+            if not festival.get('end_date'):
                 # D'abord chercher les plages "Du X au Y"
                 dates_match = re.search(r'Du\s+(\d{1,2})(?:\s*er)?\s+(\w+)\s+au\s+(\d{1,2})\s+(\w+)\s+(\d{4})', full_text, re.IGNORECASE)
                 if dates_match:
@@ -386,7 +391,8 @@ class TokyoFestivalScraper:
                     jour2 = dates_match.group(3).zfill(2)
                     mois2 = mois_mapping.get(dates_match.group(4).lower(), '??')
                     annee = dates_match.group(5)
-                    festival['dates'] = f"{annee}/{mois1}/{jour1} - {annee}/{mois2}/{jour2}"
+                    festival['start_date'] = f"{annee}/{mois1}/{jour1}"
+                    festival['end_date'] = f"{annee}/{mois2}/{jour2}"
                 else:
                     # Sinon chercher une date simple "2 février 2025"
                     dates_match = re.search(r'(\d{1,2})(?:\s*er)?\s+(\w+)\s+(\d{4})', full_text, re.IGNORECASE)
@@ -394,22 +400,28 @@ class TokyoFestivalScraper:
                         jour = dates_match.group(1).zfill(2)
                         mois = mois_mapping.get(dates_match.group(2).lower(), '??')
                         annee = dates_match.group(3)
-                        festival['dates'] = f"{annee}/{mois}/{jour}"
+                        single_date = f"{annee}/{mois}/{jour}"
+                        festival['start_date'] = single_date
+                        festival['end_date'] = single_date
 
-            # Chercher le lieu : il est dans un lien après "Lieu :"
-            # Il peut y avoir plusieurs liens, prendre le premier non-vide
-            lieu_section = re.search(r'Lieu\s*:(.+?)(?:<br|Site)', p_html, re.IGNORECASE | re.DOTALL)
+            # Chercher le lieu : il est dans un lien après "Lieu :" ou "Lieux :"
+            # Il peut y avoir plusieurs liens (ex: "temple X et temple Y")
+            lieu_section = re.search(r'Lieux?\s*:(.+?)(?:<br|Site)', p_html, re.IGNORECASE | re.DOTALL)
             if lieu_section:
                 lieu_html = lieu_section.group(1)
                 # Extraire tous les liens
                 lieu_links = re.findall(r'<a[^>]*>([^<]*)</a>', lieu_html)
+                locations = []
                 for link_text in lieu_links:
                     if link_text.strip():
-                        location = link_text.strip()
+                        loc = link_text.strip()
                         # Nettoyer les entités HTML
-                        location = location.replace('&rsquo;', "'")
-                        festival['location'] = location
-                        break
+                        loc = loc.replace('&rsquo;', "'")
+                        locations.append(loc)
+
+                if locations:
+                    # Joindre avec "et" si plusieurs lieux
+                    festival['location'] = ' et '.join(locations)
 
             # Extraire la description : après "Site de l'événement"
             # Format 1: ...Site de l'événement</a><br/>DESCRIPTION<br/>Entrée... (marchés de Noël)
@@ -587,7 +599,7 @@ class TokyoFestivalScraper:
 
     def _extract_location_from_lieu_field(self, text: str) -> Optional[str]:
         """
-        Extrait la localisation spécifiquement du champ "Lieu :"
+        Extrait la localisation spécifiquement du champ "Lieu :" ou "Lieux :"
         C'est la source la plus fiable pour le lieu
 
         Args:
@@ -596,7 +608,9 @@ class TokyoFestivalScraper:
         Returns:
             Localisation extraite ou None
         """
-        match = re.search(r'Lieu\s*:\s*(.+?)(?:\s+(?:Site|Horaires|Tarif|en un|et )|$)', text, re.IGNORECASE)
+        # Supporter à la fois "Lieu :" (singulier) et "Lieux :" (pluriel)
+        # Ne pas s'arrêter sur "et" qui fait partie du nom du lieu
+        match = re.search(r'Lieux?\s*:\s*(.+?)(?:\s+(?:Site|Horaires|Tarif|en un)\s|$)', text, re.IGNORECASE)
         if match:
             location = match.group(1).strip()
             # Nettoyer les espaces multiples
@@ -655,7 +669,7 @@ class TokyoFestivalScraper:
     def _extract_location(self, text: str) -> Optional[str]:
         """
         Extrait la localisation d'un texte
-        Cherche des patterns comme "à [lieu]", "au [lieu]", "Lieu :[lieu]", etc.
+        Cherche des patterns comme "à [lieu]", "au [lieu]", "Lieu :[lieu]", "Lieux :[lieux]", etc.
 
         Args:
             text: Texte à analyser
@@ -663,8 +677,9 @@ class TokyoFestivalScraper:
         Returns:
             Localisation extraite ou None
         """
-        # Pattern 0: Format "Lieu :" ou "Lieu:" (le plus fiable)
-        match = re.search(r'Lieu\s*:\s*(.+?)(?:\s+(?:Site|Horaires|Tarif|en un|et )|$)', text, re.IGNORECASE)
+        # Pattern 0: Format "Lieu :" / "Lieux :" (le plus fiable)
+        # Ne pas s'arrêter sur "et" qui fait partie du nom du lieu
+        match = re.search(r'Lieux?\s*:\s*(.+?)(?:\s+(?:Site|Horaires|Tarif|en un)\s|$)', text, re.IGNORECASE)
         if match:
             location = match.group(1).strip()
             # Nettoyer les espaces multiples
@@ -788,8 +803,9 @@ def main():
         print(f"\n=== Aperçu des {len(festivals)} premiers festivals ===")
         for i, festival in enumerate(festivals[:3], 1):
             print(f"\n{i}. {festival['name']}")
-            if festival.get('dates'):
-                print(f"   Dates: {festival['dates']}")
+            dates_display = format_date_range(festival.get('start_date'), festival.get('end_date'))
+            if dates_display:
+                print(f"   Dates: {dates_display}")
             if festival.get('location'):
                 print(f"   Lieu: {festival['location']}")
 
