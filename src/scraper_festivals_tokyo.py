@@ -12,6 +12,7 @@ from src.date_utils import split_date_range, format_date_range
 from src.date_utils_fr import parse_french_date_range, is_complex_date_pattern, expand_complex_dates
 from src.location_utils import normalize_district, extract_location_with_district
 from src.metadata_extractors import extract_hours, extract_fee
+from src.database import EventDatabase
 
 
 class TokyoFestivalScraper:
@@ -822,33 +823,25 @@ class TokyoFestivalScraper:
 
         return None
 
-    def save_to_json(self, festivals: List[Dict], filename: str = None):
+    def save_to_database(self, festivals: List[Dict], db_path: str = None):
         """
-        Sauvegarde les festivals en JSON
+        Sauvegarde les festivals dans la base de données SQLite.
 
         Args:
             festivals: Liste des festivals
-            filename: Nom du fichier (optionnel)
+            db_path: Chemin vers la base de données (optionnel, par défaut data/tokyo_events.sqlite)
+
+        Returns:
+            int: Nombre de festivals sauvegardés
         """
-        if not filename:
-            # Chercher le premier festival avec month et year définis
-            month = 'unknown'
-            year = 'unknown'
-            for festival in festivals:
-                if festival.get('month') and festival.get('year'):
-                    month = festival['month']
-                    year = festival['year']
-                    break
+        if not db_path:
+            db_path = "data/tokyo_events.sqlite"
 
-            # Créer le dossier data s'il n'existe pas
-            import os
-            os.makedirs('data', exist_ok=True)
-            filename = f"data/festivals_tokyo_{month}_{year}.json"
+        db = EventDatabase(db_path)
+        count = db.insert_events(festivals, event_type='festivals')
 
-        with open(filename, 'w', encoding='utf-8') as f:
-            json.dump({'festivals': festivals}, f, ensure_ascii=False, indent=2)
-
-        print(f"✓ Données sauvegardées dans {filename}")
+        print(f"✓ {count} festivals sauvegardés dans la base de données {db_path}")
+        return count
 
 
 
@@ -865,11 +858,8 @@ def main():
     festivals = scraper.scrape_festivals(month=12, year=2025)
 
     if festivals:
-        # Sauvegarder en JSON
-        scraper.save_to_json(festivals)
-
-        # Sauvegarder en CSV
-        scraper.save_to_csv(festivals)
+        # Sauvegarder dans la base de données
+        scraper.save_to_database(festivals)
 
         # Afficher un aperçu
         print(f"\n=== Aperçu des {len(festivals)} premiers festivals ===")
@@ -887,8 +877,7 @@ def main():
         try:
             festivals = scraper.scrape_festivals(month=month, year=2026)
             if festivals:
-                scraper.save_to_json(festivals)
-                scraper.save_to_csv(festivals)
+                scraper.save_to_database(festivals)
         except Exception as e:
             print(f"Erreur pour le mois {month}/2026: {e}")
 

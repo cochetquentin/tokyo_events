@@ -10,6 +10,7 @@ from src.date_utils import split_date_range, format_date_range
 from src.date_utils_fr import parse_french_date_range, is_complex_date_pattern, expand_complex_dates
 from src.location_utils import normalize_district, extract_location_with_district
 from src.metadata_extractors import extract_hours, extract_fee
+from src.database import EventDatabase
 
 
 class TokyoMarcheScraper:
@@ -256,21 +257,25 @@ class TokyoMarcheScraper:
 
         return None
 
-    def save_to_json(self, marches: List[Dict], filename: str = "data/marches_tokyo.json"):
+    def save_to_database(self, marches: List[Dict], db_path: str = None):
         """
-        Sauvegarde les marchés en JSON
+        Sauvegarde les marchés dans la base de données SQLite.
 
         Args:
             marches: Liste des marchés
-            filename: Nom du fichier
+            db_path: Chemin vers la base de données (optionnel, par défaut data/tokyo_events.sqlite)
+
+        Returns:
+            int: Nombre de marchés sauvegardés
         """
-        import os
-        os.makedirs('data', exist_ok=True)
+        if not db_path:
+            db_path = "data/tokyo_events.sqlite"
 
-        with open(filename, 'w', encoding='utf-8') as f:
-            json.dump({'marches': marches}, f, ensure_ascii=False, indent=2)
+        db = EventDatabase(db_path)
+        count = db.insert_events(marches, event_type='marches')
 
-        print(f"✓ Données sauvegardées dans {filename}")
+        print(f"✓ {count} marchés sauvegardés dans la base de données {db_path}")
+        return count
 
 
 def main():
@@ -284,8 +289,8 @@ def main():
     marches = scraper.scrape_marches()
 
     if marches:
-        # Sauvegarder en JSON
-        scraper.save_to_json(marches)
+        # Sauvegarder dans la base de données
+        scraper.save_to_database(marches)
 
         # Afficher un aperçu
         print(f"\n=== Aperçu des {min(3, len(marches))} premiers marchés ===")

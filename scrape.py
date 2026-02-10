@@ -58,8 +58,7 @@ def main():
         if events and events[0].get('start_date'):
             year = events[0]['start_date'].split('/')[0]
 
-        filename = f'data/hanabi_kanto_{year}.json'
-        scraper.save_to_json(events, filename)
+        scraper.save_to_database(events)
 
         # Résumé
         print(f"\n✅ {len(events)} hanabi sauvegardés dans {filename}")
@@ -78,8 +77,7 @@ def main():
         scraper = TokyoMarcheScraper()
         events = scraper.scrape_marches()
 
-        filename = 'data/marches_tokyo.json'
-        scraper.save_to_json(events, filename)
+        scraper.save_to_database(events)
 
         # Résumé
         print(f"\n✅ {len(events)} marchés sauvegardés dans {filename}")
@@ -135,10 +133,10 @@ def main():
         item_type = "expositions"
 
     # Sauvegarder
-    scraper.save_to_json(items, filename)
+    scraper.save_to_database(items)
 
     # Résumé
-    print(f"\n✅ {len(items)} {item_type} sauvegardés dans {filename}")
+    print(f"\n✅ {len(items)} {item_type} sauvegardés dans la base de données")
     print(f"\n📊 Résumé:")
 
     with_maps = sum(1 for item in items if item.get('googlemap_link'))

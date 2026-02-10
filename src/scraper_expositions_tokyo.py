@@ -12,6 +12,7 @@ from src.date_utils import split_date_range, format_date_range
 from src.date_utils_fr import parse_french_date_range, is_complex_date_pattern, expand_complex_dates
 from src.location_utils import normalize_district, extract_location_with_district
 from src.metadata_extractors import extract_hours, extract_fee
+from src.database import EventDatabase
 
 
 class TokyoExpositionScraper:
@@ -1109,33 +1110,25 @@ class TokyoExpositionScraper:
 
         return None
 
-    def save_to_json(self, expositions: List[Dict], filename: str = None):
+    def save_to_database(self, expositions: List[Dict], db_path: str = None):
         """
-        Sauvegarde les expositions en JSON
+        Sauvegarde les expositions dans la base de données SQLite.
 
         Args:
             expositions: Liste des expositions
-            filename: Nom du fichier (optionnel)
+            db_path: Chemin vers la base de données (optionnel, par défaut data/tokyo_events.sqlite)
+
+        Returns:
+            int: Nombre d'expositions sauvegardées
         """
-        if not filename:
-            # Chercher la première exposition avec month et year définis
-            month = 'unknown'
-            year = 'unknown'
-            for exposition in expositions:
-                if exposition.get('month') and exposition.get('year'):
-                    month = exposition['month']
-                    year = exposition['year']
-                    break
+        if not db_path:
+            db_path = "data/tokyo_events.sqlite"
 
-            # Créer le dossier data s'il n'existe pas
-            import os
-            os.makedirs('data', exist_ok=True)
-            filename = f"data/expositions_tokyo_{month}_{year}.json"
+        db = EventDatabase(db_path)
+        count = db.insert_events(expositions, event_type='expositions')
 
-        with open(filename, 'w', encoding='utf-8') as f:
-            json.dump({'expositions': expositions}, f, ensure_ascii=False, indent=2)
-
-        print(f"✓ Données sauvegardées dans {filename}")
+        print(f"✓ {count} expositions sauvegardées dans la base de données {db_path}")
+        return count
 
 
 def main():
@@ -1151,8 +1144,8 @@ def main():
     expositions = scraper.scrape_expositions(month=1, year=2026)
 
     if expositions:
-        # Sauvegarder en JSON
-        scraper.save_to_json(expositions)
+        # Sauvegarder dans la base de données
+        scraper.save_to_database(expositions)
 
         # Afficher un aperçu
         print(f"\n=== Aperçu des {min(3, len(expositions))} premières expositions ===")
@@ -1170,7 +1163,7 @@ def main():
         try:
             expositions = scraper.scrape_expositions(month=month, year=2026)
             if expositions:
-                scraper.save_to_json(expositions)
+                scraper.save_to_database(expositions)
         except Exception as e:
             print(f"Erreur pour le mois {month}/2026: {e}")
 

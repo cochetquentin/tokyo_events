@@ -1,6 +1,9 @@
 # Fichiers de données générés par le scraper
 data/*.json
 data/*.csv
+data/*.sqlite
+data/*.sqlite-shm
+data/*.sqlite-wal
 !data/reference/
 festivals_*.json
 festivals_*.csv

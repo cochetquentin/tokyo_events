@@ -13,6 +13,7 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 from src.date_utils import parse_japanese_dates, parse_japanese_dates_list, format_date_range
+from src.database import EventDatabase
 
 
 class KantoHanabiScraper:
@@ -464,29 +465,25 @@ class KantoHanabiScraper:
         print(f"\n✓ Scraping détails terminé")
         return events
 
-    def save_to_json(self, events: List[Dict], filename: str = None):
+    def save_to_database(self, events: List[Dict], db_path: str = None):
         """
-        Save events to JSON file
+        Sauvegarde les hanabi dans la base de données SQLite.
 
         Args:
-            events: List of events
-            filename: Output filename (optional)
+            events: Liste des événements hanabi
+            db_path: Chemin vers la base de données (optionnel, par défaut data/tokyo_events.sqlite)
+
+        Returns:
+            int: Nombre d'événements sauvegardés
         """
-        if not filename:
-            import os
-            os.makedirs('data', exist_ok=True)
+        if not db_path:
+            db_path = "data/tokyo_events.sqlite"
 
-            # Determine year from first event
-            year = datetime.now().year
-            if events and events[0].get('start_date'):
-                year = events[0]['start_date'].split('/')[0]
+        db = EventDatabase(db_path)
+        count = db.insert_events(events, event_type='hanabi')
 
-            filename = f"data/hanabi_kanto_{year}.json"
-
-        with open(filename, 'w', encoding='utf-8') as f:
-            json.dump({'hanabi': events}, f, ensure_ascii=False, indent=2)
-
-        print(f"\n✓ Données sauvegardées dans {filename}")
+        print(f"\n✓ {count} hanabi sauvegardés dans la base de données {db_path}")
+        return count
 
 
 def main():
@@ -500,7 +497,7 @@ def main():
     events = scraper.scrape_hanabi(months_ahead=6)
 
     if events:
-        scraper.save_to_json(events)
+        scraper.save_to_database(events)
 
         print(f"\n📊 Résumé:")
         print(f"  • Événements trouvés: {len(events)}")
