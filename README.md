@@ -19,9 +19,91 @@ cd TokyoEvent
 uv pip install -r requirements.txt
 ```
 
-## 📖 Démarrage Rapide
+## 🗺️ Application Web avec Carte Interactive
 
-### Scraper des festivals
+### Vue d'ensemble
+
+L'application web permet de visualiser tous les événements de Tokyo sur une carte interactive avec filtres en temps réel.
+
+**Fonctionnalités :**
+- 🗺️ Carte interactive avec tous les événements géolocalisés
+- 🎨 Icônes colorées par type (festivals: rouge, expositions: bleu, hanabi: orange, marchés: vert)
+- 🔍 Filtrage par type d'événement et période de dates
+- 📍 Popups détaillés avec toutes les informations (nom, dates, lieu, horaires, tarifs, description)
+- 📊 Statistiques en temps réel
+- 🗂️ Clustering automatique des marqueurs
+
+### Démarrage Rapide
+
+**Avec Makefile :**
+```bash
+make populate-gps  # Une seule fois
+make web           # Démarrer le serveur
+```
+
+**Sans Makefile :**
+```bash
+# 1. Peupler les coordonnées GPS (une seule fois)
+uv run scripts/populate_gps_coordinates.py
+
+# 2. Démarrer le serveur web
+uv run scripts/start_web.py
+
+# 3. Ouvrir dans le navigateur
+http://localhost:8000
+```
+
+### API REST
+
+L'application expose également une API REST :
+
+```bash
+# Récupérer tous les événements
+GET http://localhost:8000/api/events/
+
+# Filtrer par type
+GET http://localhost:8000/api/events/?event_type=festivals
+
+# Filtrer par dates
+GET http://localhost:8000/api/events/?start_date_from=2025/03/01&start_date_to=2025/03/31
+
+# Statistiques
+GET http://localhost:8000/api/events/stats
+
+# Générer carte HTML
+GET http://localhost:8000/api/map/generate
+```
+
+**Documentation interactive :** [http://localhost:8000/docs](http://localhost:8000/docs)
+
+### Technologies Utilisées
+
+- **Backend :** FastAPI + Uvicorn
+- **Carte :** Folium (wrapper Python pour Leaflet.js)
+- **Frontend :** Bootstrap 5 + Vanilla JavaScript
+- **Extraction GPS :** Automatique depuis les liens Google Maps (100% de succès)
+
+## 📖 Scraping des Événements
+
+### Avec Makefile (Recommandé)
+
+```bash
+# Voir toutes les commandes disponibles
+make help
+
+# Scraper des événements
+make scrape-festivals MONTH=mars YEAR=2025
+make scrape-expositions MONTH=avril YEAR=2025
+make scrape-marches
+make scrape-hanabi MONTHS=12
+
+# Lancer les tests
+make test
+```
+
+### Sans Makefile
+
+#### Scraper des festivals
 
 ```bash
 # Scraper un mois spécifique
@@ -32,20 +114,20 @@ uv run main.py festivals janvier 2025
 uv run main.py festivals février 2025
 ```
 
-### Scraper des expositions
+#### Scraper des expositions
 
 ```bash
 uv run main.py expositions avril 2025
 ```
 
-### Scraper des marchés aux puces
+#### Scraper des marchés aux puces
 
 ```bash
 # Scrape tous les marchés (pas de paramètre de date)
 uv run main.py marches
 ```
 
-### Scraper des feux d'artifice (Hanabi)
+#### Scraper des feux d'artifice (Hanabi)
 
 ```bash
 # Scrape les hanabi des 6 prochains mois (par défaut)
@@ -60,11 +142,13 @@ uv run main.py hanabi 12
 ```
 TokyoEvent/
 ├── main.py                            # ⭐ CLI principal
+├── Makefile                           # ⭐ Commandes simplifiées
 ├── requirements.txt                   # Dépendances
 ├── pytest.ini                         # Configuration tests
 │
 ├── src/                               # Code source
 │   ├── database.py                    # ⭐ Gestionnaire SQLite
+│   ├── gps_extractor.py               # ⭐ Extraction GPS
 │   ├── scraper_festivals_tokyo.py    # Scraper festivals
 │   ├── scraper_expositions_tokyo.py  # Scraper expositions
 │   ├── scraper_marches_tokyo.py      # Scraper marchés aux puces
@@ -73,6 +157,29 @@ TokyoEvent/
 │   ├── date_utils_fr.py              # Utilitaires dates françaises
 │   ├── location_utils.py             # Mapping arrondissements
 │   └── metadata_extractors.py        # Extraction heures/tarifs
+│
+├── web/                               # ⭐ Application web
+│   ├── main.py                        # Point d'entrée FastAPI
+│   ├── config.py                      # Configuration
+│   ├── api/                           # Endpoints REST
+│   │   ├── events.py                  # API événements
+│   │   └── map.py                     # API carte
+│   ├── services/                      # Logique métier
+│   │   ├── event_service.py           # Service événements
+│   │   └── map_service.py             # Service carte Folium
+│   ├── models/                        # Modèles Pydantic
+│   │   └── schemas.py
+│   ├── templates/                     # Templates HTML
+│   │   ├── base.html
+│   │   └── index.html
+│   └── static/                        # Fichiers statiques
+│       ├── css/style.css
+│       └── js/filters.js
+│
+├── scripts/                           # ⭐ Scripts utilitaires
+│   ├── start_web.py                   # Démarrer serveur web
+│   ├── populate_gps_coordinates.py    # Peupler GPS
+│   └── migrate_add_gps_columns.py     # Migration DB
 │
 ├── tests/                             # Tests
 │   ├── conftest.py                    # ⭐ Fixtures pytest

@@ -74,6 +74,8 @@ class EventDatabase:
                     description TEXT,
                     website TEXT,
                     googlemap_link TEXT,
+                    latitude REAL,
+                    longitude REAL,
                     hours TEXT,
                     fee TEXT,
 
@@ -101,6 +103,7 @@ class EventDatabase:
             conn.execute("CREATE INDEX IF NOT EXISTS idx_start_date ON events(start_date)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_end_date ON events(end_date)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_location ON events(location)")
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_coordinates ON events(latitude, longitude)")
 
             conn.commit()
 
@@ -225,6 +228,22 @@ class EventDatabase:
 
         return [self._db_row_to_dict(row) for row in rows]
 
+    def get_events_with_coordinates(self) -> List[Dict]:
+        """
+        Récupère tous les événements ayant des coordonnées GPS.
+
+        Returns:
+            Liste de dictionnaires d'événements avec latitude et longitude
+        """
+        query = "SELECT * FROM events WHERE latitude IS NOT NULL AND longitude IS NOT NULL ORDER BY start_date, name"
+
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            rows = cursor.fetchall()
+
+        return [self._db_row_to_dict(row) for row in rows]
+
     def count_events(self, event_type: Optional[str] = None) -> int:
         """
         Compte le nombre d'événements.
@@ -290,6 +309,8 @@ class EventDatabase:
             'description': event.get('description'),
             'website': event.get('website'),
             'googlemap_link': event.get('googlemap_link'),
+            'latitude': event.get('latitude'),
+            'longitude': event.get('longitude'),
             'hours': event.get('hours'),
             'fee': event.get('fee'),
             'updated_at': datetime.now().isoformat()
