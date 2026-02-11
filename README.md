@@ -1,10 +1,12 @@
 # Tokyo Events Scraper 🎌
 
-Scrapers automatiques pour récupérer les événements de Tokyo et région du Kanto :
+Scrapers automatiques pour récupérer les événements de Tokyo et région du Kanto avec stockage SQLite :
 - **Festivals** depuis [ichiban-japan.com](https://ichiban-japan.com)
 - **Expositions** depuis [ichiban-japan.com](https://ichiban-japan.com)
 - **Marchés aux puces** depuis [ichiban-japan.com](https://ichiban-japan.com)
 - **Feux d'artifice (Hanabi)** depuis [hanabi.walkerplus.com](https://hanabi.walkerplus.com)
+
+**Stockage** : Base de données SQLite unifiée (`data/tokyo_events.sqlite`)
 
 ## 🚀 Installation
 
@@ -60,8 +62,10 @@ TokyoEvent/
 ├── scrape.py                          # CLI principal
 ├── requirements.txt                   # Dépendances
 ├── pytest.ini                         # Configuration tests
+├── test_sqlite.py                     # Script de test SQLite
 │
 ├── src/                               # Code source
+│   ├── database.py                    # ⭐ Gestionnaire SQLite
 │   ├── scraper_festivals_tokyo.py    # Scraper festivals
 │   ├── scraper_expositions_tokyo.py  # Scraper expositions
 │   ├── scraper_marches_tokyo.py      # Scraper marchés aux puces
@@ -72,18 +76,17 @@ TokyoEvent/
 │   └── metadata_extractors.py        # Extraction heures/tarifs
 │
 ├── tests/                             # Tests
+│   ├── conftest.py                    # ⭐ Fixtures pytest
+│   ├── test_database.py               # ⭐ Tests unitaires database (33 tests)
 │   ├── compare.py                     # Comparaison ref vs auto
 │   ├── compare_hanabi.py              # Tests hanabi
 │   ├── test_date_utils_fr.py         # Tests unitaires dates
 │   ├── test_location_utils.py        # Tests unitaires locations
 │   └── test_metadata_extractors.py   # Tests unitaires métadonnées
 │
-├── data/                              # Données générées
-│   ├── festivals_*.json
-│   ├── expositions_*.json
-│   ├── marches_tokyo.json
-│   ├── hanabi_kanto_*.json
-│   └── reference/                     # Données de référence
+├── data/                              # Données
+│   ├── tokyo_events.sqlite            # ⭐ Base de données SQLite
+│   └── reference/                     # Données de référence (JSON)
 │
 ├── docs/                              # Documentation
 │   ├── GUIDE_UTILISATION.md
@@ -133,12 +136,15 @@ Scraping région **Kanto** (7 préfectures) :
 ### Tests Automatisés
 
 ```bash
-# Tests unitaires (71 tests)
+# Tests unitaires (104 tests, dont 33 pour la database)
 uv run python -m pytest tests/ -v
 
 # Tests de comparaison
 uv run tests/compare.py festivals all
 uv run tests/compare.py expositions all
+
+# Test SQLite complet
+uv run python test_sqlite.py
 ```
 
 ### Résultats Validés
@@ -153,7 +159,7 @@ uv run tests/compare.py expositions all
 
 ## 💻 Utilisation en Python
 
-### Festivals
+### Scraper et Sauvegarder dans SQLite
 
 ```python
 from src.scraper_festivals_tokyo import TokyoFestivalScraper
@@ -161,38 +167,60 @@ from src.scraper_festivals_tokyo import TokyoFestivalScraper
 scraper = TokyoFestivalScraper()
 festivals = scraper.scrape_festivals(month=3, year=2025)
 
-# Sauvegarder
-scraper.save_to_json(festivals, "data/festivals_mars_2025.json")
+# Sauvegarder dans SQLite
+scraper.save_to_database(festivals)
 ```
 
-### Expositions
+### Requêter la Base de Données
+
+```python
+from src.database import EventDatabase
+
+db = EventDatabase()
+
+# Compter les événements
+print(f"Total: {db.count_events()}")
+print(f"Festivals: {db.count_events('festivals')}")
+
+# Récupérer des événements avec filtres
+festivals_mars = db.get_events(
+    event_type='festivals',
+    start_date_from='2025/03/01',
+    start_date_to='2025/03/31'
+)
+
+# Filtrer par lieu
+events_taito = db.get_events(
+    event_type='festivals',
+    location='Taito'
+)
+
+# Afficher
+for event in festivals_mars[:3]:
+    print(f"{event['name']} - {event['start_date']}")
+```
+
+### Autres Scrapers
 
 ```python
 from src.scraper_expositions_tokyo import TokyoExpositionScraper
-
-scraper = TokyoExpositionScraper()
-expositions = scraper.scrape_expositions(month=4, year=2025)
-scraper.save_to_json(expositions)
-```
-
-### Marchés aux Puces
-
-```python
 from src.scraper_marches_tokyo import TokyoMarcheScraper
-
-scraper = TokyoMarcheScraper()
-marches = scraper.scrape_marches()
-scraper.save_to_json(marches)
-```
-
-### Feux d'Artifice (Hanabi)
-
-```python
 from src.scraper_hanabi_kanto import KantoHanabiScraper
 
+# Expositions
+scraper = TokyoExpositionScraper()
+expositions = scraper.scrape_expositions(month=4, year=2025)
+scraper.save_to_database(expositions)
+
+# Marchés
+scraper = TokyoMarcheScraper()
+marches = scraper.scrape_marches()
+scraper.save_to_database(marches)
+
+# Hanabi
 scraper = KantoHanabiScraper()
 hanabi = scraper.scrape_hanabi(months_ahead=6)
-scraper.save_to_json(hanabi, "data/hanabi_kanto_2025.json")
+scraper.save_to_database(hanabi)
 ```
 
 ## 🔧 Utilitaires
@@ -235,6 +263,17 @@ fee = extract_fee(text)      # → "Entrée gratuite"
 
 ## 🌟 Améliorations Récentes
 
+### v3.0 - Migration SQLite (Février 2025)
+
+- ✅ **Base de données SQLite** unifiée pour tous les événements
+- ✅ **Table unique** avec support 4 types d'événements
+- ✅ **Déduplication automatique** via clé composite unique
+- ✅ **Stratégie UPSERT** (INSERT OR REPLACE) pour mises à jour
+- ✅ **33 tests unitaires** pour la database
+- ✅ **API de requêtage** avec filtres (type, dates, lieu)
+- ✅ **Support champs JSON** pour dates multiples (hanabi/marches)
+- ✅ **104 tests pytest** au total
+
 ### v2.0 - Couverture 97%+
 
 - ✅ **Nouveaux modules** : dates françaises, locations, métadonnées
@@ -242,14 +281,48 @@ fee = extract_fee(text)      # → "Entrée gratuite"
 - ✅ **Mapping automatique** 40+ quartiers → arrondissements
 - ✅ **Support dates complexes** avec virgules et plages multiples
 - ✅ **Extraction heures/tarifs** fonctionnelle
-- ✅ **71 tests pytest** pour garantir la qualité
 - ✅ **97% de couverture** sur festivals (vs 79% avant)
 
 ## 🎨 Format des Données
 
-### Festivals & Expositions
+### Base de Données SQLite
 
-```json
+**Table** : `events` (table unifiée)
+
+**Schéma** :
+```sql
+CREATE TABLE events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_type TEXT NOT NULL,  -- 'festivals', 'expositions', 'hanabi', 'marches'
+    name TEXT NOT NULL,
+    start_date TEXT,           -- Format: YYYY/MM/DD
+    end_date TEXT,
+    location TEXT,             -- Festivals, expositions, marchés
+    prefecture TEXT,           -- Hanabi uniquement
+    city TEXT,                 -- Hanabi uniquement
+    venue TEXT,                -- Hanabi uniquement
+    description TEXT,
+    website TEXT,
+    googlemap_link TEXT,
+    hours TEXT,
+    fee TEXT,
+    event_id TEXT,             -- Hanabi uniquement
+    start_time TEXT,           -- Hanabi uniquement
+    fireworks_count TEXT,      -- Hanabi uniquement
+    detail_url TEXT,           -- Hanabi uniquement
+    dates TEXT,                -- JSON array pour marches/hanabi
+    created_at TEXT,
+    updated_at TEXT,
+
+    -- Clé unique composite pour éviter doublons
+    UNIQUE(event_type, name, start_date, location)
+);
+```
+
+### Exemples de Données
+
+**Festivals** :
+```python
 {
   "name": "Setsubun Matsuri",
   "start_date": "2025/02/02",
@@ -263,13 +336,12 @@ fee = extract_fee(text)      # → "Entrée gratuite"
 }
 ```
 
-### Feux d'Artifice (Hanabi)
-
-```json
+**Hanabi** :
+```python
 {
   "name": "Sumida River Fireworks",
   "event_id": "ar0313e123456",
-  "dates": ["2025/07/26"],
+  "dates": ["2025/07/26"],  # JSON array
   "start_date": "2025/07/26",
   "end_date": "2025/07/26",
   "prefecture": "東京都",
@@ -283,14 +355,54 @@ fee = extract_fee(text)      # → "Entrée gratuite"
 }
 ```
 
+## 🗄️ Base de Données SQLite
+
+### Architecture
+
+- **Table unifiée** `events` pour tous les types
+- **Clé primaire** auto-incrémentée (`id`)
+- **Clé unique composite** : `(event_type, name, start_date, location)`
+- **Déduplication** automatique via `INSERT OR REPLACE`
+- **Champs type-spécifiques** :
+  - Hanabi : `prefecture`, `city`, `venue`, `event_id`, `start_time`, `fireworks_count`, `detail_url`
+  - Autres : `location`, `hours`, `fee`
+- **JSON** pour champs `dates` (liste de dates multiples)
+
+### Requêtes Utiles
+
+```python
+from src.database import EventDatabase
+
+db = EventDatabase()
+
+# Stats globales
+print(f"Total événements: {db.count_events()}")
+
+# Par type
+for event_type in ['festivals', 'expositions', 'hanabi', 'marches']:
+    count = db.count_events(event_type)
+    print(f"{event_type}: {count}")
+
+# Événements de février
+events = db.get_events(
+    start_date_from='2025/02/01',
+    start_date_to='2025/02/28'
+)
+
+# Événements gratuits
+all_events = db.get_events()
+free_events = [e for e in all_events if e.get('fee') and 'gratuit' in e['fee'].lower()]
+```
+
 ## 🤝 Contribution
 
 Les améliorations sont les bienvenues ! Zones à améliorer :
 
 1. Support d'autres préfectures pour hanabi
 2. Scraper pour autres types d'événements
-3. Export vers autres formats (Excel, Base de données)
+3. Export vers autres formats (Excel, CSV)
 4. Interface web pour visualisation
+5. API REST pour accéder aux données
 
 ## 📝 Licence
 
