@@ -25,44 +25,43 @@ uv pip install -r requirements.txt
 
 ```bash
 # Scraper un mois spécifique
-uv run scrape.py festivals mars 2025
+uv run main.py festivals mars 2025
 
 # Scraper plusieurs mois
-uv run scrape.py festivals janvier 2025
-uv run scrape.py festivals février 2025
+uv run main.py festivals janvier 2025
+uv run main.py festivals février 2025
 ```
 
 ### Scraper des expositions
 
 ```bash
-uv run scrape.py expositions avril 2025
+uv run main.py expositions avril 2025
 ```
 
 ### Scraper des marchés aux puces
 
 ```bash
 # Scrape tous les marchés (pas de paramètre de date)
-uv run scrape.py marches
+uv run main.py marches
 ```
 
 ### Scraper des feux d'artifice (Hanabi)
 
 ```bash
 # Scrape les hanabi des 6 prochains mois (par défaut)
-uv run scrape.py hanabi
+uv run main.py hanabi
 
 # Scrape les hanabi des 12 prochains mois
-uv run scrape.py hanabi 12
+uv run main.py hanabi 12
 ```
 
 ## 📂 Structure du Projet
 
 ```
 TokyoEvent/
-├── scrape.py                          # CLI principal
+├── main.py                            # ⭐ CLI principal
 ├── requirements.txt                   # Dépendances
 ├── pytest.ini                         # Configuration tests
-├── test_sqlite.py                     # Script de test SQLite
 │
 ├── src/                               # Code source
 │   ├── database.py                    # ⭐ Gestionnaire SQLite
@@ -78,8 +77,7 @@ TokyoEvent/
 ├── tests/                             # Tests
 │   ├── conftest.py                    # ⭐ Fixtures pytest
 │   ├── test_database.py               # ⭐ Tests unitaires database (33 tests)
-│   ├── compare.py                     # Comparaison ref vs auto
-│   ├── compare_hanabi.py              # Tests hanabi
+│   ├── compare.py                     # ⭐ Comparaison unifiée (tous types)
 │   ├── test_date_utils_fr.py         # Tests unitaires dates
 │   ├── test_location_utils.py        # Tests unitaires locations
 │   └── test_metadata_extractors.py   # Tests unitaires métadonnées
@@ -139,12 +137,11 @@ Scraping région **Kanto** (7 préfectures) :
 # Tests unitaires (104 tests, dont 33 pour la database)
 uv run python -m pytest tests/ -v
 
-# Tests de comparaison
+# Tests de comparaison (tous types: festivals, expositions, hanabi, marches)
 uv run tests/compare.py festivals all
 uv run tests/compare.py expositions all
-
-# Test SQLite complet
-uv run python test_sqlite.py
+uv run tests/compare.py hanabi
+uv run tests/compare.py all  # Compare tous les types
 ```
 
 ### Résultats Validés

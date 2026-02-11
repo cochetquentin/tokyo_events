@@ -1,12 +1,18 @@
 """
 Script de comparaison entre scraping automatique et référence manuelle
-Usage: uv run tests/compare.py <type> <mois> <année>
-       uv run tests/compare.py <type> all
+Supporte: festivals, expositions, hanabi, marches
+
+Usage:
+  uv run tests/compare.py <type> <mois> <année>
+  uv run tests/compare.py <type> all
+  uv run tests/compare.py all
+
 Exemples:
   uv run tests/compare.py festivals mars 2025
   uv run tests/compare.py festivals all
   uv run tests/compare.py expositions janvier 2026
-  uv run tests/compare.py expositions all
+  uv run tests/compare.py hanabi
+  uv run tests/compare.py all
 """
 
 import sys
@@ -26,6 +32,8 @@ import re
 from pathlib import Path
 from src.scraper_festivals_tokyo import TokyoFestivalScraper
 from src.scraper_expositions_tokyo import TokyoExpositionScraper
+from src.scraper_hanabi_kanto import KantoHanabiScraper
+from src.scraper_marches_tokyo import TokyoMarcheScraper
 
 
 def get_month_mapping():
@@ -41,13 +49,22 @@ def find_all_references(item_type='festivals'):
     """Trouve tous les fichiers de référence disponibles
 
     Args:
-        item_type: 'festivals' ou 'expositions'
+        item_type: 'festivals', 'expositions', 'hanabi', ou 'marches'
     """
     ref_dir = Path('data/reference')
     if not ref_dir.exists():
         return []
 
     references = []
+
+    if item_type == 'hanabi':
+        # Format spécial pour hanabi: hanabi_kanto_reference.json
+        ref_file = ref_dir / 'hanabi_kanto_reference.json'
+        if ref_file.exists():
+            return [(None, None, str(ref_file))]
+        return []
+
+    # Format standard: {type}_{mois}_{année}_reference.json
     pattern = re.compile(rf'{item_type}_([a-z]+)_(\d{{4}})_reference\.json')
 
     for file in ref_dir.glob(f'{item_type}_*_reference.json'):
@@ -59,14 +76,183 @@ def find_all_references(item_type='festivals'):
     return sorted(references, key=lambda x: (x[1], get_month_mapping().get(x[0], 0)))
 
 
+def compare_hanabi(reference_file: str = None):
+    """Compare hanabi scraped vs reference
+
+    Args:
+        reference_file: Path to reference JSON (optional)
+    """
+    print("=== Comparaison Scraper Hanabi ===\n")
+
+    # Load reference
+    if not reference_file:
+        reference_file = 'data/reference/hanabi_kanto_reference.json'
+
+    if not os.path.exists(reference_file):
+        print(f"⚠️ Fichier de référence non trouvé: {reference_file}")
+        print("   Pour créer une référence, scraper quelques événements manuellement")
+        print("   et sauvegarder dans data/reference/hanabi_kanto_reference.json")
+        return None, None, None, None, None
+
+    with open(reference_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    reference = data.get('hanabi', [])
+
+    # Scrape live data
+    print("📋 Scraping en temps réel...\n")
+    scraper = KantoHanabiScraper()
+    scraped = scraper.scrape_hanabi(months_ahead=12)
+
+    print(f"\n📊 Résultats de la comparaison:\n")
+
+    # Compare counts
+    ref_count = len(reference)
+    scraped_count = len(scraped)
+
+    print(f"  • Événements référence: {ref_count}")
+    print(f"  • Événements scrapés: {scraped_count}")
+
+    # Check required fields
+    print(f"\n📝 Validation des champs requis:")
+
+    required_fields = ['name', 'start_date', 'end_date', 'event_id', 'prefecture', 'city']
+    optional_fields = ['start_time', 'fireworks_count', 'venue', 'website', 'googlemap_link']
+
+    missing_required = 0
+    for event in scraped:
+        for field in required_fields:
+            if not event.get(field):
+                print(f"  ⚠️ Champ requis manquant '{field}' pour: {event.get('name', 'Unknown')}")
+                missing_required += 1
+
+    if missing_required == 0:
+        print(f"  ✅ Tous les champs requis sont présents ({len(scraped)} événements)")
+
+    # Check optional fields coverage
+    print(f"\n📊 Couverture des champs optionnels:")
+    for field in optional_fields:
+        count = sum(1 for e in scraped if e.get(field))
+        percentage = (count / len(scraped) * 100) if scraped else 0
+        print(f"  • {field}: {count}/{len(scraped)} ({percentage:.1f}%)")
+
+    # Check date format
+    print(f"\n📅 Validation du format des dates:")
+    invalid_dates = 0
+    date_pattern = re.compile(r'^\d{4}/\d{2}/\d{2}$')
+
+    for event in scraped:
+        start = event.get('start_date')
+        end = event.get('end_date')
+
+        if start and not date_pattern.match(start):
+            print(f"  ❌ Format de start_date invalide: {start} ({event.get('name', 'Unknown')})")
+            invalid_dates += 1
+
+        if end and not date_pattern.match(end):
+            print(f"  ❌ Format de end_date invalide: {end} ({event.get('name', 'Unknown')})")
+            invalid_dates += 1
+
+    if invalid_dates == 0:
+        print(f"  ✅ Toutes les dates sont au format YYYY/MM/DD")
+
+    # Check prefecture/city coherence
+    print(f"\n🗾 Cohérence ville/préfecture:")
+    incoherent = 0
+    for event in scraped:
+        location = event.get('location', '')
+        city = event.get('city', '')
+        prefecture = event.get('prefecture', '')
+
+        # location should be "{city}, {prefecture}"
+        expected = f"{city}, {prefecture}" if city else prefecture
+        if location != expected:
+            print(f"  ⚠️ Incohérence location: '{location}' vs attendu '{expected}'")
+            incoherent += 1
+
+    if incoherent == 0:
+        print(f"  ✅ Cohérence ville/préfecture vérifiée")
+
+    # Compare specific events if reference available
+    perfect = 0
+    compared = 0
+    differences = 0
+    missing = []
+    extra = []
+
+    if reference:
+        print(f"\n🔍 Comparaison des événements de référence:")
+
+        # Find scraped event IDs
+        scraped_ids = set(e.get('event_id') for e in scraped)
+        ref_ids = set(e.get('event_id') for e in reference)
+
+        # Find missing and extra
+        missing_ids = ref_ids - scraped_ids
+        extra_ids = scraped_ids - ref_ids
+
+        # Try to match reference events by name or event_id
+        for ref_event in reference:
+            ref_name = ref_event.get('name')
+            ref_id = ref_event.get('event_id')
+
+            # Find matching scraped event
+            matched = None
+            for scraped_event in scraped:
+                if scraped_event.get('event_id') == ref_id:
+                    matched = scraped_event
+                    break
+                elif scraped_event.get('name') == ref_name:
+                    matched = scraped_event
+                    break
+
+            if matched:
+                compared += 1
+                has_diff = False
+
+                print(f"\n  ✅ Trouvé: {ref_name[:60]}")
+
+                # Compare key fields
+                for field in required_fields + optional_fields:
+                    ref_val = ref_event.get(field)
+                    scraped_val = matched.get(field)
+
+                    if ref_val and scraped_val != ref_val:
+                        has_diff = True
+                        print(f"     ⚠️ Différence {field}:")
+                        print(f"        Référence: {ref_val}")
+                        print(f"        Scrapé:    {scraped_val}")
+
+                if not has_diff:
+                    perfect += 1
+                else:
+                    differences += 1
+            else:
+                missing.append(ref_name)
+                print(f"\n  ❌ Non trouvé: {ref_name[:60]}")
+
+    print(f"\n{'='*60}")
+    print(f"Parfaits: {perfect}/{compared} ({perfect*100//compared if compared else 0}%)")
+    print(f"Différences: {differences}/{compared}")
+    print(f"Manquants: {len(missing)}")
+    print(f"En trop: {len(extra)}")
+    print(f"{'='*60}")
+    print(f"\n✅ Comparaison terminée")
+
+    return perfect, compared, differences, len(missing), len(extra)
+
+
 def compare(month_name: str, year: int, item_type: str = 'festivals'):
     """Compare le scraping automatique avec la référence
 
     Args:
         month_name: Nom du mois
         year: Année
-        item_type: 'festivals' ou 'expositions'
+        item_type: 'festivals', 'expositions', 'hanabi', ou 'marches'
     """
+
+    # Cas spécial pour hanabi
+    if item_type == 'hanabi':
+        return compare_hanabi()
 
     months = get_month_mapping()
 
@@ -74,7 +260,7 @@ def compare(month_name: str, year: int, item_type: str = 'festivals'):
     if not month_num:
         print(f"❌ Mois invalide: {month_name}")
         print(f"Mois valides: {', '.join(months.keys())}")
-        return
+        return None, None, None, None, None
 
     # Vérifier si la référence existe
     ref_file = f'data/reference/{item_type}_{month_name.lower()}_{year}_reference.json'
@@ -82,7 +268,7 @@ def compare(month_name: str, year: int, item_type: str = 'festivals'):
         print(f"Pas de référence trouvée: {ref_file}")
         print(f"\nPour créer une référence, scrappe manuellement {month_name} {year}")
         print(f"   et sauvegarde dans {ref_file}")
-        return
+        return None, None, None, None, None
 
     # Charger la référence
     with open(ref_file, 'r', encoding='utf-8') as f:
@@ -94,9 +280,15 @@ def compare(month_name: str, year: int, item_type: str = 'festivals'):
     if item_type == 'festivals':
         scraper = TokyoFestivalScraper()
         scraped = scraper.scrape_festivals(month=month_num, year=year)
-    else:  # expositions
+    elif item_type == 'expositions':
         scraper = TokyoExpositionScraper()
         scraped = scraper.scrape_expositions(month=month_num, year=year)
+    elif item_type == 'marches':
+        scraper = TokyoMarcheScraper()
+        scraped = scraper.scrape_marches(month=month_num, year=year)
+    else:
+        print(f"❌ Type inconnu: {item_type}")
+        return None, None, None, None, None
 
     print(f"\nRéférence: {len(ref_items)} {item_type}")
     print(f"Scrapé: {len(scraped)} {item_type}")
@@ -207,8 +399,18 @@ def compare_all(item_type='festivals'):
     """Compare tous les fichiers de référence disponibles
 
     Args:
-        item_type: 'festivals' ou 'expositions'
+        item_type: 'festivals', 'expositions', 'hanabi', ou 'marches'
     """
+
+    # Cas spécial pour hanabi
+    if item_type == 'hanabi':
+        if os.path.exists('data/reference/hanabi_kanto_reference.json'):
+            print(f"📂 Test de hanabi\n")
+            return compare_hanabi()
+        else:
+            print(f"❌ Aucun fichier de référence hanabi trouvé")
+            return
+
     references = find_all_references(item_type)
 
     if not references:
@@ -230,7 +432,11 @@ def compare_all(item_type='festivals'):
         print(f"Test {i}/{len(references)}: {month_name.capitalize()} {year}")
         print(f"{'='*60}\n")
 
-        perfect, compared, differences, missing, extra = compare(month_name, year, item_type)
+        result = compare(month_name, year, item_type)
+        if result[0] is None:
+            continue
+
+        perfect, compared, differences, missing, extra = result
 
         total_perfect += perfect
         total_compared += compared
@@ -250,11 +456,11 @@ def compare_all(item_type='festivals'):
 
     # Résumé global
     print(f"\n\n{'='*60}")
-    print(f"RÉSUMÉ GLOBAL - {len(references)} mois testés ({item_type})")
+    print(f"RÉSUMÉ GLOBAL - {len(results)} mois testés ({item_type})")
     print(f"{'='*60}\n")
 
     for result in results:
-        status = "OK" if result['differences'] == 0 and result['missing'] == 0 and result['extra'] == 0 else "DIFF"
+        status = "✅" if result['differences'] == 0 and result['missing'] == 0 and result['extra'] == 0 else "⚠️"
         percentage = result['perfect'] * 100 // result['compared'] if result['compared'] else 0
         print(f"{status} {result['month']} {result['year']}: {result['perfect']}/{result['compared']} parfaits ({percentage}%)")
 
@@ -270,17 +476,27 @@ def compare_all(item_type='festivals'):
 if __name__ == "__main__":
     if len(sys.argv) == 2 and sys.argv[1].lower() == 'all':
         # Format: uv run tests/compare.py all
-        # Compare festivals et expositions
-        print("🔍 Comparaison de TOUS les festivals et expositions\n")
-        compare_all('festivals')
-        print("\n\n")
-        compare_all('expositions')
+        # Compare tous les types
+        print("🔍 Comparaison de TOUS les types d'événements\n")
+        for item_type in ['festivals', 'expositions', 'hanabi', 'marches']:
+            print(f"\n\n{'#'*60}")
+            print(f"# {item_type.upper()}")
+            print(f"{'#'*60}\n")
+            compare_all(item_type)
+    elif len(sys.argv) == 2:
+        # Format: uv run tests/compare.py festivals
+        item_type = sys.argv[1].lower()
+        if item_type not in ['festivals', 'expositions', 'hanabi', 'marches']:
+            print(f"❌ Type invalide: {item_type}")
+            print("Types valides: festivals, expositions, hanabi, marches")
+            sys.exit(1)
+        compare_all(item_type)
     elif len(sys.argv) == 3 and sys.argv[2].lower() == 'all':
         # Format: uv run tests/compare.py festivals all
         item_type = sys.argv[1].lower()
-        if item_type not in ['festivals', 'expositions']:
+        if item_type not in ['festivals', 'expositions', 'hanabi', 'marches']:
             print(f"❌ Type invalide: {item_type}")
-            print("Types valides: festivals, expositions")
+            print("Types valides: festivals, expositions, hanabi, marches")
             sys.exit(1)
         compare_all(item_type)
     elif len(sys.argv) == 4:
@@ -293,20 +509,12 @@ if __name__ == "__main__":
             print(f"❌ Année invalide: {sys.argv[3]}")
             sys.exit(1)
 
-        if item_type not in ['festivals', 'expositions']:
+        if item_type not in ['festivals', 'expositions', 'hanabi', 'marches']:
             print(f"❌ Type invalide: {item_type}")
-            print("Types valides: festivals, expositions")
+            print("Types valides: festivals, expositions, hanabi, marches")
             sys.exit(1)
 
         compare(month_name, year, item_type)
     else:
-        print("Usage: uv run tests/compare.py <type> <mois> <année>")
-        print("       uv run tests/compare.py <type> all")
-        print("       uv run tests/compare.py all")
-        print("\nExemples:")
-        print("  uv run tests/compare.py festivals mars 2025")
-        print("  uv run tests/compare.py festivals all")
-        print("  uv run tests/compare.py expositions janvier 2026")
-        print("  uv run tests/compare.py expositions all")
-        print("  uv run tests/compare.py all  # Compare tous les festivals ET expositions")
+        print(__doc__)
         sys.exit(1)

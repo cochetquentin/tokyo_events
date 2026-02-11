@@ -61,11 +61,9 @@ def main():
         scraper.save_to_database(events)
 
         # Résumé
-        print(f"\n✅ {len(events)} hanabi sauvegardés dans {filename}")
+        print(f"\n✅ {len(events)} hanabi sauvegardés dans la base de données")
         print(f"\n📊 Résumé:")
         print(f"  • Événements trouvés: {len(events)}")
-        total_dates = sum(len(e.get('dates', [])) for e in events)
-        print(f"  • Total de dates individuelles: {total_dates}")
         print(f"  • Avec horaires: {sum(1 for e in events if e.get('start_time'))}/{len(events)}")
         print(f"  • Avec nb de feux: {sum(1 for e in events if e.get('fireworks_count'))}/{len(events)}")
         print(f"  • Avec Google Maps: {sum(1 for e in events if e.get('googlemap_link'))}/{len(events)}")
@@ -80,7 +78,7 @@ def main():
         scraper.save_to_database(events)
 
         # Résumé
-        print(f"\n✅ {len(events)} marchés sauvegardés dans {filename}")
+        print(f"\n✅ {len(events)} marchés sauvegardés dans la base de données")
         print(f"\n📊 Résumé:")
         print(f"  • Marchés trouvés: {len(events)}")
         print(f"  • Avec dates: {sum(1 for e in events if e.get('start_date'))}/{len(events)}")
@@ -123,13 +121,11 @@ def main():
         print(f"🔍 Scraping des festivals de {month_name} {year}...\n")
         scraper = TokyoFestivalScraper()
         items = scraper.scrape_festivals(month=month_num, year=year)
-        filename = f'data/festivals_{month_name}_{year}.json'
         item_type = "festivals"
     else:  # expositions
         print(f"🔍 Scraping des expositions de {month_name} {year}...\n")
         scraper = TokyoExpositionScraper()
         items = scraper.scrape_expositions(month=month_num, year=year)
-        filename = f'data/expositions_{month_name}_{year}.json'
         item_type = "expositions"
 
     # Sauvegarder
