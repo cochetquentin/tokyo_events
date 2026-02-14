@@ -372,7 +372,8 @@ class EventDatabase:
                 event['dates'] = None
 
         # Supprimer les champs metadata pour compatibilité avec format original
-        for field in ['id', 'created_at', 'updated_at', 'event_type']:
+        # Note: event_type est conservé pour l'API web
+        for field in ['id', 'created_at', 'updated_at']:
             event.pop(field, None)
 
         # Supprimer les champs NULL pour sortie plus propre
