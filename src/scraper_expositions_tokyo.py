@@ -695,6 +695,9 @@ class TokyoExpositionScraper:
         # Corriger "l' ukiyo-e" → "l'ukiyo-e" (apostrophe droite et typographique)
         text = re.sub(r"([ldjmnts])\s*['\u2019]\s+", r"\1'", text)
 
+        # Supprimer les espaces avant virgules, deux-points et points
+        text = re.sub(r'\s+([,:.])', r'\1', text)
+
         return text
 
     def _extract_metadata_from_paragraph(self, p_elem) -> dict:
@@ -820,6 +823,18 @@ class TokyoExpositionScraper:
         # Nettoyer les espaces multiples
         dates_lower = re.sub(r'\s+', ' ', dates_lower).strip()
 
+        # Pattern spécial: "du 16 décembre 2025 au 8 février 2026" (DU...AU entre deux années)
+        match = re.search(r'du\s+(\d{1,2})(?:er|e)?\s+(\w+)\s+(\d{4})\s+au\s+(\d{1,2})(?:er|e)?\s+(\w+)\s+(\d{4})', dates_lower)
+        if match:
+            jour1 = match.group(1).zfill(2)
+            mois1 = mois_mapping.get(match.group(2), '??')
+            annee1 = match.group(3)
+            jour2 = match.group(4).zfill(2)
+            mois2 = mois_mapping.get(match.group(5), '??')
+            annee2 = match.group(6)
+            if mois1 != '??':
+                return f"{annee1}/{mois1}/{jour1} - {annee2}/{mois2}/{jour2}"
+
         # Pattern spécial: "31 décembre 2024-1 er janvier 2025" (plage entre deux années)
         match = re.search(r'(\d{1,2})\s+(\w+)\s+(\d{4})\s*[-–]\s*(\d{1,2})\s*(?:er|e)?\s+(\w+)\s+(\d{4})', dates_lower)
         if match:
@@ -831,7 +846,7 @@ class TokyoExpositionScraper:
             annee2 = match.group(6)
             return f"{annee1}/{mois1}/{jour1} - {annee2}/{mois2}/{jour2}"
 
-        # Pattern spécial: "DU 1er MARS AU 6 JUILLET 2025" (format avec DU...AU)
+        # Pattern spécial: "DU 1er MARS AU 6 JUILLET 2025" (format avec DU...AU même année)
         match = re.search(r'du\s+(\d{1,2})(?:er|e)?\s+(\w+)\s+au\s+(\d{1,2})(?:er|e)?\s+(\w+)\s+(\d{4})', dates_lower)
         if match:
             jour1 = match.group(1).zfill(2)
