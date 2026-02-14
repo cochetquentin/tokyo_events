@@ -28,7 +28,7 @@ L'application web permet de visualiser tous les événements de Tokyo sur une ca
 **Fonctionnalités :**
 - 🗺️ Carte interactive avec tous les événements géolocalisés
 - 🎨 Icônes colorées par type (festivals: rouge, expositions: bleu, hanabi: orange, marchés: vert)
-- 🔍 Filtrage par type d'événement et période de dates
+- 🔍 Filtrage intelligent par type d'événement et période de dates (utilise une logique de chevauchement pour inclure les événements en cours)
 - 📍 Popups détaillés avec toutes les informations (nom, dates, lieu, horaires, tarifs, description)
 - 📊 Statistiques en temps réel
 - 🗂️ Clustering automatique des marqueurs
@@ -88,7 +88,10 @@ GET http://localhost:8000/api/map/generate
 # Voir toutes les commandes disponibles
 make help
 
-# Scraper des événements
+# Scraper tous les événements du mois en cours (recommandé)
+make scrape  # Scrappe festivals, expositions, marches, et hanabi automatiquement
+
+# Ou scraper individuellement par type
 make scrape-festivals MONTH=mars YEAR=2025
 make scrape-expositions MONTH=avril YEAR=2025
 make scrape-marches
@@ -175,6 +178,9 @@ TokyoEvent/
 │
 ├── scripts/                           # ⭐ Scripts utilitaires
 │   ├── start_web.py                   # Démarrer serveur web
+│   ├── get_current_month.py           # Obtenir mois actuel (français)
+│   ├── get_current_year.py            # Obtenir année actuelle
+│   ├── remove_duplicates.py           # Supprimer doublons
 │   ├── populate_gps_coordinates.py    # Peupler GPS
 │   └── migrate_add_gps_columns.py     # Migration DB
 │
@@ -257,6 +263,13 @@ uv run tests/compare.py all  # Compare tous les types
 - Juillet 2025 : 94%
 - Octobre 2025 : 100%
 - Décembre 2025 : 85%
+
+**Expositions :** 85-88% parfaits
+- Décembre 2025 : 88% (23/26)
+- Avril 2025 : 85% (17/20)
+- Janvier 2025 : 66% (8/12)
+
+**GPS :** 94% de succès global
 
 ## 💻 Utilisation en Python
 
@@ -363,6 +376,17 @@ fee = extract_fee(text)      # → "Entrée gratuite"
 - [Analyse site hanabi](docs/how_to_scrap_hanabi_website.md) - Architecture scraper
 
 ## 🌟 Améliorations Récentes
+
+### v4.0 - Application Web avec Carte Interactive (Février 2025)
+
+- ✅ **Application web FastAPI** avec carte interactive Folium
+- ✅ **Extraction GPS automatique** lors du scraping (94% de succès)
+- ✅ **Filtrage intelligent par dates** avec logique de chevauchement de périodes
+- ✅ **Clustering de marqueurs** pour meilleure visualisation
+- ✅ **API REST complète** avec documentation interactive
+- ✅ **Commande `make scrape`** pour scraper tous les événements du mois en cours
+- ✅ **Amélioration du scraper expositions** (85-88% de précision)
+- ✅ **Support dates complexes** sur plusieurs années
 
 ### v3.0 - Migration SQLite (Février 2025)
 
@@ -500,10 +524,10 @@ free_events = [e for e in all_events if e.get('fee') and 'gratuit' in e['fee'].l
 Les améliorations sont les bienvenues ! Zones à améliorer :
 
 1. Support d'autres préfectures pour hanabi
-2. Scraper pour autres types d'événements
-3. Export vers autres formats (Excel, CSV)
-4. Interface web pour visualisation
-5. API REST pour accéder aux données
+2. Scraper pour autres types d'événements (concerts, théâtre, etc.)
+3. Export vers autres formats (Excel, CSV, iCalendar)
+4. Amélioration du taux de précision des expositions (actuellement 85-88%)
+5. Filtres supplémentaires (tarif, arrondissement, mot-clé)
 
 ## 📝 Licence
 
