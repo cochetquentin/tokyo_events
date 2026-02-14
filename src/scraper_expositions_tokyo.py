@@ -847,6 +847,16 @@ class TokyoExpositionScraper:
             annee2 = match.group(6)
             return f"{annee1}/{mois1}/{jour1} - {annee2}/{mois2}/{jour2}"
 
+        # Pattern spécial: "du 5 au 26 janvier 2025" (DU X AU Y même mois, sans "er")
+        match = re.search(r'du\s+(\d{1,2})\s+au\s+(\d{1,2})\s+(\w+)\s+(\d{4})', dates_lower)
+        if match:
+            jour1 = match.group(1).zfill(2)
+            jour2 = match.group(2).zfill(2)
+            mois = mois_mapping.get(match.group(3), '??')
+            annee = match.group(4)
+            if mois != '??':
+                return f"{annee}/{mois}/{jour1} - {annee}/{mois}/{jour2}"
+
         # Pattern spécial: "DU 1er MARS AU 6 JUILLET 2025" (format avec DU...AU même année)
         # Support "1 er février" avec espace et "1erfévrier" sans espace
         match = re.search(r'du\s+(\d{1,2})\s*(?:er|e)?\s+(\w+)\s+au\s+(\d{1,2})\s*(?:er|e)?\s+(\w+)\s+(\d{4})', dates_lower)
