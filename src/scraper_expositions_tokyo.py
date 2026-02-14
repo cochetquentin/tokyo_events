@@ -824,7 +824,8 @@ class TokyoExpositionScraper:
         dates_lower = re.sub(r'\s+', ' ', dates_lower).strip()
 
         # Pattern spécial: "du 16 décembre 2025 au 8 février 2026" (DU...AU entre deux années)
-        match = re.search(r'du\s+(\d{1,2})(?:er|e)?\s+(\w+)\s+(\d{4})\s+au\s+(\d{1,2})(?:er|e)?\s+(\w+)\s+(\d{4})', dates_lower)
+        # Support "1 er février" avec espace et "1erfévrier" sans espace
+        match = re.search(r'du\s+(\d{1,2})\s*(?:er|e)?\s+(\w+)\s+(\d{4})\s+au\s+(\d{1,2})\s*(?:er|e)?\s+(\w+)\s+(\d{4})', dates_lower)
         if match:
             jour1 = match.group(1).zfill(2)
             mois1 = mois_mapping.get(match.group(2), '??')
@@ -847,7 +848,8 @@ class TokyoExpositionScraper:
             return f"{annee1}/{mois1}/{jour1} - {annee2}/{mois2}/{jour2}"
 
         # Pattern spécial: "DU 1er MARS AU 6 JUILLET 2025" (format avec DU...AU même année)
-        match = re.search(r'du\s+(\d{1,2})(?:er|e)?\s+(\w+)\s+au\s+(\d{1,2})(?:er|e)?\s+(\w+)\s+(\d{4})', dates_lower)
+        # Support "1 er février" avec espace et "1erfévrier" sans espace
+        match = re.search(r'du\s+(\d{1,2})\s*(?:er|e)?\s+(\w+)\s+au\s+(\d{1,2})\s*(?:er|e)?\s+(\w+)\s+(\d{4})', dates_lower)
         if match:
             jour1 = match.group(1).zfill(2)
             mois1 = mois_mapping.get(match.group(2), '??')
