@@ -29,16 +29,19 @@ class MapService:
 
         # Ajouter marqueurs
         for event in result.events:
-            if not (event.get('latitude') and event.get('longitude')):
+            # Convertir Pydantic object en dict
+            event_dict = event.model_dump()
+
+            if not (event_dict.get('latitude') and event_dict.get('longitude')):
                 continue
 
-            color = EVENT_COLORS.get(event.get('event_type', 'festivals'), 'gray')
-            popup_html = self._create_popup_html(event)
+            color = EVENT_COLORS.get(event_dict.get('event_type', 'festivals'), 'gray')
+            popup_html = self._create_popup_html(event_dict)
 
             folium.Marker(
-                location=[event['latitude'], event['longitude']],
+                location=[event_dict['latitude'], event_dict['longitude']],
                 popup=folium.Popup(popup_html, max_width=300),
-                tooltip=event['name'],
+                tooltip=event_dict['name'],
                 icon=folium.Icon(color=color, icon='info-sign')
             ).add_to(marker_cluster)
 
