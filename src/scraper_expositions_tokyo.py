@@ -165,20 +165,20 @@ class TokyoExpositionScraper:
             if not name:
                 continue
 
-            # Logique notebook: dernière section a +1 élément (script), autres sections normales
-            is_last_section = (k + 1 == len(sections))
+            # Trouver les paragraphes <p> (exclure les <div> et <figure>)
+            paragraphs = [elem for elem in section[1:] if isinstance(elem, Tag) and elem.name == 'p']
 
-            if is_last_section and len(section) >= 4:
-                # Dernière section: section[-3] = description, section[-2] = métadonnées
-                description_elem = section[-3]
-                metadata_elem = section[-2]
-            elif len(section) >= 3:
-                # Section normale: section[-2] = description, section[-1] = métadonnées
-                description_elem = section[-2]
-                metadata_elem = section[-1]
-            else:
-                # Section trop courte, skip
+            if len(paragraphs) == 0:
+                # Aucun paragraphe, skip
                 continue
+            elif len(paragraphs) == 1:
+                # Un seul paragraphe : description ET métadonnées combinées
+                description_elem = paragraphs[0]
+                metadata_elem = paragraphs[0]
+            else:
+                # Deux paragraphes ou plus : premier = description, deuxième = métadonnées
+                description_elem = paragraphs[0]
+                metadata_elem = paragraphs[1]
 
             # Extraire description
             description = self._clean_description(description_elem.get_text(separator=' ', strip=True))
