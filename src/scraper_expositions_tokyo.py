@@ -13,6 +13,7 @@ from src.date_utils_fr import parse_french_date_range, is_complex_date_pattern, 
 from src.location_utils import normalize_district, extract_location_with_district
 from src.metadata_extractors import extract_hours, extract_fee
 from src.database import EventDatabase
+from src.gps_extractor import GPSExtractor
 
 
 class TokyoExpositionScraper:
@@ -1113,6 +1114,7 @@ class TokyoExpositionScraper:
     def save_to_database(self, expositions: List[Dict], db_path: str = None):
         """
         Sauvegarde les expositions dans la base de données SQLite.
+        Extrait automatiquement les coordonnées GPS depuis les liens Google Maps.
 
         Args:
             expositions: Liste des expositions
@@ -1124,10 +1126,23 @@ class TokyoExpositionScraper:
         if not db_path:
             db_path = "data/tokyo_events.sqlite"
 
+        # Extraire les coordonnées GPS pour chaque exposition
+        gps_extractor = GPSExtractor()
+        gps_success = 0
+
+        for exposition in expositions:
+            if exposition.get('googlemap_link'):
+                coords = gps_extractor.extract_from_googlemap_link(exposition['googlemap_link'])
+                if coords:
+                    exposition['latitude'], exposition['longitude'] = coords
+                    gps_success += 1
+
         db = EventDatabase(db_path)
         count = db.insert_events(expositions, event_type='expositions')
 
         print(f"✓ {count} expositions sauvegardées dans la base de données {db_path}")
+        if gps_success > 0:
+            print(f"✓ {gps_success}/{len(expositions)} coordonnées GPS extraites automatiquement")
         return count
 
 

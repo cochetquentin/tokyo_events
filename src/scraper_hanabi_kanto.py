@@ -14,6 +14,7 @@ from dateutil.relativedelta import relativedelta
 
 from src.date_utils import parse_japanese_dates, parse_japanese_dates_list, format_date_range
 from src.database import EventDatabase
+from src.gps_extractor import GPSExtractor
 
 
 class KantoHanabiScraper:
@@ -468,6 +469,7 @@ class KantoHanabiScraper:
     def save_to_database(self, events: List[Dict], db_path: str = None):
         """
         Sauvegarde les hanabi dans la base de données SQLite.
+        Extrait automatiquement les coordonnées GPS depuis les liens Google Maps.
 
         Args:
             events: Liste des événements hanabi
@@ -479,10 +481,23 @@ class KantoHanabiScraper:
         if not db_path:
             db_path = "data/tokyo_events.sqlite"
 
+        # Extraire les coordonnées GPS pour chaque hanabi
+        gps_extractor = GPSExtractor()
+        gps_success = 0
+
+        for event in events:
+            if event.get('googlemap_link'):
+                coords = gps_extractor.extract_from_googlemap_link(event['googlemap_link'])
+                if coords:
+                    event['latitude'], event['longitude'] = coords
+                    gps_success += 1
+
         db = EventDatabase(db_path)
         count = db.insert_events(events, event_type='hanabi')
 
         print(f"\n✓ {count} hanabi sauvegardés dans la base de données {db_path}")
+        if gps_success > 0:
+            print(f"✓ {gps_success}/{len(events)} coordonnées GPS extraites automatiquement")
         return count
 
 

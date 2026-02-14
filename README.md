@@ -37,21 +37,18 @@ L'application web permet de visualiser tous les événements de Tokyo sur une ca
 
 **Avec Makefile :**
 ```bash
-make populate-gps  # Une seule fois
-make web           # Démarrer le serveur
+make web  # Démarrer le serveur
 ```
 
 **Sans Makefile :**
 ```bash
-# 1. Peupler les coordonnées GPS (une seule fois)
-uv run scripts/populate_gps_coordinates.py
-
-# 2. Démarrer le serveur web
 uv run scripts/start_web.py
 
-# 3. Ouvrir dans le navigateur
+# Ouvrir dans le navigateur
 http://localhost:8000
 ```
+
+**Note :** Les coordonnées GPS sont maintenant extraites **automatiquement lors du scraping**. Plus besoin de script de population séparé !
 
 ### API REST
 

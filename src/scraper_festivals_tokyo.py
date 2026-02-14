@@ -13,6 +13,7 @@ from src.date_utils_fr import parse_french_date_range, is_complex_date_pattern, 
 from src.location_utils import normalize_district, extract_location_with_district
 from src.metadata_extractors import extract_hours, extract_fee
 from src.database import EventDatabase
+from src.gps_extractor import GPSExtractor
 
 
 class TokyoFestivalScraper:
@@ -826,6 +827,7 @@ class TokyoFestivalScraper:
     def save_to_database(self, festivals: List[Dict], db_path: str = None):
         """
         Sauvegarde les festivals dans la base de données SQLite.
+        Extrait automatiquement les coordonnées GPS depuis les liens Google Maps.
 
         Args:
             festivals: Liste des festivals
@@ -837,10 +839,23 @@ class TokyoFestivalScraper:
         if not db_path:
             db_path = "data/tokyo_events.sqlite"
 
+        # Extraire les coordonnées GPS pour chaque festival
+        gps_extractor = GPSExtractor()
+        gps_success = 0
+
+        for festival in festivals:
+            if festival.get('googlemap_link'):
+                coords = gps_extractor.extract_from_googlemap_link(festival['googlemap_link'])
+                if coords:
+                    festival['latitude'], festival['longitude'] = coords
+                    gps_success += 1
+
         db = EventDatabase(db_path)
         count = db.insert_events(festivals, event_type='festivals')
 
         print(f"✓ {count} festivals sauvegardés dans la base de données {db_path}")
+        if gps_success > 0:
+            print(f"✓ {gps_success}/{len(festivals)} coordonnées GPS extraites automatiquement")
         return count
 
 
