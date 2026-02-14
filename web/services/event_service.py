@@ -17,6 +17,8 @@ class EventService:
 
     def get_events(self, filters: EventFilters) -> EventsListResponse:
         """Récupère événements avec filtres."""
+        from web.models.schemas import EventResponse
+
         events = self.db.get_events(
             event_type=filters.event_type,
             start_date_from=filters.start_date_from,
@@ -27,9 +29,12 @@ class EventService:
         if filters.has_coordinates:
             events = [e for e in events if e.get('latitude') and e.get('longitude')]
 
+        # Convertir en EventResponse objects
+        event_responses = [EventResponse(**event) for event in events]
+
         return EventsListResponse(
-            events=events,
-            total=len(events),
+            events=event_responses,
+            total=len(event_responses),
             filters_applied=filters.dict(exclude_none=True)
         )
 
