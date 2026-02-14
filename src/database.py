@@ -193,12 +193,18 @@ class EventDatabase:
 
         Args:
             event_type: Filtrer par type (None = tous les types)
-            start_date_from: Filtrer événements débutant après cette date (YYYY/MM/DD)
-            start_date_to: Filtrer événements débutant avant cette date (YYYY/MM/DD)
+            start_date_from: Début de la période recherchée (YYYY/MM/DD)
+            start_date_to: Fin de la période recherchée (YYYY/MM/DD)
             location: Filtrer par lieu (recherche LIKE, insensible à la casse)
 
         Returns:
-            Liste de dictionnaires d'événements
+            Liste de dictionnaires d'événements actifs durant la période
+
+        Note:
+            Les filtres de dates utilisent une logique de chevauchement:
+            - Inclut les événements qui commencent avant ou pendant la période ET
+            - qui se terminent pendant ou après la période
+            Cela permet de trouver tous les événements actifs durant la période.
         """
         query = "SELECT * FROM events WHERE 1=1"
         params = []
@@ -207,11 +213,19 @@ class EventDatabase:
             query += " AND event_type = ?"
             params.append(event_type)
 
-        if start_date_from:
-            query += " AND start_date >= ?"
+        # Filtre de dates avec logique de chevauchement
+        # Un événement est inclus si : start_date <= période_fin ET (end_date >= période_début OU end_date IS NULL)
+        if start_date_from and start_date_to:
+            # Période complète : événements qui chevauchent [start_date_from, start_date_to]
+            query += " AND start_date <= ? AND (end_date >= ? OR end_date IS NULL)"
+            params.append(start_date_to)
             params.append(start_date_from)
-
-        if start_date_to:
+        elif start_date_from:
+            # Seulement date début : événements qui se terminent après cette date
+            query += " AND (end_date >= ? OR end_date IS NULL)"
+            params.append(start_date_from)
+        elif start_date_to:
+            # Seulement date fin : événements qui commencent avant cette date
             query += " AND start_date <= ?"
             params.append(start_date_to)
 
