@@ -1,10 +1,11 @@
-.PHONY: help install test web scrape-festivals scrape-expositions scrape-marches scrape-hanabi clean
+.PHONY: help install test web scrape scrape-festivals scrape-expositions scrape-marches scrape-hanabi clean
 
 help:
 	@echo "Commandes disponibles:"
 	@echo "  make install          - Installer les dependances"
 	@echo "  make test            - Executer les tests"
 	@echo "  make web             - Demarrer l'application web"
+	@echo "  make scrape          - Scraper tous les evenements du mois en cours"
 	@echo "  make scrape-festivals - Scraper festivals (ex: make scrape-festivals MONTH=mars YEAR=2025)"
 	@echo "  make scrape-expositions - Scraper expositions"
 	@echo "  make scrape-marches  - Scraper marches aux puces"
@@ -21,6 +22,25 @@ test:
 
 web:
 	uv run scripts/start_web.py
+
+scrape:
+	@MONTH=$$(uv run python scripts/get_current_month.py) && \
+	YEAR=$$(uv run python scripts/get_current_year.py) && \
+	echo "Scraping du mois en cours: $$MONTH $$YEAR" && \
+	echo "" && \
+	echo "==> Scraping festivals..." && \
+	uv run main.py festivals $$MONTH $$YEAR && \
+	echo "" && \
+	echo "==> Scraping expositions..." && \
+	uv run main.py expositions $$MONTH $$YEAR && \
+	echo "" && \
+	echo "==> Scraping marches..." && \
+	uv run main.py marches && \
+	echo "" && \
+	echo "==> Scraping hanabi (2 mois)..." && \
+	uv run main.py hanabi 2 && \
+	echo "" && \
+	echo "✓ Scraping termine!"
 
 scrape-festivals:
 	@if [ -z "$(MONTH)" ] || [ -z "$(YEAR)" ]; then \
