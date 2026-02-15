@@ -13,15 +13,20 @@ class MapService:
     def __init__(self):
         self.event_service = EventService()
 
-    def generate_map(self, filters: EventFilters) -> str:
+    def generate_map(self, filters: EventFilters, center_lat: float = None, center_lon: float = None, zoom: int = None) -> str:
         """Génère carte HTML avec événements."""
         result = self.event_service.get_events(filters)
 
-        # Créer carte centrée sur Tokyo
+        # Utiliser le centre personnalisé ou Tokyo par défaut
+        lat = center_lat if center_lat is not None else MAP_CENTER_LAT
+        lon = center_lon if center_lon is not None else MAP_CENTER_LON
+        zoom_level = zoom if zoom is not None else MAP_DEFAULT_ZOOM
+
+        # Créer carte
         m = folium.Map(
-            location=[MAP_CENTER_LAT, MAP_CENTER_LON],
-            zoom_start=MAP_DEFAULT_ZOOM,
-            tiles='OpenStreetMap'
+            location=[lat, lon],
+            zoom_start=zoom_level,
+            tiles='CartoDB Voyager'
         )
 
         # Cluster de marqueurs
@@ -38,15 +43,23 @@ class MapService:
             color = EVENT_COLORS.get(event_dict.get('event_type', 'festivals'), 'gray')
             popup_html = self._create_popup_html(event_dict)
 
+            # Icônes personnalisées par type d'événement
+            event_icons = {
+                'hanabi': 'fire',
+                'festivals': 'music',
+                'expositions': 'palette',
+                'marches': 'store'
+            }
+            icon_name = event_icons.get(event_dict.get('event_type', 'festivals'), 'info-sign')
+
             folium.Marker(
                 location=[event_dict['latitude'], event_dict['longitude']],
                 popup=folium.Popup(popup_html, max_width=300),
                 tooltip=event_dict['name'],
-                icon=folium.Icon(color=color, icon='info-sign')
+                icon=folium.Icon(color=color, icon=icon_name, prefix='fa')
             ).add_to(marker_cluster)
 
         marker_cluster.add_to(m)
-        self._add_legend(m)
 
         return m._repr_html_()
 
@@ -86,23 +99,3 @@ class MapService:
 
         html += "</div>"
         return html
-
-    def _add_legend(self, map_obj):
-        """Ajoute légende."""
-        legend_html = """
-        <div style="position: fixed; bottom: 50px; left: 50px; width: 180px;
-                    background-color: white; z-index:9999; border:2px solid grey;
-                    border-radius: 5px; padding: 10px;">
-            <p style="margin: 0 0 10px 0; font-weight: bold;">Types d'evenements</p>
-        """
-
-        for event_type, color in EVENT_COLORS.items():
-            legend_html += f"""
-            <p style="margin: 5px 0;">
-                <i class="fa fa-map-marker" style="color:{color}"></i>
-                {event_type.capitalize()}
-            </p>
-            """
-
-        legend_html += "</div>"
-        map_obj.get_root().html.add_child(folium.Element(legend_html))

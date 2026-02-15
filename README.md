@@ -26,12 +26,15 @@ uv pip install -r requirements.txt
 L'application web permet de visualiser tous les événements de Tokyo sur une carte interactive avec filtres en temps réel.
 
 **Fonctionnalités :**
-- 🗺️ Carte interactive avec tous les événements géolocalisés
-- 🎨 Icônes colorées par type (festivals: rouge, expositions: bleu, hanabi: orange, marchés: vert)
+- 🗺️ Carte interactive avec tous les événements géolocalisés (style CartoDB Voyager épuré)
+- 🎨 Icônes personnalisées par type (🔥 hanabi, 🎵 festivals, 🎨 expositions, 🏪 marchés)
 - 🔍 Filtrage intelligent par type d'événement et période de dates (utilise une logique de chevauchement pour inclure les événements en cours)
 - 📍 Popups détaillés avec toutes les informations (nom, dates, lieu, horaires, tarifs, description)
-- 📊 Statistiques en temps réel
+- 📊 Statistiques dynamiques en temps réel (mises à jour selon les filtres appliqués)
+- 📋 Liste des événements groupée par catégorie avec compteurs
+- 🎯 Clic sur un événement pour zoomer et centrer la carte
 - 🗂️ Clustering automatique des marqueurs
+- 📅 Filtres par défaut sur la date du jour
 
 ### Démarrage Rapide
 
@@ -76,8 +79,9 @@ GET http://localhost:8000/api/map/generate
 ### Technologies Utilisées
 
 - **Backend :** FastAPI + Uvicorn
-- **Carte :** Folium (wrapper Python pour Leaflet.js)
+- **Carte :** Folium (wrapper Python pour Leaflet.js) avec tuiles CartoDB Voyager
 - **Frontend :** Bootstrap 5 + Vanilla JavaScript
+- **Icônes :** Font Awesome (icônes personnalisées par type d'événement)
 - **Extraction GPS :** Automatique depuis les liens Google Maps (100% de succès)
 
 ## 📖 Scraping des Événements
@@ -383,6 +387,17 @@ fee = extract_fee(text)      # → "Entrée gratuite"
 - [Investigation map.html hanabi](docs/hanabi_map_investigation.md) - Extraction GPS via map.html
 
 ## 🌟 Améliorations Récentes
+
+### v4.2 - Améliorations Interface Carte Interactive (Février 2025)
+
+- ✅ **Style de carte amélioré** : CartoDB Voyager pour un rendu épuré et coloré
+- ✅ **Icônes personnalisées** : Font Awesome avec icônes spécifiques (🔥 fire, 🎵 music, 🎨 palette, 🏪 store)
+- ✅ **Légende déplacée** dans le panneau latéral pour meilleure lisibilité
+- ✅ **Statistiques dynamiques** : compteurs mis à jour en temps réel selon les filtres
+- ✅ **Liste d'événements** groupée par catégorie avec compteurs
+- ✅ **Zoom sur événement** : clic sur un événement dans la liste pour centrer la carte
+- ✅ **Filtres par défaut** : date du jour pré-sélectionnée au chargement
+- ✅ **Interface épurée** : suppression des statistiques redondantes
 
 ### v4.1 - Extraction GPS Hanabi via map.html (Février 2025)
 

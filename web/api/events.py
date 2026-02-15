@@ -27,6 +27,17 @@ async def get_events(
 
 
 @router.get("/stats")
-async def get_stats():
-    """Statistiques."""
-    return event_service.get_statistics()
+async def get_stats(
+    event_type: Optional[str] = Query(None, pattern="^(festivals|expositions|hanabi|marches)$"),
+    start_date_from: Optional[str] = None,
+    start_date_to: Optional[str] = None,
+    has_coordinates: bool = Query(True, description="Uniquement événements avec GPS")
+):
+    """Statistiques avec filtres."""
+    filters = EventFilters(
+        event_type=event_type,
+        start_date_from=start_date_from,
+        start_date_to=start_date_to,
+        has_coordinates=has_coordinates
+    )
+    return event_service.get_statistics(filters)

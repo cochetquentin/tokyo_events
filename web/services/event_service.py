@@ -38,20 +38,36 @@ class EventService:
             filters_applied=filters.dict(exclude_none=True)
         )
 
-    def get_statistics(self):
-        """Statistiques globales."""
-        total = self.db.count_events()
-        all_events = self.db.get_events()
+    def get_statistics(self, filters: EventFilters = None):
+        """Statistiques avec filtres optionnels."""
+        if filters is None:
+            filters = EventFilters()
+
+        # Récupérer les événements avec les filtres appliqués
+        all_events = self.db.get_events(
+            event_type=filters.event_type,
+            start_date_from=filters.start_date_from,
+            start_date_to=filters.start_date_to
+        )
+
+        # Filtrer par coordonnées si demandé
+        if filters.has_coordinates:
+            all_events = [e for e in all_events if e.get('latitude') and e.get('longitude')]
+
+        total = len(all_events)
         with_gps = sum(1 for e in all_events if e.get('latitude') and e.get('longitude'))
+
+        # Compter par type
+        by_type = {
+            'festivals': sum(1 for e in all_events if e.get('event_type') == 'festivals'),
+            'expositions': sum(1 for e in all_events if e.get('event_type') == 'expositions'),
+            'hanabi': sum(1 for e in all_events if e.get('event_type') == 'hanabi'),
+            'marches': sum(1 for e in all_events if e.get('event_type') == 'marches')
+        }
 
         return {
             'total_events': total,
-            'by_type': {
-                'festivals': self.db.count_events('festivals'),
-                'expositions': self.db.count_events('expositions'),
-                'hanabi': self.db.count_events('hanabi'),
-                'marches': self.db.count_events('marches')
-            },
+            'by_type': by_type,
             'with_gps_coordinates': with_gps,
             'gps_coverage_percent': round((with_gps / total * 100), 2) if total > 0 else 0
         }

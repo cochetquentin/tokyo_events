@@ -39,9 +39,16 @@
                     </button>
                 </form>
 
-                <div class="mt-4" id="statsPanel">
-                    <h6>Statistiques</h6>
-                    <div id="statsContent">
+                <div class="mt-4" id="legendPanel">
+                    <h6><i class="fas fa-map-marker"></i> Types d'événements</h6>
+                    <div id="legendContent">
+                        <p class="text-muted">Chargement...</p>
+                    </div>
+                </div>
+
+                <div class="mt-4" id="eventsListPanel">
+                    <h6><i class="fas fa-list"></i> Événements</h6>
+                    <div id="eventsListContent" style="max-height: 400px; overflow-y: auto;">
                         <p class="text-muted">Chargement...</p>
                     </div>
                 </div>
@@ -68,16 +75,29 @@
 {% block extra_scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    loadStatistics();
+    // Définir la date d'aujourd'hui par défaut
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('startDateFrom').value = today;
+    document.getElementById('startDateTo').value = today;
+
+    loadStatistics(); // Charger les stats au démarrage
+    loadEventsList(); // Charger la liste des événements
+    applyFilters(); // Appliquer les filtres au chargement
 
     document.getElementById('filterForm').addEventListener('submit', function(e) {
         e.preventDefault();
         applyFilters();
+        loadStatistics(); // Mettre à jour les stats après application des filtres
+        loadEventsList(); // Mettre à jour la liste des événements
     });
 
     document.getElementById('resetBtn').addEventListener('click', function() {
         document.getElementById('filterForm').reset();
+        document.getElementById('startDateFrom').value = today;
+        document.getElementById('startDateTo').value = today;
         applyFilters();
+        loadStatistics(); // Mettre à jour les stats après réinitialisation
+        loadEventsList(); // Mettre à jour la liste des événements
     });
 });
 
@@ -95,21 +115,121 @@ function applyFilters() {
 }
 
 function loadStatistics() {
-    fetch('/api/events/stats')
+    const eventType = document.getElementById('eventType').value;
+    const startDateFrom = document.getElementById('startDateFrom').value;
+    const startDateTo = document.getElementById('startDateTo').value;
+
+    const params = new URLSearchParams();
+    if (eventType) params.append('event_type', eventType);
+    if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
+    if (startDateTo) params.append('start_date_to', startDateTo.replace(/-/g, '/'));
+
+    fetch(`/api/events/stats?${params.toString()}`)
         .then(response => response.json())
         .then(data => {
             const html = `
-                <p class="mb-1"><strong>Total:</strong> ${data.total_events}</p>
+                <p class="mb-2"><i class="fas fa-fire text-warning"></i> Hanabi: <strong>${data.by_type.hanabi || 0}</strong></p>
+                <p class="mb-2"><i class="fas fa-music text-danger"></i> Festivals: <strong>${data.by_type.festivals || 0}</strong></p>
+                <p class="mb-2"><i class="fas fa-palette text-primary"></i> Expositions: <strong>${data.by_type.expositions || 0}</strong></p>
+                <p class="mb-2"><i class="fas fa-store text-success"></i> Marchés: <strong>${data.by_type.marches || 0}</strong></p>
                 <hr>
-                <p class="mb-1"><i class="fas fa-torii-gate text-danger"></i> Festivals: ${data.by_type.festivals}</p>
-                <p class="mb-1"><i class="fas fa-palette text-primary"></i> Expositions: ${data.by_type.expositions}</p>
-                <p class="mb-1"><i class="fas fa-burst text-warning"></i> Hanabi: ${data.by_type.hanabi}</p>
-                <p class="mb-1"><i class="fas fa-store text-success"></i> Marches: ${data.by_type.marches}</p>
-                <hr>
-                <p class="mb-0"><strong>Avec GPS:</strong> ${data.with_gps_coordinates} (${data.gps_coverage_percent}%)</p>
+                <p class="mb-0"><strong>Total:</strong> ${data.total_events}</p>
             `;
-            document.getElementById('statsContent').innerHTML = html;
+            document.getElementById('legendContent').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error loading statistics:', error);
+            document.getElementById('legendContent').innerHTML = '<p class="text-danger">Erreur de chargement</p>';
         });
+}
+
+function loadEventsList() {
+    const eventType = document.getElementById('eventType').value;
+    const startDateFrom = document.getElementById('startDateFrom').value;
+    const startDateTo = document.getElementById('startDateTo').value;
+
+    const params = new URLSearchParams();
+    if (eventType) params.append('event_type', eventType);
+    if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
+    if (startDateTo) params.append('start_date_to', startDateTo.replace(/-/g, '/'));
+
+    fetch(`/api/events?${params.toString()}`)
+        .then(response => response.json())
+        .then(data => {
+            const events = data.events;
+
+            // Grouper par type
+            const grouped = {
+                'hanabi': [],
+                'festivals': [],
+                'expositions': [],
+                'marches': []
+            };
+
+            events.forEach(event => {
+                if (grouped[event.event_type]) {
+                    grouped[event.event_type].push(event);
+                }
+            });
+
+            // Générer le HTML
+            let html = '';
+            const icons = {
+                'hanabi': '<i class="fas fa-fire text-warning"></i>',
+                'festivals': '<i class="fas fa-music text-danger"></i>',
+                'expositions': '<i class="fas fa-palette text-primary"></i>',
+                'marches': '<i class="fas fa-store text-success"></i>'
+            };
+            const labels = {
+                'hanabi': 'Hanabi',
+                'festivals': 'Festivals',
+                'expositions': 'Expositions',
+                'marches': 'Marchés'
+            };
+
+            for (const [type, eventsList] of Object.entries(grouped)) {
+                if (eventsList.length > 0) {
+                    html += `<div class="mb-3">`;
+                    html += `<h6 class="mb-2">${icons[type]} ${labels[type]} (${eventsList.length})</h6>`;
+                    eventsList.forEach(event => {
+                        html += `<div class="event-item mb-2 p-2" style="cursor: pointer; border-left: 3px solid; font-size: 0.9em;"
+                                      onclick="focusOnEvent(${event.latitude}, ${event.longitude}, '${event.name.replace(/'/g, "\\'")}')">
+                                    <strong>${event.name}</strong><br>
+                                    <small class="text-muted">${event.location || ''}</small>
+                                 </div>`;
+                    });
+                    html += `</div>`;
+                }
+            }
+
+            if (html === '') {
+                html = '<p class="text-muted">Aucun événement trouvé</p>';
+            }
+
+            document.getElementById('eventsListContent').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error loading events:', error);
+            document.getElementById('eventsListContent').innerHTML = '<p class="text-danger">Erreur de chargement</p>';
+        });
+}
+
+function focusOnEvent(lat, lon, name) {
+    // Pour zoomer sur un événement, on doit communiquer avec l'iframe
+    // On va recharger la carte en ajoutant des paramètres pour le centre et le zoom
+    const eventType = document.getElementById('eventType').value;
+    const startDateFrom = document.getElementById('startDateFrom').value;
+    const startDateTo = document.getElementById('startDateTo').value;
+
+    const params = new URLSearchParams();
+    if (eventType) params.append('event_type', eventType);
+    if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
+    if (startDateTo) params.append('start_date_to', startDateTo.replace(/-/g, '/'));
+    params.append('center_lat', lat);
+    params.append('center_lon', lon);
+    params.append('zoom', 15);
+
+    document.getElementById('mapFrame').src = `/api/map/generate?${params.toString()}`;
 }
 </script>
 {% endblock %}
