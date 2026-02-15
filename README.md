@@ -182,6 +182,8 @@ TokyoEvent/
 │   ├── get_current_year.py            # Obtenir année actuelle
 │   ├── remove_duplicates.py           # Supprimer doublons
 │   ├── populate_gps_coordinates.py    # Peupler GPS
+│   ├── investigate_hanabi_map.py      # Investigation pages map.html hanabi
+│   ├── update_hanabi_coords_from_investigation.py  # MAJ coords depuis investigation
 │   └── migrate_add_gps_columns.py     # Migration DB
 │
 ├── tests/                             # Tests
@@ -201,7 +203,8 @@ TokyoEvent/
 │   ├── README_SCRAPER.md
 │   ├── README_PROJET.md
 │   ├── how_to_scrap_festival_event_website.md
-│   └── how_to_scrap_hanabi_website.md
+│   ├── how_to_scrap_hanabi_website.md
+│   └── hanabi_map_investigation.md    # Rapport investigation map.html
 │
 └── tools/                             # Scripts utilitaires
     └── update_references_districts.py
@@ -238,6 +241,7 @@ Scraping région **Kanto** (7 préfectures) :
 - ✅ **Préfecture et ville**
 - ✅ **Lieu détaillé**
 - ✅ **Double parsing** (JSON-LD + HTML)
+- ✅ **Coordonnées GPS** via extraction map.html (100% de couverture)
 
 ## 📊 Qualité & Validation
 
@@ -269,7 +273,9 @@ uv run tests/compare.py all  # Compare tous les types
 - Avril 2025 : 85% (17/20)
 - Janvier 2025 : 66% (8/12)
 
-**GPS :** 94% de succès global
+**GPS :**
+- Festivals/Expositions/Marchés : 94% de succès (Google Maps links)
+- Hanabi : 100% de succès (extraction map.html)
 
 ## 💻 Utilisation en Python
 
@@ -374,8 +380,16 @@ fee = extract_fee(text)      # → "Entrée gratuite"
 - [Présentation du projet](docs/README_PROJET.md) - Vue d'ensemble
 - [Analyse site festivals](docs/how_to_scrap_festival_event_website.md) - Patterns HTML
 - [Analyse site hanabi](docs/how_to_scrap_hanabi_website.md) - Architecture scraper
+- [Investigation map.html hanabi](docs/hanabi_map_investigation.md) - Extraction GPS via map.html
 
 ## 🌟 Améliorations Récentes
+
+### v4.1 - Extraction GPS Hanabi via map.html (Février 2025)
+
+- ✅ **Investigation pages map.html** pour événements hanabi
+- ✅ **Extraction GPS à 100%** pour hanabi via Google Maps iframes
+- ✅ **Script d'investigation automatique** avec rapport détaillé
+- ✅ **Couverture GPS complète** sur tous les feux d'artifice
 
 ### v4.0 - Application Web avec Carte Interactive (Février 2025)
 
