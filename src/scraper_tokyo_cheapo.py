@@ -521,8 +521,8 @@ def main():
 
     print("=== Tokyo Cheapo Events Scraper ===\n")
 
-    # Scrape events (limit to 2 pages for testing)
-    events = scraper.scrape_events(max_pages=2)
+    # Scrape all available events (no page limit)
+    events = scraper.scrape_events(max_pages=None)
 
     if events:
         # Save to database
