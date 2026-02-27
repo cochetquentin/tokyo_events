@@ -54,7 +54,7 @@ class EventDatabase:
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
                     -- Identification
-                    event_type TEXT NOT NULL CHECK(event_type IN ('festivals', 'expositions', 'hanabi', 'marches')),
+                    event_type TEXT NOT NULL CHECK(event_type IN ('festivals', 'expositions', 'hanabi', 'marches', 'tokyo_cheapo')),
                     name TEXT NOT NULL,
 
                     -- Dates (format YYYY/MM/DD)
@@ -152,7 +152,7 @@ class EventDatabase:
         Raises:
             ValueError: Si event_type n'est pas valide
         """
-        valid_types = ['festivals', 'expositions', 'hanabi', 'marches']
+        valid_types = ['festivals', 'expositions', 'hanabi', 'marches', 'tokyo_cheapo']
         if event_type not in valid_types:
             raise ValueError(f"event_type doit être l'un de {valid_types}, reçu: {event_type}")
 
