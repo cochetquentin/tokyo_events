@@ -13,6 +13,7 @@ map_service = MapService()
 @router.get("/generate", response_class=HTMLResponse)
 async def generate_map(
     event_type: Optional[str] = None,
+    category: Optional[str] = None,
     start_date_from: Optional[str] = None,
     start_date_to: Optional[str] = None,
     center_lat: Optional[float] = None,
@@ -22,6 +23,7 @@ async def generate_map(
     """Génère carte HTML avec événements filtrés."""
     filters = EventFilters(
         event_type=event_type,
+        category=category,
         start_date_from=start_date_from,
         start_date_to=start_date_to,
         has_coordinates=True

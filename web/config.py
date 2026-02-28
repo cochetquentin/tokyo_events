@@ -21,5 +21,6 @@ EVENT_COLORS = {
     'festivals': 'red',
     'expositions': 'blue',
     'hanabi': 'orange',
-    'marches': 'green'
+    'marches': 'green',
+    'tokyo_cheapo': 'purple'
 }

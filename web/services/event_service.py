@@ -21,6 +21,7 @@ class EventService:
 
         events = self.db.get_events(
             event_type=filters.event_type,
+            category=filters.category,
             start_date_from=filters.start_date_from,
             start_date_to=filters.start_date_to
         )
@@ -46,6 +47,7 @@ class EventService:
         # Récupérer les événements avec les filtres appliqués
         all_events = self.db.get_events(
             event_type=filters.event_type,
+            category=filters.category,
             start_date_from=filters.start_date_from,
             start_date_to=filters.start_date_to
         )
@@ -62,7 +64,8 @@ class EventService:
             'festivals': sum(1 for e in all_events if e.get('event_type') == 'festivals'),
             'expositions': sum(1 for e in all_events if e.get('event_type') == 'expositions'),
             'hanabi': sum(1 for e in all_events if e.get('event_type') == 'hanabi'),
-            'marches': sum(1 for e in all_events if e.get('event_type') == 'marches')
+            'marches': sum(1 for e in all_events if e.get('event_type') == 'marches'),
+            'tokyo_cheapo': sum(1 for e in all_events if e.get('event_type') == 'tokyo_cheapo')
         }
 
         return {

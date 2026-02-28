@@ -185,6 +185,7 @@ class EventDatabase:
 
     def get_events(self,
                    event_type: Optional[str] = None,
+                   category: Optional[str] = None,
                    start_date_from: Optional[str] = None,
                    start_date_to: Optional[str] = None,
                    location: Optional[str] = None) -> List[Dict]:
@@ -193,6 +194,7 @@ class EventDatabase:
 
         Args:
             event_type: Filtrer par type (None = tous les types)
+            category: Filtrer par catégorie (pour tokyo_cheapo events)
             start_date_from: Début de la période recherchée (YYYY/MM/DD)
             start_date_to: Fin de la période recherchée (YYYY/MM/DD)
             location: Filtrer par lieu (recherche LIKE, insensible à la casse)
@@ -212,6 +214,10 @@ class EventDatabase:
         if event_type:
             query += " AND event_type = ?"
             params.append(event_type)
+
+        if category:
+            query += " AND category = ?"
+            params.append(category)
 
         # Filtre de dates avec logique de chevauchement
         # Un événement est inclus si : start_date <= période_fin ET (end_date >= période_début OU end_date IS NULL)
@@ -327,6 +333,7 @@ class EventDatabase:
             'longitude': event.get('longitude'),
             'hours': event.get('hours'),
             'fee': event.get('fee'),
+            'category': event.get('category'),
             'updated_at': datetime.now().isoformat()
         }
 

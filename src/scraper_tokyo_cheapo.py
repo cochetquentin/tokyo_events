@@ -39,7 +39,9 @@ class TokyoCheapoScraper:
         'art exhibition': 'expositions',
         'market': 'marches',
         'flea market': 'marches',
+        'fireworks': 'hanabi',
         # Default: 'tokyo_cheapo' for unmapped categories
+        # (nature, illumination, sport, music, workshop, charity, volunteering, party, comedy)
     }
 
     def __init__(self):

@@ -8,6 +8,7 @@ class EventResponse(BaseModel):
     """Événement avec coordonnées."""
     name: str
     event_type: str
+    category: Optional[str] = None
     start_date: Optional[str] = None
     end_date: Optional[str] = None
     location: Optional[str] = None
@@ -30,6 +31,7 @@ class EventsListResponse(BaseModel):
 class EventFilters(BaseModel):
     """Filtres pour requêtes."""
     event_type: Optional[str] = None
+    category: Optional[str] = None
     start_date_from: Optional[str] = None
     start_date_to: Optional[str] = None
     has_coordinates: bool = True

@@ -48,7 +48,8 @@ class MapService:
                 'hanabi': 'fire',
                 'festivals': 'music',
                 'expositions': 'palette',
-                'marches': 'store'
+                'marches': 'store',
+                'tokyo_cheapo': 'globe'
             }
             icon_name = event_icons.get(event_dict.get('event_type', 'festivals'), 'info-sign')
 
@@ -68,6 +69,9 @@ class MapService:
         html = f"<div style='font-family: Arial; min-width: 250px;'>"
         html += f"<h4 style='margin-top: 0;'>{event['name']}</h4>"
         html += f"<p><strong>Type:</strong> {event.get('event_type', 'N/A')}</p>"
+
+        if event.get('category'):
+            html += f"<p><strong>Catégorie:</strong> {event['category']}</p>"
 
         if event.get('start_date'):
             dates = event['start_date']

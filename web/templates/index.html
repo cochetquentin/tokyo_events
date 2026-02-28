@@ -18,6 +18,28 @@
                             <option value="expositions">Expositions</option>
                             <option value="hanabi">Hanabi (Feux d'artifice)</option>
                             <option value="marches">Marches aux puces</option>
+                            <option value="tokyo_cheapo">Tokyo Cheapo (Autres)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3" id="categoryFilterContainer" style="display: none;">
+                        <label class="form-label">Categorie Tokyo Cheapo</label>
+                        <select class="form-select" id="categoryFilter">
+                            <option value="">Toutes les categories</option>
+                            <option value="Nature">Nature</option>
+                            <option value="Illumination">Illumination</option>
+                            <option value="Music">Musique</option>
+                            <option value="Sport">Sport</option>
+                            <option value="Comedy">Comedie</option>
+                            <option value="Food">Nourriture</option>
+                            <option value="Workshop">Ateliers</option>
+                            <option value="Anime">Anime</option>
+                            <option value="Party">Fetes</option>
+                            <option value="Charity">Charite</option>
+                            <option value="Volunteering">Benevolat</option>
+                            <option value="Film">Cinema</option>
+                            <option value="Fashion">Mode</option>
+                            <option value="Trade Show">Salons</option>
                         </select>
                     </div>
 
@@ -95,19 +117,38 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('filterForm').reset();
         document.getElementById('startDateFrom').value = today;
         document.getElementById('startDateTo').value = today;
+        document.getElementById('categoryFilterContainer').style.display = 'none';
         applyFilters();
         loadStatistics(); // Mettre à jour les stats après réinitialisation
         loadEventsList(); // Mettre à jour la liste des événements
+    });
+
+    // Event listener pour afficher/masquer le filtre de catégorie
+    document.getElementById('eventType').addEventListener('change', function() {
+        const categoryContainer = document.getElementById('categoryFilterContainer');
+        categoryContainer.style.display = (this.value === 'tokyo_cheapo') ? 'block' : 'none';
+        if (this.value !== 'tokyo_cheapo') {
+            document.getElementById('categoryFilter').value = '';
+        }
+    });
+
+    // Event listener pour le filtre de catégorie
+    document.getElementById('categoryFilter').addEventListener('change', function() {
+        applyFilters();
+        loadStatistics();
+        loadEventsList();
     });
 });
 
 function applyFilters() {
     const eventType = document.getElementById('eventType').value;
+    const category = document.getElementById('categoryFilter').value;
     const startDateFrom = document.getElementById('startDateFrom').value;
     const startDateTo = document.getElementById('startDateTo').value;
 
     const params = new URLSearchParams();
     if (eventType) params.append('event_type', eventType);
+    if (category && eventType === 'tokyo_cheapo') params.append('category', category);
     if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
     if (startDateTo) params.append('start_date_to', startDateTo.replace(/-/g, '/'));
 
@@ -116,11 +157,13 @@ function applyFilters() {
 
 function loadStatistics() {
     const eventType = document.getElementById('eventType').value;
+    const category = document.getElementById('categoryFilter').value;
     const startDateFrom = document.getElementById('startDateFrom').value;
     const startDateTo = document.getElementById('startDateTo').value;
 
     const params = new URLSearchParams();
     if (eventType) params.append('event_type', eventType);
+    if (category && eventType === 'tokyo_cheapo') params.append('category', category);
     if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
     if (startDateTo) params.append('start_date_to', startDateTo.replace(/-/g, '/'));
 
@@ -132,6 +175,7 @@ function loadStatistics() {
                 <p class="mb-2"><i class="fas fa-music text-danger"></i> Festivals: <strong>${data.by_type.festivals || 0}</strong></p>
                 <p class="mb-2"><i class="fas fa-palette text-primary"></i> Expositions: <strong>${data.by_type.expositions || 0}</strong></p>
                 <p class="mb-2"><i class="fas fa-store text-success"></i> Marchés: <strong>${data.by_type.marches || 0}</strong></p>
+                <p class="mb-2"><i class="fas fa-globe text-info"></i> Tokyo Cheapo: <strong>${data.by_type.tokyo_cheapo || 0}</strong></p>
                 <hr>
                 <p class="mb-0"><strong>Total:</strong> ${data.total_events}</p>
             `;
@@ -145,11 +189,13 @@ function loadStatistics() {
 
 function loadEventsList() {
     const eventType = document.getElementById('eventType').value;
+    const category = document.getElementById('categoryFilter').value;
     const startDateFrom = document.getElementById('startDateFrom').value;
     const startDateTo = document.getElementById('startDateTo').value;
 
     const params = new URLSearchParams();
     if (eventType) params.append('event_type', eventType);
+    if (category && eventType === 'tokyo_cheapo') params.append('category', category);
     if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
     if (startDateTo) params.append('start_date_to', startDateTo.replace(/-/g, '/'));
 
@@ -163,7 +209,8 @@ function loadEventsList() {
                 'hanabi': [],
                 'festivals': [],
                 'expositions': [],
-                'marches': []
+                'marches': [],
+                'tokyo_cheapo': []
             };
 
             events.forEach(event => {
@@ -178,13 +225,15 @@ function loadEventsList() {
                 'hanabi': '<i class="fas fa-fire text-warning"></i>',
                 'festivals': '<i class="fas fa-music text-danger"></i>',
                 'expositions': '<i class="fas fa-palette text-primary"></i>',
-                'marches': '<i class="fas fa-store text-success"></i>'
+                'marches': '<i class="fas fa-store text-success"></i>',
+                'tokyo_cheapo': '<i class="fas fa-globe text-info"></i>'
             };
             const labels = {
                 'hanabi': 'Hanabi',
                 'festivals': 'Festivals',
                 'expositions': 'Expositions',
-                'marches': 'Marchés'
+                'marches': 'Marchés',
+                'tokyo_cheapo': 'Tokyo Cheapo'
             };
 
             for (const [type, eventsList] of Object.entries(grouped)) {
