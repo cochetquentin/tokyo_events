@@ -37,7 +37,8 @@
       "Bash(PYTHONPATH=. \".venv/Scripts/python.exe\":*)",
       "Bash(PYTHONPATH=. uv run:*)",
       "Bash(tee:*)",
-      "Bash(make:*)"
+      "Bash(make:*)",
+      "Bash(PYTHONPATH=. timeout 60 uv run:*)"
     ]
   }
 }

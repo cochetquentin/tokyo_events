@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 import time
 from typing import List, Dict, Optional, Tuple
 import re
+import json
 from datetime import datetime
 
 from src.database import EventDatabase
@@ -398,13 +399,47 @@ class TokyoCheapoScraper:
                     if desc_parts:
                         detail_data['description'] = ' '.join(desc_parts)
 
-            # Extract Google Maps link
+            # Extract GPS coordinates from Apple Maps JSON (Primary method)
+            # Tokyo Cheapo uses Apple Maps with embedded JSON in HTML source
+            map_div = soup.find('div', {'component-name': 'apple-maps'})
+            if map_div:
+                json_script = map_div.find('script', {'type': 'application/json'})
+                if json_script and json_script.string:
+                    try:
+                        map_data = json.loads(json_script.string)
+
+                        # Extract GPS coordinates (stored as strings)
+                        lat_str = map_data.get('lat')
+                        lng_str = map_data.get('lng')
+
+                        if lat_str and lng_str:
+                            detail_data['latitude'] = float(lat_str)
+                            detail_data['longitude'] = float(lng_str)
+
+                        # Bonus: extract venue and address if not already set
+                        if map_data.get('title'):
+                            detail_data['venue_name'] = map_data.get('title')
+                        if map_data.get('addr'):
+                            detail_data['address'] = map_data.get('addr')
+
+                    except (json.JSONDecodeError, ValueError, TypeError) as e:
+                        print(f"      ⚠️ Error parsing Apple Maps JSON: {e}")
+
+            # Extract Google Maps link (fallback - rarely used now)
             # Look for links containing "google.com/maps" or "goo.gl"
             all_links = soup.find_all('a', href=True)
             for link in all_links:
                 href = link.get('href', '')
                 if 'google.com/maps' in href or 'goo.gl' in href:
                     detail_data['googlemap_link'] = href
+
+                    # Extract GPS from googlemap_link if we have one but no coordinates yet
+                    if 'latitude' not in detail_data:
+                        gps_extractor = GPSExtractor()
+                        lat, lon = gps_extractor.extract_from_google_maps_url(href)
+                        if lat:
+                            detail_data['latitude'] = lat
+                            detail_data['longitude'] = lon
                     break
 
             # Extract official website
