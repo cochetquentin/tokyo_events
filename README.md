@@ -237,14 +237,6 @@ TokyoEvent/
 │   ├── tokyo_events.sqlite            # ⭐ Base de données SQLite
 │   └── reference/                     # Données de référence (JSON)
 │
-├── docs/                              # Documentation
-│   ├── GUIDE_UTILISATION.md
-│   ├── README_SCRAPER.md
-│   ├── README_PROJET.md
-│   ├── how_to_scrap_festival_event_website.md
-│   ├── how_to_scrap_hanabi_website.md
-│   └── hanabi_map_investigation.md    # Rapport investigation map.html
-│
 └── tools/                             # Scripts utilitaires
     └── update_references_districts.py
 ```
@@ -430,14 +422,28 @@ hours = extract_hours(text)  # → "de 10h à 18h"
 fee = extract_fee(text)      # → "Entrée gratuite"
 ```
 
-## 📖 Documentation
+## 📊 Couverture GPS
 
-- [Guide d'utilisation](docs/GUIDE_UTILISATION.md) - Exemples détaillés
-- [Documentation technique](docs/README_SCRAPER.md) - API et paramètres
-- [Présentation du projet](docs/README_PROJET.md) - Vue d'ensemble
-- [Analyse site festivals](docs/how_to_scrap_festival_event_website.md) - Patterns HTML
-- [Analyse site hanabi](docs/how_to_scrap_hanabi_website.md) - Architecture scraper
-- [Investigation map.html hanabi](docs/hanabi_map_investigation.md) - Extraction GPS via map.html
+L'extraction GPS est **automatique** lors du scraping avec les taux de succès suivants :
+
+| Type | Couverture | Événements |
+|------|-----------|-----------|
+| **Expositions** | 93.5% ✅ | 29/31 |
+| **Marchés** | 90.7% ✅ | 49/54 |
+| **Festivals** | 83.7% ⚠️ | 36/43 |
+| **Tokyo Cheapo** | 74.6% ⚠️ | 44/59 |
+| **Hanabi** | 0.0% ❌ | 0/1 |
+| **TOTAL** | **84.0%** | **158/188** |
+
+### Méthodes d'extraction GPS :
+1. **JSON Apple Maps** (Tokyo Cheapo) - Extraction depuis `<div component-name="apple-maps">`
+2. **Liens Google Maps** (Festivals/Expositions/Marchés) - Pattern `@lat,lng` + résolution liens courts
+3. **Map.html** (Hanabi) - Extraction depuis iframes Google Maps
+
+### Événements sans GPS (30) :
+- **Événements online/itinérants** : Pas de lieu physique fixe
+- **Lieux imprécis** : Seulement un quartier mentionné (ex: "Shibuya")
+- **Données manquantes** : Venue non renseigné dans la source
 
 ## 🌟 Améliorations Récentes
 

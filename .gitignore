@@ -8,6 +8,9 @@ data/*.sqlite-wal
 festivals_*.json
 festivals_*.csv
 
+# Documentation (non suivie sur Git)
+docs/
+
 # Python-generated files
 __pycache__/
 *.py[oc]
