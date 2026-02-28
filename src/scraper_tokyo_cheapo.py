@@ -436,10 +436,10 @@ class TokyoCheapoScraper:
                     # Extract GPS from googlemap_link if we have one but no coordinates yet
                     if 'latitude' not in detail_data:
                         gps_extractor = GPSExtractor()
-                        lat, lon = gps_extractor.extract_from_google_maps_url(href)
-                        if lat:
-                            detail_data['latitude'] = lat
-                            detail_data['longitude'] = lon
+                        coords = gps_extractor.extract_from_googlemap_link(href)
+                        if coords:
+                            detail_data['latitude'] = coords[0]
+                            detail_data['longitude'] = coords[1]
                     break
 
             # Extract official website
