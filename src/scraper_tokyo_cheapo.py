@@ -3,14 +3,6 @@ Scraper pour les événements Tokyo Cheapo
 Source: https://tokyocheapo.com/events/
 """
 
-import sys
-import io
-
-# Fix Windows console encoding for emojis
-if sys.platform == 'win32':
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
-
 import requests
 from bs4 import BeautifulSoup
 import time
@@ -563,4 +555,10 @@ def main():
 
 
 if __name__ == "__main__":
+    import sys
+    import io
+    # Fix Windows console encoding for emojis (seulement quand exécuté directement)
+    if sys.platform == 'win32':
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
     main()

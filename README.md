@@ -5,6 +5,7 @@ Scrapers automatiques pour récupérer les événements de Tokyo et région du K
 - **Expositions** depuis [ichiban-japan.com](https://ichiban-japan.com)
 - **Marchés aux puces** depuis [ichiban-japan.com](https://ichiban-japan.com)
 - **Feux d'artifice (Hanabi)** depuis [hanabi.walkerplus.com](https://hanabi.walkerplus.com)
+- **Tokyo Cheapo Events** depuis [tokyocheapo.com](https://tokyocheapo.com/events/) 🆕
 
 **Stockage** : Base de données SQLite unifiée (`data/tokyo_events.sqlite`)
 
@@ -86,13 +87,43 @@ GET http://localhost:8000/api/map/generate
 
 ## 📖 Scraping des Événements
 
-### Avec Makefile (Recommandé)
+### Mise à Jour Automatique (Recommandé) ⭐
+
+La commande `make update-all` est la méthode **recommandée** pour maintenir votre base de données à jour. Elle met à jour tous les scrapers intelligemment en évitant les doublons :
+
+```bash
+# Mise à jour globale de tous les scrapers
+make update-all
+
+# Ce que fait cette commande :
+# - Tokyo Cheapo    : 5 pages (~120 événements)
+# - Festivals       : Mois actuel (skip si déjà scrapé)
+# - Expositions     : Mois actuel (skip si déjà scrapé)
+# - Marchés         : Tous (skip si déjà scrapé)
+# - Hanabi          : 3 prochains mois
+# - Nettoyage auto  : Supprime événements >30 jours
+
+# Afficher les statistiques
+make stats
+
+# Mode dry-run (simulation)
+uv run main.py update-all --dry-run
+```
+
+**Fonctionnalités :**
+- ✅ Détection intelligente des nouveaux événements
+- ✅ Évite les doublons (basé sur nom + date)
+- ✅ Nettoyage automatique des événements passés
+- ✅ Statistiques avant/après chaque mise à jour
+- ✅ Skip automatique si déjà scrapé
+
+### Scraping Manuel (par type)
 
 ```bash
 # Voir toutes les commandes disponibles
 make help
 
-# Scraper tous les événements du mois en cours (recommandé)
+# Scraper tous les événements du mois en cours
 make scrape  # Scrappe festivals, expositions, marches, et hanabi automatiquement
 
 # Ou scraper individuellement par type
@@ -100,6 +131,7 @@ make scrape-festivals MONTH=mars YEAR=2025
 make scrape-expositions MONTH=avril YEAR=2025
 make scrape-marches
 make scrape-hanabi MONTHS=12
+make scrape-tokyo-cheapo  # 5 pages (~120 événements)
 
 # Lancer les tests
 make test
@@ -157,8 +189,10 @@ TokyoEvent/
 │   ├── scraper_expositions_tokyo.py  # Scraper expositions
 │   ├── scraper_marches_tokyo.py      # Scraper marchés aux puces
 │   ├── scraper_hanabi_kanto.py       # Scraper feux d'artifice
+│   ├── scraper_tokyo_cheapo.py       # ⭐ Scraper Tokyo Cheapo (🆕)
 │   ├── date_utils.py                 # Utilitaires dates japonaises
 │   ├── date_utils_fr.py              # Utilitaires dates françaises
+│   ├── date_utils_en.py              # ⭐ Utilitaires dates anglaises (🆕)
 │   ├── location_utils.py             # Mapping arrondissements
 │   └── metadata_extractors.py        # Extraction heures/tarifs
 │
@@ -189,6 +223,7 @@ TokyoEvent/
 │   ├── investigate_hanabi_map.py      # Investigation pages map.html hanabi
 │   ├── update_hanabi_coords_from_investigation.py  # MAJ coords depuis investigation
 │   └── migrate_add_gps_columns.py     # Migration DB
+│
 │
 ├── tests/                             # Tests
 │   ├── conftest.py                    # ⭐ Fixtures pytest
@@ -246,6 +281,18 @@ Scraping région **Kanto** (7 préfectures) :
 - ✅ **Lieu détaillé**
 - ✅ **Double parsing** (JSON-LD + HTML)
 - ✅ **Coordonnées GPS** via extraction map.html (100% de couverture)
+
+### Tokyo Cheapo Events 🆕
+
+Scraping événements depuis **tokyocheapo.com** :
+- ✅ **Two-stage scraping** (liste + pages de détail)
+- ✅ **5 pages** (~120 événements récupérés)
+- ✅ **Parsing dates anglaises** (3 variantes supportées)
+- ✅ **Catégorisation automatique** (festivals, expositions, marchés, tokyo_cheapo)
+- ✅ **Rate limiting** (0.5s entre requêtes)
+- ✅ **Extraction GPS** automatique depuis Google Maps (75% de succès)
+- ✅ **Détection intelligente** des nouveaux événements
+- ✅ **Champs complets** : nom, dates, lieu, description, horaires, tarifs, website, GPS
 
 ## 📊 Qualité & Validation
 
@@ -330,6 +377,7 @@ for event in festivals_mars[:3]:
 from src.scraper_expositions_tokyo import TokyoExpositionScraper
 from src.scraper_marches_tokyo import TokyoMarcheScraper
 from src.scraper_hanabi_kanto import KantoHanabiScraper
+from src.scraper_tokyo_cheapo import TokyoCheapoScraper
 
 # Expositions
 scraper = TokyoExpositionScraper()
@@ -345,6 +393,11 @@ scraper.save_to_database(marches)
 scraper = KantoHanabiScraper()
 hanabi = scraper.scrape_hanabi(months_ahead=6)
 scraper.save_to_database(hanabi)
+
+# Tokyo Cheapo (🆕)
+scraper = TokyoCheapoScraper()
+events = scraper.scrape_events(max_pages=5)  # 5 pages (~120 événements)
+scraper.save_to_database(events)
 ```
 
 ## 🔧 Utilitaires
@@ -387,6 +440,20 @@ fee = extract_fee(text)      # → "Entrée gratuite"
 - [Investigation map.html hanabi](docs/hanabi_map_investigation.md) - Extraction GPS via map.html
 
 ## 🌟 Améliorations Récentes
+
+### v4.3 - Scraper Tokyo Cheapo + Système de Mise à Jour Globale (Février 2025)
+
+- ✅ **Nouveau scraper Tokyo Cheapo** (tokyocheapo.com/events/)
+- ✅ **Two-stage scraping** : liste + pages de détail pour données complètes
+- ✅ **Parsing dates anglaises** avec 3 variantes (single, multi, multi-year)
+- ✅ **Catégorisation automatique** : festivals/expositions/marchés/tokyo_cheapo
+- ✅ **Extraction GPS 75%** depuis Google Maps links
+- ✅ **Système de mise à jour globale** `make update-all`
+- ✅ **Détection intelligente** des nouveaux événements (évite doublons)
+- ✅ **Skip automatique** si mois déjà scrapé (festivals/expositions/marchés)
+- ✅ **Nettoyage automatique** des événements >30 jours
+- ✅ **Statistiques détaillées** avant/après chaque mise à jour
+- ✅ **Support event_type='tokyo_cheapo'** dans la database
 
 ### v4.2 - Améliorations Interface Carte Interactive (Février 2025)
 
@@ -447,11 +514,11 @@ fee = extract_fee(text)      # → "Entrée gratuite"
 ```sql
 CREATE TABLE events (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    event_type TEXT NOT NULL,  -- 'festivals', 'expositions', 'hanabi', 'marches'
+    event_type TEXT NOT NULL,  -- 'festivals', 'expositions', 'hanabi', 'marches', 'tokyo_cheapo'
     name TEXT NOT NULL,
     start_date TEXT,           -- Format: YYYY/MM/DD
     end_date TEXT,
-    location TEXT,             -- Festivals, expositions, marchés
+    location TEXT,             -- Festivals, expositions, marchés, tokyo_cheapo
     prefecture TEXT,           -- Hanabi uniquement
     city TEXT,                 -- Hanabi uniquement
     venue TEXT,                -- Hanabi uniquement
@@ -463,8 +530,10 @@ CREATE TABLE events (
     event_id TEXT,             -- Hanabi uniquement
     start_time TEXT,           -- Hanabi uniquement
     fireworks_count TEXT,      -- Hanabi uniquement
-    detail_url TEXT,           -- Hanabi uniquement
+    detail_url TEXT,           -- Hanabi + Tokyo Cheapo
     dates TEXT,                -- JSON array pour marches/hanabi
+    latitude REAL,             -- Coordonnées GPS
+    longitude REAL,            -- Coordonnées GPS
     created_at TEXT,
     updated_at TEXT,
 
@@ -567,6 +636,7 @@ Usage personnel et éducatif.
 Sources de données :
 - [ichiban-japan.com](https://ichiban-japan.com) - Festivals, expositions, marchés
 - [hanabi.walkerplus.com](https://hanabi.walkerplus.com) - Feux d'artifice
+- [tokyocheapo.com](https://tokyocheapo.com/events/) - Événements Tokyo Cheapo 🆕
 
 ---
 

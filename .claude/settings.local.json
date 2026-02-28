@@ -24,7 +24,20 @@
       "Bash(echo:*)",
       "Bash(uv pip install:*)",
       "Bash(timeout 10 uv run:*)",
-      "Bash(make scrape:*)"
+      "Bash(make scrape:*)",
+      "Bash(curl:*)",
+      "Bash(timeout 3 curl:*)",
+      "Bash(timeout 5 curl:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill /F /PID 19080 /PID 13976)",
+      "Bash(timeout 5 bash:*)",
+      "Bash(.venvScriptspython.exe src/scraper_tokyo_cheapo.py)",
+      "Bash(\".venv/Scripts/python.exe\" src/scraper_tokyo_cheapo.py)",
+      "Bash(PYTHONPATH=. \".venv/Scripts/python.exe\":*)",
+      "Bash(PYTHONPATH=. uv run:*)",
+      "Bash(tee:*)",
+      "Bash(make:*)"
     ]
   }
 }
