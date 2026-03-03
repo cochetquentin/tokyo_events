@@ -88,6 +88,13 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('startDateFrom').value = today;
     document.getElementById('startDateTo').value = today;
 
+    // Charger les badges si tokyo_cheapo est sélectionné au démarrage
+    const eventType = document.getElementById('eventType').value;
+    if (eventType === 'tokyo_cheapo') {
+        document.getElementById('categoryGroupsContainer').style.display = 'block';
+        loadCategoryBadges();
+    }
+
     loadStatistics(); // Charger les stats au démarrage
     loadEventsList(); // Charger la liste des événements
     applyFilters(); // Appliquer les filtres au chargement
@@ -205,7 +212,29 @@ function loadStatistics() {
     fetch(`/api/events/stats?${params.toString()}`)
         .then(response => response.json())
         .then(data => {
-            const html = `
+            let html = '';
+
+            // Si tokyo_cheapo avec des category_groups sélectionnés, afficher la légende par catégorie
+            if (eventType === 'tokyo_cheapo' && selectedCategoryGroups.size > 0 && data.by_category_group) {
+                // Fetch metadata pour les icônes/couleurs
+                fetch('/api/events/category-groups')
+                    .then(r => r.json())
+                    .then(metadata => {
+                        html = '<h6 class="mb-2">Catégories sélectionnées</h6>';
+                        for (const [key, count] of Object.entries(data.by_category_group)) {
+                            if (selectedCategoryGroups.has(key) && count > 0) {
+                                const group = metadata[key];
+                                html += `<p class="mb-2"><i class="fas fa-${group.icon}" style="color: ${group.color}"></i> ${group.label}: <strong>${count}</strong></p>`;
+                            }
+                        }
+                        html += `<hr><p class="mb-0"><strong>Total:</strong> ${data.total_events}</p>`;
+                        document.getElementById('legendContent').innerHTML = html;
+                    });
+                return; // Exit early pour éviter le double update
+            }
+
+            // Sinon, afficher la légende standard par type
+            html = `
                 <p class="mb-2"><i class="fas fa-fire text-warning"></i> Hanabi: <strong>${data.by_type.hanabi || 0}</strong></p>
                 <p class="mb-2"><i class="fas fa-music text-danger"></i> Festivals: <strong>${data.by_type.festivals || 0}</strong></p>
                 <p class="mb-2"><i class="fas fa-palette text-primary"></i> Expositions: <strong>${data.by_type.expositions || 0}</strong></p>
