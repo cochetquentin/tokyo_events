@@ -22,25 +22,11 @@
                         </select>
                     </div>
 
-                    <div class="mb-3" id="categoryFilterContainer" style="display: none;">
-                        <label class="form-label">Categorie Tokyo Cheapo</label>
-                        <select class="form-select" id="categoryFilter">
-                            <option value="">Toutes les categories</option>
-                            <option value="Nature">Nature</option>
-                            <option value="Illumination">Illumination</option>
-                            <option value="Music">Musique</option>
-                            <option value="Sport">Sport</option>
-                            <option value="Comedy">Comedie</option>
-                            <option value="Food">Nourriture</option>
-                            <option value="Workshop">Ateliers</option>
-                            <option value="Anime">Anime</option>
-                            <option value="Party">Fetes</option>
-                            <option value="Charity">Charite</option>
-                            <option value="Volunteering">Benevolat</option>
-                            <option value="Film">Cinema</option>
-                            <option value="Fashion">Mode</option>
-                            <option value="Trade Show">Salons</option>
-                        </select>
+                    <div class="mb-3" id="categoryGroupsContainer" style="display: none;">
+                        <label class="form-label">Catégories (sélectionnez-en plusieurs)</label>
+                        <div class="category-badges-grid" id="categoryBadgesGrid">
+                            <!-- Badges générés dynamiquement par JavaScript -->
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -117,38 +103,83 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('filterForm').reset();
         document.getElementById('startDateFrom').value = today;
         document.getElementById('startDateTo').value = today;
-        document.getElementById('categoryFilterContainer').style.display = 'none';
-        applyFilters();
-        loadStatistics(); // Mettre à jour les stats après réinitialisation
-        loadEventsList(); // Mettre à jour la liste des événements
-    });
-
-    // Event listener pour afficher/masquer le filtre de catégorie
-    document.getElementById('eventType').addEventListener('change', function() {
-        const categoryContainer = document.getElementById('categoryFilterContainer');
-        categoryContainer.style.display = (this.value === 'tokyo_cheapo') ? 'block' : 'none';
-        if (this.value !== 'tokyo_cheapo') {
-            document.getElementById('categoryFilter').value = '';
-        }
-    });
-
-    // Event listener pour le filtre de catégorie
-    document.getElementById('categoryFilter').addEventListener('change', function() {
+        document.getElementById('categoryGroupsContainer').style.display = 'none';
+        selectedCategoryGroups.clear();
         applyFilters();
         loadStatistics();
         loadEventsList();
     });
+
+    // Event listener pour afficher/masquer les category groups
+    document.getElementById('eventType').addEventListener('change', function() {
+        const categoryContainer = document.getElementById('categoryGroupsContainer');
+        if (this.value === 'tokyo_cheapo') {
+            categoryContainer.style.display = 'block';
+            loadCategoryBadges();
+        } else {
+            categoryContainer.style.display = 'none';
+            selectedCategoryGroups.clear();
+        }
+    });
 });
+
+// État global pour la multi-sélection
+let selectedCategoryGroups = new Set();
+
+function toggleCategoryGroup(badgeBtn) {
+    const group = badgeBtn.dataset.group;
+
+    if (selectedCategoryGroups.has(group)) {
+        selectedCategoryGroups.delete(group);
+        badgeBtn.classList.remove('active');
+    } else {
+        selectedCategoryGroups.add(group);
+        badgeBtn.classList.add('active');
+    }
+
+    applyFilters();
+    loadStatistics();
+    loadEventsList();
+}
+
+async function loadCategoryBadges() {
+    try {
+        // Fetch metadata + stats en parallèle
+        const [metadata, stats] = await Promise.all([
+            fetch('/api/events/category-groups').then(r => r.json()),
+            fetch('/api/events/stats?event_type=tokyo_cheapo').then(r => r.json())
+        ]);
+
+        // Générer HTML des badges
+        const container = document.getElementById('categoryBadgesGrid');
+        container.innerHTML = Object.entries(metadata).map(([key, data]) => `
+            <button type="button"
+                    class="category-badge ${selectedCategoryGroups.has(key) ? 'active' : ''}"
+                    data-group="${key}"
+                    onclick="toggleCategoryGroup(this)">
+                <i class="fas fa-${data.icon}" style="color: ${data.color}"></i>
+                <span>${data.label}</span>
+                <small class="badge-count">(${stats.by_category_group[key] || 0})</small>
+            </button>
+        `).join('');
+    } catch (error) {
+        console.error('Error loading category badges:', error);
+    }
+}
 
 function applyFilters() {
     const eventType = document.getElementById('eventType').value;
-    const category = document.getElementById('categoryFilter').value;
     const startDateFrom = document.getElementById('startDateFrom').value;
     const startDateTo = document.getElementById('startDateTo').value;
 
     const params = new URLSearchParams();
     if (eventType) params.append('event_type', eventType);
-    if (category && eventType === 'tokyo_cheapo') params.append('category', category);
+
+    // Multi-selection de category groups
+    if (selectedCategoryGroups.size > 0) {
+        params.append('category_groups', Array.from(selectedCategoryGroups).join(','));
+    }
+
     if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
     if (startDateTo) params.append('start_date_to', startDateTo.replace(/-/g, '/'));
 
@@ -157,13 +188,17 @@ function applyFilters() {
 
 function loadStatistics() {
     const eventType = document.getElementById('eventType').value;
-    const category = document.getElementById('categoryFilter').value;
     const startDateFrom = document.getElementById('startDateFrom').value;
     const startDateTo = document.getElementById('startDateTo').value;
 
     const params = new URLSearchParams();
     if (eventType) params.append('event_type', eventType);
-    if (category && eventType === 'tokyo_cheapo') params.append('category', category);
+
+    // Multi-selection de category groups
+    if (selectedCategoryGroups.size > 0) {
+        params.append('category_groups', Array.from(selectedCategoryGroups).join(','));
+    }
+
     if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
     if (startDateTo) params.append('start_date_to', startDateTo.replace(/-/g, '/'));
 
@@ -189,13 +224,17 @@ function loadStatistics() {
 
 function loadEventsList() {
     const eventType = document.getElementById('eventType').value;
-    const category = document.getElementById('categoryFilter').value;
     const startDateFrom = document.getElementById('startDateFrom').value;
     const startDateTo = document.getElementById('startDateTo').value;
 
     const params = new URLSearchParams();
     if (eventType) params.append('event_type', eventType);
-    if (category && eventType === 'tokyo_cheapo') params.append('category', category);
+
+    // Multi-selection de category groups
+    if (selectedCategoryGroups.size > 0) {
+        params.append('category_groups', Array.from(selectedCategoryGroups).join(','));
+    }
+
     if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
     if (startDateTo) params.append('start_date_to', startDateTo.replace(/-/g, '/'));
 

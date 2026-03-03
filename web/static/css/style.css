@@ -30,3 +30,54 @@ body {
     border-radius: 8px;
     overflow: hidden;
 }
+
+/* Category Badges Grid */
+.category-badges-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+}
+
+.category-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 8px;
+    border: 2px solid #dee2e6;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.category-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.category-badge.active {
+    border-color: #0d6efd;
+    background: #e7f1ff;
+}
+
+.category-badge i {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.badge-count {
+    font-size: 11px;
+    color: #6c757d;
+}
+
+/* Responsive mobile */
+@media (max-width: 768px) {
+    .category-badges-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+    .category-badge {
+        padding: 8px 4px;
+        font-size: 0.9em;
+    }
+}

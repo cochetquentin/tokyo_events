@@ -22,6 +22,7 @@ class EventService:
         events = self.db.get_events(
             event_type=filters.event_type,
             category=filters.category,
+            category_groups=filters.category_groups,
             start_date_from=filters.start_date_from,
             start_date_to=filters.start_date_to
         )
@@ -48,6 +49,7 @@ class EventService:
         all_events = self.db.get_events(
             event_type=filters.event_type,
             category=filters.category,
+            category_groups=filters.category_groups,
             start_date_from=filters.start_date_from,
             start_date_to=filters.start_date_to
         )
@@ -68,9 +70,20 @@ class EventService:
             'tokyo_cheapo': sum(1 for e in all_events if e.get('event_type') == 'tokyo_cheapo')
         }
 
+        # Compter par category_group
+        from web.config import CATEGORY_GROUPS, CATEGORY_TO_GROUP
+        by_category_group = {key: 0 for key in CATEGORY_GROUPS.keys()}
+
+        for event in all_events:
+            cat = event.get('category')
+            if cat and cat in CATEGORY_TO_GROUP:
+                group = CATEGORY_TO_GROUP[cat]
+                by_category_group[group] += 1
+
         return {
             'total_events': total,
             'by_type': by_type,
+            'by_category_group': by_category_group,
             'with_gps_coordinates': with_gps,
             'gps_coverage_percent': round((with_gps / total * 100), 2) if total > 0 else 0
         }

@@ -40,18 +40,23 @@ class MapService:
             if not (event_dict.get('latitude') and event_dict.get('longitude')):
                 continue
 
-            color = EVENT_COLORS.get(event_dict.get('event_type', 'festivals'), 'gray')
-            popup_html = self._create_popup_html(event_dict)
+            event_type = event_dict.get('event_type', 'festivals')
 
-            # Icônes personnalisées par type d'événement
-            event_icons = {
-                'hanabi': 'fire',
-                'festivals': 'music',
-                'expositions': 'palette',
-                'marches': 'store',
-                'tokyo_cheapo': 'globe'
-            }
-            icon_name = event_icons.get(event_dict.get('event_type', 'festivals'), 'info-sign')
+            # Déterminer couleur et icône
+            if event_type == 'tokyo_cheapo':
+                color, icon_name = self._get_category_marker_style(event_dict)
+            else:
+                # Types standards (hanabi, festivals, etc.)
+                color = EVENT_COLORS.get(event_type, 'gray')
+                event_icons = {
+                    'hanabi': 'fire',
+                    'festivals': 'music',
+                    'expositions': 'palette',
+                    'marches': 'store'
+                }
+                icon_name = event_icons.get(event_type, 'info-sign')
+
+            popup_html = self._create_popup_html(event_dict)
 
             folium.Marker(
                 location=[event_dict['latitude'], event_dict['longitude']],
@@ -63,6 +68,19 @@ class MapService:
         marker_cluster.add_to(m)
 
         return m._repr_html_()
+
+    def _get_category_marker_style(self, event: dict) -> tuple:
+        """Retourne (color, icon) basé sur la category_group de l'événement."""
+        from web.config import CATEGORY_GROUPS, CATEGORY_TO_GROUP
+
+        category = event.get('category')
+        if category and category in CATEGORY_TO_GROUP:
+            group_key = CATEGORY_TO_GROUP[category]
+            group_data = CATEGORY_GROUPS[group_key]
+            return group_data['color'], group_data['icon']
+
+        # Fallback : tokyo_cheapo default
+        return 'purple', 'globe'
 
     def _create_popup_html(self, event: dict) -> str:
         """Crée HTML du popup."""

@@ -14,6 +14,7 @@ map_service = MapService()
 async def generate_map(
     event_type: Optional[str] = None,
     category: Optional[str] = None,
+    category_groups: Optional[str] = None,
     start_date_from: Optional[str] = None,
     start_date_to: Optional[str] = None,
     center_lat: Optional[float] = None,
@@ -21,9 +22,13 @@ async def generate_map(
     zoom: Optional[int] = None,
 ):
     """Génère carte HTML avec événements filtrés."""
+    # Parse category_groups si fourni
+    groups_list = category_groups.split(',') if category_groups else None
+
     filters = EventFilters(
         event_type=event_type,
         category=category,
+        category_groups=groups_list,
         start_date_from=start_date_from,
         start_date_to=start_date_to,
         has_coordinates=True

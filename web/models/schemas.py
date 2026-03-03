@@ -31,7 +31,8 @@ class EventsListResponse(BaseModel):
 class EventFilters(BaseModel):
     """Filtres pour requêtes."""
     event_type: Optional[str] = None
-    category: Optional[str] = None
+    category: Optional[str] = None  # Deprecated - gardé pour backward compatibility
+    category_groups: Optional[List[str]] = None  # Nouveau système de filtrage par familles
     start_date_from: Optional[str] = None
     start_date_to: Optional[str] = None
     has_coordinates: bool = True

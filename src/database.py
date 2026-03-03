@@ -186,6 +186,7 @@ class EventDatabase:
     def get_events(self,
                    event_type: Optional[str] = None,
                    category: Optional[str] = None,
+                   category_groups: Optional[List[str]] = None,
                    start_date_from: Optional[str] = None,
                    start_date_to: Optional[str] = None,
                    location: Optional[str] = None) -> List[Dict]:
@@ -194,7 +195,8 @@ class EventDatabase:
 
         Args:
             event_type: Filtrer par type (None = tous les types)
-            category: Filtrer par catégorie (pour tokyo_cheapo events)
+            category: Filtrer par catégorie (deprecated - pour backward compatibility)
+            category_groups: Filtrer par familles de catégories (ex: ['culture_arts', 'nature_outdoor'])
             start_date_from: Début de la période recherchée (YYYY/MM/DD)
             start_date_to: Fin de la période recherchée (YYYY/MM/DD)
             location: Filtrer par lieu (recherche LIKE, insensible à la casse)
@@ -215,7 +217,20 @@ class EventDatabase:
             query += " AND event_type = ?"
             params.append(event_type)
 
-        if category:
+        # Filtrage par category_groups (prioritaire sur category)
+        if category_groups:
+            from web.config import CATEGORY_GROUPS
+            allowed_cats = []
+            for group in category_groups:
+                if group in CATEGORY_GROUPS:
+                    allowed_cats.extend(CATEGORY_GROUPS[group]['categories'])
+
+            if allowed_cats:
+                placeholders = ','.join(['?' for _ in allowed_cats])
+                query += f" AND category IN ({placeholders})"
+                params.extend(allowed_cats)
+        elif category:
+            # Fallback : ancien système single category
             query += " AND category = ?"
             params.append(category)
 
