@@ -1,81 +1,90 @@
 {% extends "base.html" %}
 
 {% block content %}
+<!-- Filtres en horizontal en haut -->
 <div class="row mt-3">
-    <!-- Filtres -->
-    <div class="col-md-3">
+    <div class="col-12">
         <div class="card">
-            <div class="card-header">
-                <h5><i class="fas fa-filter"></i> Filtres</h5>
-            </div>
             <div class="card-body">
                 <form id="filterForm">
-                    <div class="mb-3">
-                        <label class="form-label">Catégories (cliquez pour multi-sélection)</label>
-                        <div class="category-badges-grid" id="allCategoriesBadges">
-                            <!-- Badges générés dynamiquement par JavaScript -->
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Période</label>
-                        <div class="btn-group w-100 mb-2" role="group">
-                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('today')">
-                                Aujourd'hui
-                            </button>
-                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('week')">
-                                Cette semaine
-                            </button>
-                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('month')">
-                                Ce mois
-                            </button>
-                        </div>
-                        <div class="row g-2">
-                            <div class="col-6">
-                                <label class="form-label small text-muted">Du</label>
-                                <input type="date" class="form-control form-control-sm" id="startDateFrom">
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label small text-muted">Au</label>
-                                <input type="date" class="form-control form-control-sm" id="startDateTo">
+                    <div class="row g-3">
+                        <!-- Catégories -->
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold"><i class="fas fa-filter"></i> Catégories (cliquez pour multi-sélection)</label>
+                            <div class="category-badges-grid" id="allCategoriesBadges">
+                                <!-- Badges générés dynamiquement par JavaScript -->
                             </div>
                         </div>
-                    </div>
 
-                    <button type="submit" class="btn btn-primary w-100 mb-2">
-                        <i class="fas fa-search"></i> Appliquer
-                    </button>
-                    <button type="button" class="btn btn-secondary w-100" id="resetBtn">
-                        <i class="fas fa-undo"></i> Reinitialiser
-                    </button>
+                        <!-- Dates et actions -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold"><i class="fas fa-calendar"></i> Période</label>
+                            <div class="btn-group w-100 mb-2" role="group">
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('today')">
+                                    Aujourd'hui
+                                </button>
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('week')">
+                                    Semaine
+                                </button>
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('month')">
+                                    Mois
+                                </button>
+                            </div>
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <input type="date" class="form-control form-control-sm" id="startDateFrom" placeholder="Du">
+                                </div>
+                                <div class="col-6">
+                                    <input type="date" class="form-control form-control-sm" id="startDateTo" placeholder="Au">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm w-100 mb-1">
+                                <i class="fas fa-search"></i> Appliquer
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm w-100" id="resetBtn">
+                                <i class="fas fa-undo"></i> Réinitialiser
+                            </button>
+                        </div>
+                    </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-                <div class="mt-4" id="legendPanel">
-                    <h6><i class="fas fa-map-marker"></i> Types d'événements</h6>
-                    <div id="legendContent">
-                        <p class="text-muted">Chargement...</p>
-                    </div>
-                </div>
-
-                <div class="mt-4" id="eventsListPanel">
-                    <h6><i class="fas fa-list"></i> Événements</h6>
-                    <div id="eventsListContent" style="max-height: 400px; overflow-y: auto;">
-                        <p class="text-muted">Chargement...</p>
-                    </div>
+<!-- Carte (70%) et Liste (30%) -->
+<div class="row mt-3">
+    <!-- Carte -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body p-0">
+                <div id="mapContainer" style="height: calc(100vh - 270px);">
+                    <iframe id="mapFrame"
+                            src="/api/map/generate"
+                            style="width: 100%; height: 100%; border: none;">
+                    </iframe>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Carte -->
-    <div class="col-md-9">
+    <!-- Liste événements -->
+    <div class="col-md-4">
         <div class="card">
-            <div class="card-body p-0">
-                <div id="mapContainer" style="height: calc(100vh - 150px);">
-                    <iframe id="mapFrame"
-                            src="/api/map/generate"
-                            style="width: 100%; height: 100%; border: none;">
-                    </iframe>
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="fas fa-list"></i> Événements</h6>
+            </div>
+            <div class="card-body p-2">
+                <!-- Stats -->
+                <div id="legendPanel" class="mb-3">
+                    <div id="legendContent">
+                        <p class="text-muted small">Chargement...</p>
+                    </div>
+                </div>
+
+                <!-- Liste scrollable -->
+                <div id="eventsListContent" style="max-height: calc(100vh - 420px); overflow-y: auto;">
+                    <p class="text-muted small">Chargement...</p>
                 </div>
             </div>
         </div>

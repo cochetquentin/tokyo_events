@@ -33,22 +33,23 @@ body {
 
 /* Category Badges Grid */
 .category-badges-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .category-badge {
-    display: flex;
-    flex-direction: column;
+    display: inline-flex;
     align-items: center;
-    padding: 12px 8px;
+    gap: 6px;
+    padding: 8px 12px;
     border: 2px solid #dee2e6;
     background: white;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s;
-    text-align: center;
+    font-size: 0.9em;
+    white-space: nowrap;
 }
 
 .category-badge:hover {
@@ -62,8 +63,7 @@ body {
 }
 
 .category-badge i {
-    font-size: 24px;
-    margin-bottom: 8px;
+    font-size: 18px;
 }
 
 .badge-count {
@@ -71,13 +71,21 @@ body {
     color: #6c757d;
 }
 
+/* Events list styling */
+.event-item {
+    border-left: 3px solid #0d6efd !important;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.event-item:hover {
+    background: #f8f9fa;
+}
+
 /* Responsive mobile */
 @media (max-width: 768px) {
-    .category-badges-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    }
     .category-badge {
-        padding: 8px 4px;
-        font-size: 0.9em;
+        padding: 6px 10px;
+        font-size: 0.85em;
     }
 }
