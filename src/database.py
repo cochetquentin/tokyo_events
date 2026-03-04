@@ -219,31 +219,67 @@ class EventDatabase:
         query = "SELECT * FROM events WHERE 1=1"
         params = []
 
-        # Filtrage par event_types (prioritaire sur event_type)
-        if event_types:
-            placeholders = ','.join(['?' for _ in event_types])
-            query += f" AND event_type IN ({placeholders})"
-            params.extend(event_types)
-        elif event_type:
-            query += " AND event_type = ?"
-            params.append(event_type)
+        # Logique de filtrage combiné (OR entre event_types et category_groups)
+        # Si les deux sont fournis : (event_type IN (...) OR category IN (...))
+        # Si un seul : condition simple avec AND
+        has_event_types_filter = event_types or event_type
+        has_category_filter = category_groups or category
 
-        # Filtrage par category_groups (prioritaire sur category)
-        if category_groups:
-            from web.config import CATEGORY_GROUPS
-            allowed_cats = []
-            for group in category_groups:
-                if group in CATEGORY_GROUPS:
-                    allowed_cats.extend(CATEGORY_GROUPS[group]['categories'])
+        if has_event_types_filter and has_category_filter:
+            # Cas 1: Les deux filtres fournis -> OR
+            conditions = []
 
-            if allowed_cats:
-                placeholders = ','.join(['?' for _ in allowed_cats])
-                query += f" AND category IN ({placeholders})"
-                params.extend(allowed_cats)
-        elif category:
-            # Fallback : ancien système single category
-            query += " AND category = ?"
-            params.append(category)
+            # Condition event_types
+            if event_types:
+                placeholders = ','.join(['?' for _ in event_types])
+                conditions.append(f"event_type IN ({placeholders})")
+                params.extend(event_types)
+            elif event_type:
+                conditions.append("event_type = ?")
+                params.append(event_type)
+
+            # Condition category_groups
+            if category_groups:
+                from web.config import CATEGORY_GROUPS
+                allowed_cats = []
+                for group in category_groups:
+                    if group in CATEGORY_GROUPS:
+                        allowed_cats.extend(CATEGORY_GROUPS[group]['categories'])
+                if allowed_cats:
+                    placeholders = ','.join(['?' for _ in allowed_cats])
+                    conditions.append(f"category IN ({placeholders})")
+                    params.extend(allowed_cats)
+            elif category:
+                conditions.append("category = ?")
+                params.append(category)
+
+            query += f" AND ({' OR '.join(conditions)})"
+
+        elif has_event_types_filter:
+            # Cas 2: Seulement event_types
+            if event_types:
+                placeholders = ','.join(['?' for _ in event_types])
+                query += f" AND event_type IN ({placeholders})"
+                params.extend(event_types)
+            elif event_type:
+                query += " AND event_type = ?"
+                params.append(event_type)
+
+        elif has_category_filter:
+            # Cas 3: Seulement category_groups
+            if category_groups:
+                from web.config import CATEGORY_GROUPS
+                allowed_cats = []
+                for group in category_groups:
+                    if group in CATEGORY_GROUPS:
+                        allowed_cats.extend(CATEGORY_GROUPS[group]['categories'])
+                if allowed_cats:
+                    placeholders = ','.join(['?' for _ in allowed_cats])
+                    query += f" AND category IN ({placeholders})"
+                    params.extend(allowed_cats)
+            elif category:
+                query += " AND category = ?"
+                params.append(category)
 
         # Filtre de dates avec logique de chevauchement
         # Un événement est inclus si : start_date <= période_fin ET (end_date >= période_début OU end_date IS NULL)
