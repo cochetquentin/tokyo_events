@@ -2,46 +2,65 @@
 
 {% block content %}
 <!-- Filtres en horizontal en haut -->
-<div class="row mt-3">
+<div class="row mt-3" x-data>
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <form id="filterForm">
+                <form id="filterForm" @submit.prevent="$store.filters.applyFilters()">
                     <div class="row g-3">
                         <!-- Catégories -->
                         <div class="col-md-8">
-                            <label class="form-label fw-bold"><i class="fas fa-filter"></i> Catégories (cliquez pour multi-sélection)</label>
-                            <div class="category-badges-grid" id="allCategoriesBadges">
-                                <!-- Badges générés dynamiquement par JavaScript -->
+                            <label class="form-label"><i class="fas fa-filter"></i> Catégories (cliquez pour multi-sélection)</label>
+                            <div class="category-badges-grid">
+                                <template x-for="[key, data] in Object.entries($store.filters.allCategoriesMetadata)" :key="key">
+                                    <button
+                                        type="button"
+                                        class="category-badge"
+                                        :class="{ 'active': $store.filters.isCategorySelected(key) }"
+                                        @click="$store.filters.toggleCategory(key)">
+                                        <i :class="`fas fa-${data.icon}`" :style="`color: ${data.color}`"></i>
+                                        <span x-text="data.label"></span>
+                                    </button>
+                                </template>
                             </div>
                         </div>
 
                         <!-- Dates et actions -->
                         <div class="col-md-4">
-                            <label class="form-label fw-bold"><i class="fas fa-calendar"></i> Période</label>
-                            <div class="btn-group w-100 mb-2" role="group">
-                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('today')">
+                            <label class="form-label"><i class="fas fa-calendar"></i> Période</label>
+                            <div class="btn-group w-100 mb-2 date-filters" role="group">
+                                <button type="button" class="btn btn-outline-primary btn-sm" @click="$store.filters.setDateRange('today')">
                                     Aujourd'hui
                                 </button>
-                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('week')">
+                                <button type="button" class="btn btn-outline-primary btn-sm" @click="$store.filters.setDateRange('week')">
                                     Semaine
                                 </button>
-                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('month')">
+                                <button type="button" class="btn btn-outline-primary btn-sm" @click="$store.filters.setDateRange('month')">
                                     Mois
                                 </button>
                             </div>
                             <div class="row g-2 mb-2">
                                 <div class="col-6">
-                                    <input type="date" class="form-control form-control-sm" id="startDateFrom" placeholder="Du">
+                                    <input
+                                        type="date"
+                                        class="form-control form-control-sm"
+                                        x-model="$store.filters.dateFrom"
+                                        @change="$store.filters.debouncedApplyFilters()"
+                                        placeholder="Du">
                                 </div>
                                 <div class="col-6">
-                                    <input type="date" class="form-control form-control-sm" id="startDateTo" placeholder="Au">
+                                    <input
+                                        type="date"
+                                        class="form-control form-control-sm"
+                                        x-model="$store.filters.dateTo"
+                                        @change="$store.filters.debouncedApplyFilters()"
+                                        placeholder="Au">
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-primary btn-sm w-100 mb-1">
                                 <i class="fas fa-search"></i> Appliquer
                             </button>
-                            <button type="button" class="btn btn-secondary btn-sm w-100" id="resetBtn">
+                            <button type="button" class="btn btn-secondary btn-sm w-100" @click="$store.filters.resetFilters()">
                                 <i class="fas fa-undo"></i> Réinitialiser
                             </button>
                         </div>
@@ -53,15 +72,23 @@
 </div>
 
 <!-- Carte (70%) et Liste (30%) -->
-<div class="row mt-3">
+<div class="row mt-3" x-data>
     <!-- Carte -->
     <div class="col-md-8">
         <div class="card">
             <div class="card-body p-0">
                 <div id="mapContainer" style="height: calc(100vh - 270px);">
-                    <iframe id="mapFrame"
-                            src="/api/map/generate"
-                            style="width: 100%; height: 100%; border: none;">
+                    <!-- Loading State -->
+                    <div x-show="$store.filters.loading" class="map-skeleton">
+                        <div class="spinner"></div>
+                        <p>Chargement de la carte...</p>
+                    </div>
+
+                    <!-- Map Iframe -->
+                    <iframe
+                        id="mapFrame"
+                        src="/api/map/generate"
+                        style="width: 100%; height: 100%; border: none;">
                     </iframe>
                 </div>
             </div>
@@ -76,371 +103,100 @@
             </div>
             <div class="card-body p-2">
                 <!-- Stats -->
-                <div id="legendPanel" class="mb-3">
+                <div id="legendPanel">
                     <div id="legendContent">
-                        <p class="text-muted small">Chargement...</p>
+                        <!-- Loading State -->
+                        <template x-if="$store.stats.loading">
+                            <div class="skeleton skeleton-line"></div>
+                        </template>
+
+                        <!-- Stats Content -->
+                        <template x-if="!$store.stats.loading">
+                            <div>
+                                <h6 class="mb-2">Catégories sélectionnées</h6>
+
+                                <!-- Selected categories stats -->
+                                <template x-for="key in Array.from($store.filters.selectedCategories)" :key="key">
+                                    <template x-if="$store.stats.getCategoryCount(key) > 0">
+                                        <p class="mb-2">
+                                            <i :class="`fas fa-${$store.filters.allCategoriesMetadata[key]?.icon}`"
+                                               :style="`color: ${$store.filters.allCategoriesMetadata[key]?.color}`"></i>
+                                            <span x-text="$store.filters.allCategoriesMetadata[key]?.label"></span>:
+                                            <strong x-text="$store.stats.getCategoryCount(key)"></strong>
+                                        </p>
+                                    </template>
+                                </template>
+
+                                <hr>
+                                <p class="mb-0">
+                                    <strong>Total:</strong>
+                                    <strong x-text="$store.stats.totalEvents" class="text-gradient"></strong>
+                                </p>
+                            </div>
+                        </template>
                     </div>
                 </div>
 
-                <!-- Liste scrollable -->
-                <div id="eventsListContent" style="max-height: calc(100vh - 420px); overflow-y: auto;">
-                    <p class="text-muted small">Chargement...</p>
+                <!-- Events List -->
+                <div id="eventsListContent">
+                    <!-- Loading State -->
+                    <template x-if="$store.events.loading">
+                        <div>
+                            <div class="skeleton skeleton-line skeleton-line--title"></div>
+                            <div class="skeleton skeleton-line"></div>
+                            <div class="skeleton skeleton-line short"></div>
+                        </div>
+                    </template>
+
+                    <!-- Empty State -->
+                    <template x-if="!$store.events.loading && $store.events.events.length === 0">
+                        <div class="empty-state">
+                            <i class="fas fa-calendar-times"></i>
+                            <h3>Aucun événement trouvé</h3>
+                            <p>Essayez d'élargir vos filtres</p>
+                            <button @click="$store.filters.resetFilters()">Réinitialiser</button>
+                        </div>
+                    </template>
+
+                    <!-- Events List -->
+                    <template x-if="!$store.events.loading && $store.events.events.length > 0">
+                        <div>
+                            <!-- Group by type -->
+                            <template x-for="[type, eventsList] in Object.entries($store.events.groupedEvents)" :key="type">
+                                <template x-if="eventsList.length > 0">
+                                    <div class="mb-3">
+                                        <!-- Section Header -->
+                                        <div class="event-section-header" :style="`color: ${$store.events.getTypeColor(type)}`">
+                                            <i :class="`fas fa-${$store.events.getTypeIcon(type)}`"></i>
+                                            <span x-text="`${$store.events.getTypeLabel(type)} (${eventsList.length})`"></span>
+                                        </div>
+
+                                        <!-- Event Cards -->
+                                        <template x-for="event in eventsList" :key="event.id || event.name">
+                                            <div
+                                                class="event-item"
+                                                :style="`border-left-color: ${$store.events.getTypeColor(type)}`"
+                                                @click="$store.events.focusOnEvent(event.latitude, event.longitude, event.name)">
+                                                <i :class="`fas fa-${$store.events.getTypeIcon(type)} event-icon`" :style="`color: ${$store.events.getTypeColor(type)}`"></i>
+                                                <strong x-text="event.name"></strong>
+                                                <small x-text="event.location || ''"></small>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block extra_scripts %}
-<script>
-// État global pour la multi-sélection (clés de ALL_CATEGORIES)
-let selectedCategories = new Set();
-let allCategoriesMetadata = {};
-
-function setDateRange(range) {
-    const today = new Date();
-    const startDateInput = document.getElementById('startDateFrom');
-    const endDateInput = document.getElementById('startDateTo');
-
-    let startDate, endDate;
-
-    switch(range) {
-        case 'today':
-            startDate = endDate = today;
-            break;
-
-        case 'week':
-            startDate = today;
-            endDate = new Date(today);
-            endDate.setDate(today.getDate() + 6); // 7 jours à partir d'aujourd'hui
-            break;
-
-        case 'month':
-            startDate = today;
-            endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0); // Dernier jour du mois
-            break;
-    }
-
-    startDateInput.value = startDate.toISOString().split('T')[0];
-    endDateInput.value = endDate.toISOString().split('T')[0];
-
-    // Appliquer les filtres immédiatement
-    applyFilters();
-    loadStatistics();
-    loadEventsList();
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Définir la date d'aujourd'hui par défaut
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('startDateFrom').value = today;
-    document.getElementById('startDateTo').value = today;
-
-    // Charger les badges ALL_CATEGORIES au démarrage
-    loadAllCategoriesBadges();
-
-    loadStatistics(); // Charger les stats au démarrage
-    loadEventsList(); // Charger la liste des événements
-    applyFilters(); // Appliquer les filtres au chargement
-
-    document.getElementById('filterForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        applyFilters();
-        loadStatistics(); // Mettre à jour les stats après application des filtres
-        loadEventsList(); // Mettre à jour la liste des événements
-    });
-
-    document.getElementById('resetBtn').addEventListener('click', function() {
-        document.getElementById('filterForm').reset();
-        document.getElementById('startDateFrom').value = today;
-        document.getElementById('startDateTo').value = today;
-        selectedCategories.clear();
-        // Réinitialiser les badges
-        document.querySelectorAll('.category-badge').forEach(btn => btn.classList.remove('active'));
-        applyFilters();
-        loadStatistics();
-        loadEventsList();
-    });
-
-    // Listener sur les changements de dates pour mise à jour automatique
-    document.getElementById('startDateFrom').addEventListener('change', function() {
-        applyFilters();
-        loadStatistics();
-        loadEventsList();
-    });
-
-    document.getElementById('startDateTo').addEventListener('change', function() {
-        applyFilters();
-        loadStatistics();
-        loadEventsList();
-    });
-});
-
-function toggleCategory(badgeBtn) {
-    const category = badgeBtn.dataset.category;
-
-    if (selectedCategories.has(category)) {
-        selectedCategories.delete(category);
-        badgeBtn.classList.remove('active');
-    } else {
-        selectedCategories.add(category);
-        badgeBtn.classList.add('active');
-    }
-
-    applyFilters();
-    loadStatistics();
-    loadEventsList();
-}
-
-async function loadAllCategoriesBadges() {
-    try {
-        // Fetch ALL_CATEGORIES metadata
-        const metadata = await fetch('/api/events/all-categories').then(r => r.json());
-        allCategoriesMetadata = metadata;
-
-        // Générer HTML des badges
-        const container = document.getElementById('allCategoriesBadges');
-        container.innerHTML = Object.entries(metadata).map(([key, data]) => `
-            <button type="button"
-                    class="category-badge ${selectedCategories.has(key) ? 'active' : ''}"
-                    data-category="${key}"
-                    onclick="toggleCategory(this)">
-                <i class="fas fa-${data.icon}" style="color: ${data.color}"></i>
-                <span>${data.label}</span>
-            </button>
-        `).join('');
-    } catch (error) {
-        console.error('Error loading all categories badges:', error);
-    }
-}
-
-function applyFilters() {
-    const startDateFrom = document.getElementById('startDateFrom').value;
-    const startDateTo = document.getElementById('startDateTo').value;
-
-    const params = new URLSearchParams();
-
-    // Séparer les catégories sélectionnées par filter_type
-    const eventTypes = [];
-    const categoryGroups = [];
-
-    for (const key of selectedCategories) {
-        const meta = allCategoriesMetadata[key];
-        if (meta.filter_type === 'event_type') {
-            eventTypes.push(meta.filter_value || key);
-        } else if (meta.filter_type === 'category_group') {
-            categoryGroups.push(key);
-        }
-    }
-
-    // Ajouter les paramètres
-    if (eventTypes.length > 0) {
-        params.append('event_types', eventTypes.join(','));
-    }
-    if (categoryGroups.length > 0) {
-        params.append('category_groups', categoryGroups.join(','));
-    }
-
-    if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
-    if (startDateTo) params.append('start_date_to', startDateTo.replace(/-/g, '/'));
-
-    const newUrl = `/api/map/generate?${params.toString()}`;
-    console.log('[DEBUG] Map URL:', newUrl);
-
-    // Forcer le rechargement de l'iframe en ajoutant un timestamp
-    const iframe = document.getElementById('mapFrame');
-    iframe.src = newUrl + (newUrl.includes('?') ? '&' : '?') + '_t=' + Date.now();
-}
-
-function loadStatistics() {
-    const startDateFrom = document.getElementById('startDateFrom').value;
-    const startDateTo = document.getElementById('startDateTo').value;
-
-    const params = new URLSearchParams();
-
-    // Séparer les catégories sélectionnées par filter_type
-    const eventTypes = [];
-    const categoryGroups = [];
-
-    for (const key of selectedCategories) {
-        const meta = allCategoriesMetadata[key];
-        if (meta.filter_type === 'event_type') {
-            eventTypes.push(meta.filter_value || key);
-        } else if (meta.filter_type === 'category_group') {
-            categoryGroups.push(key);
-        }
-    }
-
-    if (eventTypes.length > 0) {
-        params.append('event_types', eventTypes.join(','));
-    }
-    if (categoryGroups.length > 0) {
-        params.append('category_groups', categoryGroups.join(','));
-    }
-
-    if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
-    if (startDateTo) params.append('start_date_to', startDateTo.replace(/-/g, '/'));
-
-    fetch(`/api/events/stats?${params.toString()}`)
-        .then(response => response.json())
-        .then(data => {
-            let html = '<h6 class="mb-2">Catégories sélectionnées</h6>';
-
-            // Afficher les catégories sélectionnées avec leurs compteurs
-            for (const key of selectedCategories) {
-                const meta = allCategoriesMetadata[key];
-                let count = 0;
-
-                if (meta.filter_type === 'event_type') {
-                    const typeKey = meta.filter_value || key;
-                    count = data.by_type[typeKey] || 0;
-                } else if (meta.filter_type === 'category_group') {
-                    count = data.by_category_group[key] || 0;
-                }
-
-                if (count > 0) {
-                    html += `<p class="mb-2"><i class="fas fa-${meta.icon}" style="color: ${meta.color}"></i> ${meta.label}: <strong>${count}</strong></p>`;
-                }
-            }
-
-            html += `<hr><p class="mb-0"><strong>Total:</strong> ${data.total_events}</p>`;
-            document.getElementById('legendContent').innerHTML = html;
-        })
-        .catch(error => {
-            console.error('Error loading statistics:', error);
-            document.getElementById('legendContent').innerHTML = '<p class="text-danger">Erreur de chargement</p>';
-        });
-}
-
-function loadEventsList() {
-    const startDateFrom = document.getElementById('startDateFrom').value;
-    const startDateTo = document.getElementById('startDateTo').value;
-
-    const params = new URLSearchParams();
-
-    // Séparer les catégories sélectionnées par filter_type
-    const eventTypes = [];
-    const categoryGroups = [];
-
-    for (const key of selectedCategories) {
-        const meta = allCategoriesMetadata[key];
-        if (meta.filter_type === 'event_type') {
-            eventTypes.push(meta.filter_value || key);
-        } else if (meta.filter_type === 'category_group') {
-            categoryGroups.push(key);
-        }
-    }
-
-    if (eventTypes.length > 0) {
-        params.append('event_types', eventTypes.join(','));
-    }
-    if (categoryGroups.length > 0) {
-        params.append('category_groups', categoryGroups.join(','));
-    }
-
-    if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
-    if (startDateTo) params.append('start_date_to', startDateTo.replace(/-/g, '/'));
-
-    fetch(`/api/events?${params.toString()}`)
-        .then(response => response.json())
-        .then(data => {
-            const events = data.events;
-
-            // Grouper par type
-            const grouped = {
-                'hanabi': [],
-                'festivals': [],
-                'expositions': [],
-                'marches': [],
-                'tokyo_cheapo': []
-            };
-
-            events.forEach(event => {
-                if (grouped[event.event_type]) {
-                    grouped[event.event_type].push(event);
-                }
-            });
-
-            // Générer le HTML
-            let html = '';
-            const icons = {
-                'hanabi': '<i class="fas fa-fire text-warning"></i>',
-                'festivals': '<i class="fas fa-music text-danger"></i>',
-                'expositions': '<i class="fas fa-palette text-primary"></i>',
-                'marches': '<i class="fas fa-store text-success"></i>',
-                'tokyo_cheapo': '<i class="fas fa-globe text-info"></i>'
-            };
-            const labels = {
-                'hanabi': 'Hanabi',
-                'festivals': 'Festivals',
-                'expositions': 'Expositions',
-                'marches': 'Marchés',
-                'tokyo_cheapo': 'Tokyo Cheapo'
-            };
-
-            for (const [type, eventsList] of Object.entries(grouped)) {
-                if (eventsList.length > 0) {
-                    html += `<div class="mb-3">`;
-                    html += `<h6 class="mb-2">${icons[type]} ${labels[type]} (${eventsList.length})</h6>`;
-                    eventsList.forEach(event => {
-                        html += `<div class="event-item mb-2 p-2" style="cursor: pointer; border-left: 3px solid; font-size: 0.9em;"
-                                      onclick="focusOnEvent(${event.latitude}, ${event.longitude}, '${event.name.replace(/'/g, "\\'")}')">
-                                    <strong>${event.name}</strong><br>
-                                    <small class="text-muted">${event.location || ''}</small>
-                                 </div>`;
-                    });
-                    html += `</div>`;
-                }
-            }
-
-            if (html === '') {
-                html = '<p class="text-muted">Aucun événement trouvé</p>';
-            }
-
-            document.getElementById('eventsListContent').innerHTML = html;
-        })
-        .catch(error => {
-            console.error('Error loading events:', error);
-            document.getElementById('eventsListContent').innerHTML = '<p class="text-danger">Erreur de chargement</p>';
-        });
-}
-
-function focusOnEvent(lat, lon, name) {
-    // Pour zoomer sur un événement, on doit communiquer avec l'iframe
-    // On va recharger la carte en ajoutant des paramètres pour le centre et le zoom
-    const startDateFrom = document.getElementById('startDateFrom').value;
-    const startDateTo = document.getElementById('startDateTo').value;
-
-    const params = new URLSearchParams();
-
-    // Séparer les catégories sélectionnées par filter_type
-    const eventTypes = [];
-    const categoryGroups = [];
-
-    for (const key of selectedCategories) {
-        const meta = allCategoriesMetadata[key];
-        if (meta.filter_type === 'event_type') {
-            eventTypes.push(meta.filter_value || key);
-        } else if (meta.filter_type === 'category_group') {
-            categoryGroups.push(key);
-        }
-    }
-
-    if (eventTypes.length > 0) {
-        params.append('event_types', eventTypes.join(','));
-    }
-    if (categoryGroups.length > 0) {
-        params.append('category_groups', categoryGroups.join(','));
-    }
-
-    if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
-    if (startDateTo) params.append('start_date_to', startDateTo.replace(/-/g, '/'));
-    params.append('center_lat', lat);
-    params.append('center_lon', lon);
-    params.append('zoom', 15);
-
-    document.getElementById('mapFrame').src = `/api/map/generate?${params.toString()}`;
-}
-</script>
+<!-- Error Toast -->
+<div x-data x-show="$store.filters.error" x-transition class="toast-notification">
+    <i class="fas fa-exclamation-circle"></i>
+    <span x-text="$store.filters.error"></span>
+    <button @click="$store.filters.error = null">×</button>
+</div>
 {% endblock %}
