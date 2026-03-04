@@ -18,13 +18,28 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Date debut</label>
-                        <input type="date" class="form-control" id="startDateFrom">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Date fin</label>
-                        <input type="date" class="form-control" id="startDateTo">
+                        <label class="form-label">Période</label>
+                        <div class="btn-group w-100 mb-2" role="group">
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('today')">
+                                Aujourd'hui
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('week')">
+                                Cette semaine
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="setDateRange('month')">
+                                Ce mois
+                            </button>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label class="form-label small text-muted">Du</label>
+                                <input type="date" class="form-control form-control-sm" id="startDateFrom">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small text-muted">Au</label>
+                                <input type="date" class="form-control form-control-sm" id="startDateTo">
+                            </div>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100 mb-2">
@@ -74,6 +89,39 @@
 let selectedCategories = new Set();
 let allCategoriesMetadata = {};
 
+function setDateRange(range) {
+    const today = new Date();
+    const startDateInput = document.getElementById('startDateFrom');
+    const endDateInput = document.getElementById('startDateTo');
+
+    let startDate, endDate;
+
+    switch(range) {
+        case 'today':
+            startDate = endDate = today;
+            break;
+
+        case 'week':
+            startDate = today;
+            endDate = new Date(today);
+            endDate.setDate(today.getDate() + 6); // 7 jours à partir d'aujourd'hui
+            break;
+
+        case 'month':
+            startDate = today;
+            endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0); // Dernier jour du mois
+            break;
+    }
+
+    startDateInput.value = startDate.toISOString().split('T')[0];
+    endDateInput.value = endDate.toISOString().split('T')[0];
+
+    // Appliquer les filtres immédiatement
+    applyFilters();
+    loadStatistics();
+    loadEventsList();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Définir la date d'aujourd'hui par défaut
     const today = new Date().toISOString().split('T')[0];
@@ -101,6 +149,19 @@ document.addEventListener('DOMContentLoaded', function() {
         selectedCategories.clear();
         // Réinitialiser les badges
         document.querySelectorAll('.category-badge').forEach(btn => btn.classList.remove('active'));
+        applyFilters();
+        loadStatistics();
+        loadEventsList();
+    });
+
+    // Listener sur les changements de dates pour mise à jour automatique
+    document.getElementById('startDateFrom').addEventListener('change', function() {
+        applyFilters();
+        loadStatistics();
+        loadEventsList();
+    });
+
+    document.getElementById('startDateTo').addEventListener('change', function() {
         applyFilters();
         loadStatistics();
         loadEventsList();
@@ -175,7 +236,12 @@ function applyFilters() {
     if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
     if (startDateTo) params.append('start_date_to', startDateTo.replace(/-/g, '/'));
 
-    document.getElementById('mapFrame').src = `/api/map/generate?${params.toString()}`;
+    const newUrl = `/api/map/generate?${params.toString()}`;
+    console.log('[DEBUG] Map URL:', newUrl);
+
+    // Forcer le rechargement de l'iframe en ajoutant un timestamp
+    const iframe = document.getElementById('mapFrame');
+    iframe.src = newUrl + (newUrl.includes('?') ? '&' : '?') + '_t=' + Date.now();
 }
 
 function loadStatistics() {
