@@ -85,6 +85,9 @@ class EventDatabase:
                     fireworks_count TEXT,
                     detail_url TEXT,
 
+                    -- Catégorie Tokyo Cheapo
+                    category TEXT,
+
                     -- Métadonnées
                     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
                     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -103,6 +106,7 @@ class EventDatabase:
             conn.execute("CREATE INDEX IF NOT EXISTS idx_start_date ON events(start_date)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_end_date ON events(end_date)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_location ON events(location)")
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_category ON events(category)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_coordinates ON events(latitude, longitude)")
 
             conn.commit()
@@ -185,6 +189,7 @@ class EventDatabase:
 
     def get_events(self,
                    event_type: Optional[str] = None,
+                   event_types: Optional[List[str]] = None,
                    category: Optional[str] = None,
                    category_groups: Optional[List[str]] = None,
                    start_date_from: Optional[str] = None,
@@ -194,7 +199,8 @@ class EventDatabase:
         Récupère des événements avec filtres optionnels.
 
         Args:
-            event_type: Filtrer par type (None = tous les types)
+            event_type: Filtrer par type unique (deprecated - utiliser event_types)
+            event_types: Filtrer par plusieurs types (ex: ['hanabi', 'festivals'])
             category: Filtrer par catégorie (deprecated - pour backward compatibility)
             category_groups: Filtrer par familles de catégories (ex: ['culture_arts', 'nature_outdoor'])
             start_date_from: Début de la période recherchée (YYYY/MM/DD)
@@ -213,7 +219,12 @@ class EventDatabase:
         query = "SELECT * FROM events WHERE 1=1"
         params = []
 
-        if event_type:
+        # Filtrage par event_types (prioritaire sur event_type)
+        if event_types:
+            placeholders = ','.join(['?' for _ in event_types])
+            query += f" AND event_type IN ({placeholders})"
+            params.extend(event_types)
+        elif event_type:
             query += " AND event_type = ?"
             params.append(event_type)
 

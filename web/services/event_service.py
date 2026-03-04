@@ -21,6 +21,7 @@ class EventService:
 
         events = self.db.get_events(
             event_type=filters.event_type,
+            event_types=filters.event_types,
             category=filters.category,
             category_groups=filters.category_groups,
             start_date_from=filters.start_date_from,
@@ -48,6 +49,7 @@ class EventService:
         # Récupérer les événements avec les filtres appliqués
         all_events = self.db.get_events(
             event_type=filters.event_type,
+            event_types=filters.event_types,
             category=filters.category,
             category_groups=filters.category_groups,
             start_date_from=filters.start_date_from,

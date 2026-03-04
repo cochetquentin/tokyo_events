@@ -11,20 +11,8 @@
             <div class="card-body">
                 <form id="filterForm">
                     <div class="mb-3">
-                        <label class="form-label">Type d'evenement</label>
-                        <select class="form-select" id="eventType">
-                            <option value="">Tous</option>
-                            <option value="festivals">Festivals</option>
-                            <option value="expositions">Expositions</option>
-                            <option value="hanabi">Hanabi (Feux d'artifice)</option>
-                            <option value="marches">Marches aux puces</option>
-                            <option value="tokyo_cheapo">Tokyo Cheapo (Autres)</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3" id="categoryGroupsContainer" style="display: none;">
-                        <label class="form-label">Catégories (sélectionnez-en plusieurs)</label>
-                        <div class="category-badges-grid" id="categoryBadgesGrid">
+                        <label class="form-label">Catégories (cliquez pour multi-sélection)</label>
+                        <div class="category-badges-grid" id="allCategoriesBadges">
                             <!-- Badges générés dynamiquement par JavaScript -->
                         </div>
                     </div>
@@ -82,18 +70,18 @@
 
 {% block extra_scripts %}
 <script>
+// État global pour la multi-sélection (clés de ALL_CATEGORIES)
+let selectedCategories = new Set();
+let allCategoriesMetadata = {};
+
 document.addEventListener('DOMContentLoaded', function() {
     // Définir la date d'aujourd'hui par défaut
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('startDateFrom').value = today;
     document.getElementById('startDateTo').value = today;
 
-    // Charger les badges si tokyo_cheapo est sélectionné au démarrage
-    const eventType = document.getElementById('eventType').value;
-    if (eventType === 'tokyo_cheapo') {
-        document.getElementById('categoryGroupsContainer').style.display = 'block';
-        loadCategoryBadges();
-    }
+    // Charger les badges ALL_CATEGORIES au démarrage
+    loadAllCategoriesBadges();
 
     loadStatistics(); // Charger les stats au démarrage
     loadEventsList(); // Charger la liste des événements
@@ -110,37 +98,23 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('filterForm').reset();
         document.getElementById('startDateFrom').value = today;
         document.getElementById('startDateTo').value = today;
-        document.getElementById('categoryGroupsContainer').style.display = 'none';
-        selectedCategoryGroups.clear();
+        selectedCategories.clear();
+        // Réinitialiser les badges
+        document.querySelectorAll('.category-badge').forEach(btn => btn.classList.remove('active'));
         applyFilters();
         loadStatistics();
         loadEventsList();
     });
-
-    // Event listener pour afficher/masquer les category groups
-    document.getElementById('eventType').addEventListener('change', function() {
-        const categoryContainer = document.getElementById('categoryGroupsContainer');
-        if (this.value === 'tokyo_cheapo') {
-            categoryContainer.style.display = 'block';
-            loadCategoryBadges();
-        } else {
-            categoryContainer.style.display = 'none';
-            selectedCategoryGroups.clear();
-        }
-    });
 });
 
-// État global pour la multi-sélection
-let selectedCategoryGroups = new Set();
+function toggleCategory(badgeBtn) {
+    const category = badgeBtn.dataset.category;
 
-function toggleCategoryGroup(badgeBtn) {
-    const group = badgeBtn.dataset.group;
-
-    if (selectedCategoryGroups.has(group)) {
-        selectedCategoryGroups.delete(group);
+    if (selectedCategories.has(category)) {
+        selectedCategories.delete(category);
         badgeBtn.classList.remove('active');
     } else {
-        selectedCategoryGroups.add(group);
+        selectedCategories.add(category);
         badgeBtn.classList.add('active');
     }
 
@@ -149,42 +123,53 @@ function toggleCategoryGroup(badgeBtn) {
     loadEventsList();
 }
 
-async function loadCategoryBadges() {
+async function loadAllCategoriesBadges() {
     try {
-        // Fetch metadata + stats en parallèle
-        const [metadata, stats] = await Promise.all([
-            fetch('/api/events/category-groups').then(r => r.json()),
-            fetch('/api/events/stats?event_type=tokyo_cheapo').then(r => r.json())
-        ]);
+        // Fetch ALL_CATEGORIES metadata
+        const metadata = await fetch('/api/events/all-categories').then(r => r.json());
+        allCategoriesMetadata = metadata;
 
         // Générer HTML des badges
-        const container = document.getElementById('categoryBadgesGrid');
+        const container = document.getElementById('allCategoriesBadges');
         container.innerHTML = Object.entries(metadata).map(([key, data]) => `
             <button type="button"
-                    class="category-badge ${selectedCategoryGroups.has(key) ? 'active' : ''}"
-                    data-group="${key}"
-                    onclick="toggleCategoryGroup(this)">
+                    class="category-badge ${selectedCategories.has(key) ? 'active' : ''}"
+                    data-category="${key}"
+                    onclick="toggleCategory(this)">
                 <i class="fas fa-${data.icon}" style="color: ${data.color}"></i>
                 <span>${data.label}</span>
-                <small class="badge-count">(${stats.by_category_group[key] || 0})</small>
             </button>
         `).join('');
     } catch (error) {
-        console.error('Error loading category badges:', error);
+        console.error('Error loading all categories badges:', error);
     }
 }
 
 function applyFilters() {
-    const eventType = document.getElementById('eventType').value;
     const startDateFrom = document.getElementById('startDateFrom').value;
     const startDateTo = document.getElementById('startDateTo').value;
 
     const params = new URLSearchParams();
-    if (eventType) params.append('event_type', eventType);
 
-    // Multi-selection de category groups
-    if (selectedCategoryGroups.size > 0) {
-        params.append('category_groups', Array.from(selectedCategoryGroups).join(','));
+    // Séparer les catégories sélectionnées par filter_type
+    const eventTypes = [];
+    const categoryGroups = [];
+
+    for (const key of selectedCategories) {
+        const meta = allCategoriesMetadata[key];
+        if (meta.filter_type === 'event_type') {
+            eventTypes.push(meta.filter_value || key);
+        } else if (meta.filter_type === 'category_group') {
+            categoryGroups.push(key);
+        }
+    }
+
+    // Ajouter les paramètres
+    if (eventTypes.length > 0) {
+        params.append('event_types', eventTypes.join(','));
+    }
+    if (categoryGroups.length > 0) {
+        params.append('category_groups', categoryGroups.join(','));
     }
 
     if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
@@ -194,16 +179,29 @@ function applyFilters() {
 }
 
 function loadStatistics() {
-    const eventType = document.getElementById('eventType').value;
     const startDateFrom = document.getElementById('startDateFrom').value;
     const startDateTo = document.getElementById('startDateTo').value;
 
     const params = new URLSearchParams();
-    if (eventType) params.append('event_type', eventType);
 
-    // Multi-selection de category groups
-    if (selectedCategoryGroups.size > 0) {
-        params.append('category_groups', Array.from(selectedCategoryGroups).join(','));
+    // Séparer les catégories sélectionnées par filter_type
+    const eventTypes = [];
+    const categoryGroups = [];
+
+    for (const key of selectedCategories) {
+        const meta = allCategoriesMetadata[key];
+        if (meta.filter_type === 'event_type') {
+            eventTypes.push(meta.filter_value || key);
+        } else if (meta.filter_type === 'category_group') {
+            categoryGroups.push(key);
+        }
+    }
+
+    if (eventTypes.length > 0) {
+        params.append('event_types', eventTypes.join(','));
+    }
+    if (categoryGroups.length > 0) {
+        params.append('category_groups', categoryGroups.join(','));
     }
 
     if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
@@ -212,37 +210,26 @@ function loadStatistics() {
     fetch(`/api/events/stats?${params.toString()}`)
         .then(response => response.json())
         .then(data => {
-            let html = '';
+            let html = '<h6 class="mb-2">Catégories sélectionnées</h6>';
 
-            // Si tokyo_cheapo avec des category_groups sélectionnés, afficher la légende par catégorie
-            if (eventType === 'tokyo_cheapo' && selectedCategoryGroups.size > 0 && data.by_category_group) {
-                // Fetch metadata pour les icônes/couleurs
-                fetch('/api/events/category-groups')
-                    .then(r => r.json())
-                    .then(metadata => {
-                        html = '<h6 class="mb-2">Catégories sélectionnées</h6>';
-                        for (const [key, count] of Object.entries(data.by_category_group)) {
-                            if (selectedCategoryGroups.has(key) && count > 0) {
-                                const group = metadata[key];
-                                html += `<p class="mb-2"><i class="fas fa-${group.icon}" style="color: ${group.color}"></i> ${group.label}: <strong>${count}</strong></p>`;
-                            }
-                        }
-                        html += `<hr><p class="mb-0"><strong>Total:</strong> ${data.total_events}</p>`;
-                        document.getElementById('legendContent').innerHTML = html;
-                    });
-                return; // Exit early pour éviter le double update
+            // Afficher les catégories sélectionnées avec leurs compteurs
+            for (const key of selectedCategories) {
+                const meta = allCategoriesMetadata[key];
+                let count = 0;
+
+                if (meta.filter_type === 'event_type') {
+                    const typeKey = meta.filter_value || key;
+                    count = data.by_type[typeKey] || 0;
+                } else if (meta.filter_type === 'category_group') {
+                    count = data.by_category_group[key] || 0;
+                }
+
+                if (count > 0) {
+                    html += `<p class="mb-2"><i class="fas fa-${meta.icon}" style="color: ${meta.color}"></i> ${meta.label}: <strong>${count}</strong></p>`;
+                }
             }
 
-            // Sinon, afficher la légende standard par type
-            html = `
-                <p class="mb-2"><i class="fas fa-fire text-warning"></i> Hanabi: <strong>${data.by_type.hanabi || 0}</strong></p>
-                <p class="mb-2"><i class="fas fa-music text-danger"></i> Festivals: <strong>${data.by_type.festivals || 0}</strong></p>
-                <p class="mb-2"><i class="fas fa-palette text-primary"></i> Expositions: <strong>${data.by_type.expositions || 0}</strong></p>
-                <p class="mb-2"><i class="fas fa-store text-success"></i> Marchés: <strong>${data.by_type.marches || 0}</strong></p>
-                <p class="mb-2"><i class="fas fa-globe text-info"></i> Tokyo Cheapo: <strong>${data.by_type.tokyo_cheapo || 0}</strong></p>
-                <hr>
-                <p class="mb-0"><strong>Total:</strong> ${data.total_events}</p>
-            `;
+            html += `<hr><p class="mb-0"><strong>Total:</strong> ${data.total_events}</p>`;
             document.getElementById('legendContent').innerHTML = html;
         })
         .catch(error => {
@@ -252,16 +239,29 @@ function loadStatistics() {
 }
 
 function loadEventsList() {
-    const eventType = document.getElementById('eventType').value;
     const startDateFrom = document.getElementById('startDateFrom').value;
     const startDateTo = document.getElementById('startDateTo').value;
 
     const params = new URLSearchParams();
-    if (eventType) params.append('event_type', eventType);
 
-    // Multi-selection de category groups
-    if (selectedCategoryGroups.size > 0) {
-        params.append('category_groups', Array.from(selectedCategoryGroups).join(','));
+    // Séparer les catégories sélectionnées par filter_type
+    const eventTypes = [];
+    const categoryGroups = [];
+
+    for (const key of selectedCategories) {
+        const meta = allCategoriesMetadata[key];
+        if (meta.filter_type === 'event_type') {
+            eventTypes.push(meta.filter_value || key);
+        } else if (meta.filter_type === 'category_group') {
+            categoryGroups.push(key);
+        }
+    }
+
+    if (eventTypes.length > 0) {
+        params.append('event_types', eventTypes.join(','));
+    }
+    if (categoryGroups.length > 0) {
+        params.append('category_groups', categoryGroups.join(','));
     }
 
     if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
@@ -334,12 +334,31 @@ function loadEventsList() {
 function focusOnEvent(lat, lon, name) {
     // Pour zoomer sur un événement, on doit communiquer avec l'iframe
     // On va recharger la carte en ajoutant des paramètres pour le centre et le zoom
-    const eventType = document.getElementById('eventType').value;
     const startDateFrom = document.getElementById('startDateFrom').value;
     const startDateTo = document.getElementById('startDateTo').value;
 
     const params = new URLSearchParams();
-    if (eventType) params.append('event_type', eventType);
+
+    // Séparer les catégories sélectionnées par filter_type
+    const eventTypes = [];
+    const categoryGroups = [];
+
+    for (const key of selectedCategories) {
+        const meta = allCategoriesMetadata[key];
+        if (meta.filter_type === 'event_type') {
+            eventTypes.push(meta.filter_value || key);
+        } else if (meta.filter_type === 'category_group') {
+            categoryGroups.push(key);
+        }
+    }
+
+    if (eventTypes.length > 0) {
+        params.append('event_types', eventTypes.join(','));
+    }
+    if (categoryGroups.length > 0) {
+        params.append('category_groups', categoryGroups.join(','));
+    }
+
     if (startDateFrom) params.append('start_date_from', startDateFrom.replace(/-/g, '/'));
     if (startDateTo) params.append('start_date_to', startDateTo.replace(/-/g, '/'));
     params.append('center_lat', lat);
