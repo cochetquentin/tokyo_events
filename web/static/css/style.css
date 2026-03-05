@@ -269,7 +269,7 @@ body {
   background-color: var(--bg-elevated);
   border-radius: var(--border-radius-lg);
   overflow: hidden;
-  height: 70vh;
+  height: calc(100vh - 200px);
 }
 
 #mapFrame {

@@ -26,7 +26,9 @@ class MapService:
         m = folium.Map(
             location=[lat, lon],
             zoom_start=zoom_level,
-            tiles='CartoDB Voyager'
+            tiles='CartoDB Voyager',
+            width='100%',
+            height='100%'
         )
 
         # Cluster de marqueurs
@@ -67,7 +69,33 @@ class MapService:
 
         marker_cluster.add_to(m)
 
-        return m._repr_html_()
+        # Générer HTML et forcer la carte à prendre 100% de hauteur
+        html = m._repr_html_()
+
+        # Injecter du CSS pour forcer la carte à remplir l'iframe sans scroll
+        custom_css = """
+        <style>
+            html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+            .folium-map {
+                width: 100% !important;
+                height: 100% !important;
+            }
+        </style>
+        """
+
+        # Injecter le CSS au début du HTML
+        if '<head>' in html:
+            html = html.replace('<head>', '<head>' + custom_css)
+        else:
+            html = custom_css + html
+
+        return html
 
     def _get_category_marker_style(self, event: dict) -> tuple:
         """Retourne (color, icon) basé sur la category_group de l'événement."""
