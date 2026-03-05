@@ -269,7 +269,7 @@ body {
   background-color: var(--bg-elevated);
   border-radius: var(--border-radius-lg);
   overflow: hidden;
-  height: calc(100vh - 200px);
+  height: 85vh;
 }
 
 #mapFrame {
@@ -360,8 +360,7 @@ body {
 
 /* Events List Container */
 #eventsListContent {
-  height: 60vh;
-  max-height: 60vh;
+  height: 68vh;
   overflow-y: auto;
   padding-right: 4px;
 }
