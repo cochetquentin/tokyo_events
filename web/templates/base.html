@@ -17,11 +17,96 @@
             <a class="navbar-brand" href="/">
                 <i class="fas fa-torii-gate"></i> Tokyo Events Map
             </a>
+
+            <!-- Bouton de mise à jour -->
+            <button
+                x-data
+                id="updateEventsBtn"
+                class="btn btn-sm"
+                :class="{
+                    'btn-outline-light': $store.updateStatus.status === 'idle',
+                    'btn-outline-warning': $store.updateStatus.status === 'running',
+                    'btn-outline-secondary': $store.updateStatus.status === 'cooldown',
+                    'btn-outline-success': $store.updateStatus.status === 'success',
+                    'btn-outline-danger': $store.updateStatus.status === 'error'
+                }"
+                :disabled="$store.updateStatus.status !== 'idle'"
+                @click="$store.updateStatus.triggerUpdate()"
+                :title="$store.updateStatus.status === 'cooldown' ?
+                    'Disponible dans ' + $store.updateStatus.formatCooldown() :
+                    'Mettre à jour les événements'">
+
+                <!-- Icône dynamique -->
+                <template x-if="$store.updateStatus.status === 'idle'">
+                    <i class="fas fa-sync-alt"></i>
+                </template>
+                <template x-if="$store.updateStatus.status === 'running'">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </template>
+                <template x-if="$store.updateStatus.status === 'cooldown'">
+                    <i class="fas fa-clock"></i>
+                </template>
+                <template x-if="$store.updateStatus.status === 'success'">
+                    <i class="fas fa-check"></i>
+                </template>
+                <template x-if="$store.updateStatus.status === 'error'">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </template>
+
+                <!-- Texte dynamique -->
+                <span x-show="$store.updateStatus.status === 'idle'">Mettre à jour</span>
+                <span x-show="$store.updateStatus.status === 'running'">Mise à jour...</span>
+                <span x-show="$store.updateStatus.status === 'cooldown'"
+                      x-text="$store.updateStatus.formatCooldown()">
+                </span>
+                <span x-show="$store.updateStatus.status === 'success'">Réussi !</span>
+                <span x-show="$store.updateStatus.status === 'error'">Erreur</span>
+            </button>
         </div>
     </nav>
 
     <div class="container-fluid">
         {% block content %}{% endblock %}
+    </div>
+
+    <!-- Modal de résultats de mise à jour -->
+    <div class="modal fade" id="updateResultsModal" tabindex="-1" aria-labelledby="updateResultsModalLabel" aria-hidden="true" x-data>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateResultsModalLabel">
+                        <i class="fas fa-check-circle text-success"></i>
+                        Mise à jour terminée
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <template x-if="$store.updateStatus.results">
+                        <div>
+                            <h6>Résumé par source :</h6>
+                            <ul class="list-unstyled">
+                                <template x-for="(result, source) in $store.updateStatus.results" :key="source">
+                                    <li class="mb-2">
+                                        <strong x-text="source"></strong>:
+                                        <span x-text="result.saved + ' sauvegardés / ' + result.new + ' nouveaux / ' + result.scraped + ' scrapés'"></span>
+                                    </li>
+                                </template>
+                            </ul>
+
+                            <hr>
+
+                            <div class="d-flex justify-content-between">
+                                <span>Total événements ajoutés :</span>
+                                <strong x-text="Object.values($store.updateStatus.results).reduce((sum, r) => sum + r.saved, 0)"></strong>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

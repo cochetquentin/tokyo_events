@@ -97,6 +97,29 @@ body {
 }
 
 /* ==========================================
+   3. UPDATE BUTTON
+   ========================================== */
+#updateEventsBtn {
+  min-width: 140px;
+  transition: all var(--transition-base);
+  font-weight: 500;
+}
+
+#updateEventsBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+#updateEventsBtn .fa-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================
    4. CARDS BASE
    ========================================== */
 .card {
@@ -630,4 +653,61 @@ body {
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+/* ==========================================
+   12. UPDATE RESULTS MODAL
+   ========================================== */
+.modal-content {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--bg-surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--bg-surface);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+.modal-body {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.modal-footer {
+  border-top: 1px solid var(--bg-surface);
+  background-color: var(--bg-surface);
+}
+
+.modal-title {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.modal-body h6 {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--spacing-md);
+}
+
+.modal-body ul {
+  margin-bottom: var(--spacing-md);
+}
+
+.modal-body li {
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.modal-body li:last-child {
+  border-bottom: none;
+}
+
+.modal-body hr {
+  border-color: var(--bg-surface);
+  opacity: 1;
+  margin: var(--spacing-lg) 0;
 }

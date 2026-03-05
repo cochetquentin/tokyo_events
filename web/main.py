@@ -29,6 +29,13 @@ app.include_router(events.router, prefix="/api/events", tags=["events"])
 app.include_router(map_router.router, prefix="/api/map", tags=["map"])
 
 
+@app.on_event("startup")
+async def startup_event():
+    """Initialisation au démarrage de l'application."""
+    from web.api.events import load_last_update_timestamp
+    load_last_update_timestamp()
+
+
 @app.get("/")
 async def root(request: Request):
     """Page d'accueil avec carte."""

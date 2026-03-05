@@ -176,6 +176,15 @@ document.addEventListener('alpine:init', () => {
       setTimeout(() => {
         this.error = null;
       }, 5000);
+    },
+
+    // Show success message
+    showSuccess(message) {
+      // Réutilisation du système error pour afficher le succès
+      this.error = message;
+      setTimeout(() => {
+        this.error = null;
+      }, 5000);
     }
   });
 
@@ -317,6 +326,132 @@ document.addEventListener('alpine:init', () => {
       }
     }
   });
+
+  // Update Status Store
+  Alpine.store('updateStatus', {
+    // État
+    status: 'idle', // 'idle' | 'running' | 'cooldown' | 'success' | 'error'
+    taskId: null,
+    results: null,
+    error: null,
+    cooldownRemaining: 0,
+    cooldownTimer: null,
+    pollingInterval: null,
+
+    // Initialisation
+    async init() {
+      await this.checkCooldownStatus();
+    },
+
+    // Vérifier le statut du cooldown au chargement
+    async checkCooldownStatus() {
+      try {
+        const response = await fetch('/api/events/update/cooldown');
+        const data = await response.json();
+
+        if (data.cooldown_active) {
+          this.status = 'cooldown';
+          this.cooldownRemaining = data.remaining_seconds;
+          this.startCooldownTimer();
+        }
+      } catch (error) {
+        console.error('Erreur lors de la vérification du cooldown:', error);
+      }
+    },
+
+    // Déclencher la mise à jour
+    async triggerUpdate() {
+      if (this.status === 'running' || this.status === 'cooldown') {
+        return;
+      }
+
+      this.status = 'running';
+      this.error = null;
+
+      try {
+        const response = await fetch('/api/events/update', {
+          method: 'POST'
+        });
+        const data = await response.json();
+
+        if (data.error) {
+          this.status = 'cooldown';
+          this.cooldownRemaining = data.retry_after;
+          this.startCooldownTimer();
+          return;
+        }
+
+        this.taskId = data.task_id;
+        this.pollStatus();
+      } catch (error) {
+        this.status = 'error';
+        this.error = 'Erreur de connexion au serveur';
+      }
+    },
+
+    // Polling du statut de la tâche
+    pollStatus() {
+      this.pollingInterval = setInterval(async () => {
+        try {
+          const response = await fetch(`/api/events/update/status/${this.taskId}`);
+          const data = await response.json();
+
+          if (data.status === 'completed') {
+            clearInterval(this.pollingInterval);
+            this.status = 'success';
+            this.results = data.results;
+            await this.onUpdateComplete();
+          } else if (data.status === 'error') {
+            clearInterval(this.pollingInterval);
+            this.status = 'error';
+            this.error = data.error;
+          }
+        } catch (error) {
+          clearInterval(this.pollingInterval);
+          this.status = 'error';
+          this.error = 'Erreur lors de la vérification du statut';
+        }
+      }, 2000); // Poll toutes les 2 secondes
+    },
+
+    // Gestion du timer de cooldown
+    startCooldownTimer() {
+      if (this.cooldownTimer) {
+        clearInterval(this.cooldownTimer);
+      }
+
+      this.cooldownTimer = setInterval(() => {
+        this.cooldownRemaining--;
+        if (this.cooldownRemaining <= 0) {
+          clearInterval(this.cooldownTimer);
+          this.status = 'idle';
+          this.cooldownTimer = null;
+        }
+      }, 1000);
+    },
+
+    // Callback après succès
+    async onUpdateComplete() {
+      // Afficher la modal de résultats
+      const modal = new bootstrap.Modal(document.getElementById('updateResultsModal'));
+      modal.show();
+
+      // Rafraîchir les données (carte + liste + stats)
+      await Alpine.store('filters').applyFilters();
+
+      // Démarrer le cooldown
+      this.cooldownRemaining = 300; // 5 minutes
+      this.status = 'cooldown';
+      this.startCooldownTimer();
+    },
+
+    // Formater le temps de cooldown
+    formatCooldown() {
+      const minutes = Math.floor(this.cooldownRemaining / 60);
+      const seconds = this.cooldownRemaining % 60;
+      return `${minutes}m ${seconds}s`;
+    }
+  });
 });
 
 // Utility: Debounce function
@@ -333,5 +468,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Wait for Alpine to be ready
   if (window.Alpine) {
     Alpine.store('filters').init();
+    Alpine.store('updateStatus').init();
   }
 });
