@@ -46,6 +46,20 @@ class EventDeduplicator:
         'tokyo_cheapo': 5
     }
 
+    # Mapping de traduction japonais → anglais pour termes courants
+    TRANSLATION_MAP = {
+        'matsuri': 'festival',
+        'hanabi': 'fireworks',
+        'sakura': 'cherry blossom',
+        'ume': 'plum blossom',
+        'momiji': 'autumn leaves',
+        'illumination': 'illumination',
+        'yozakura': 'night cherry blossom',
+        'taikai': 'tournament',
+        'marche': 'market',
+        'marche aux puces': 'flea market',
+    }
+
     # Champs JAMAIS écrasés lors de la fusion
     PROTECTED_FIELDS = [
         'name', 'event_type', 'start_date', 'end_date',
@@ -140,12 +154,13 @@ class EventDeduplicator:
         2. Supprimer accents
         3. Supprimer ponctuation
         4. Normaliser espaces
+        5. Traduire termes japonais courants → anglais
 
         Args:
             name: Nom à normaliser
 
         Returns:
-            Nom normalisé
+            Nom normalisé et traduit
         """
         if not name:
             return ""
@@ -162,6 +177,14 @@ class EventDeduplicator:
 
         # Normaliser espaces (multiples → single, strip)
         text = re.sub(r'\s+', ' ', text).strip()
+
+        # Traduire termes japonais courants
+        words = text.split()
+        translated_words = []
+        for word in words:
+            # Chercher traduction exacte ou conserver le mot original
+            translated_words.append(self.TRANSLATION_MAP.get(word, word))
+        text = ' '.join(translated_words)
 
         return text
 
@@ -325,7 +348,19 @@ class EventDeduplicator:
         # Détection de préfixes (ex: "Roppongi Crossing" vs "Roppongi Crossing 2025: ...")
         name1 = event1.get('_norm_name', '')
         name2 = event2.get('_norm_name', '')
-        is_prefix = (name1.startswith(name2) or name2.startswith(name1)) and min(len(name1), len(name2)) >= 10
+
+        # Préfixe exact (un nom complet est préfixe de l'autre)
+        is_exact_prefix = (name1.startswith(name2) or name2.startswith(name1)) and min(len(name1), len(name2)) >= 10
+
+        # Préfixe commun (les deux noms partagent un préfixe significatif)
+        # Ex: "Yoshino Baigo Ume Matsuri" vs "Yoshino Baigo Plum Blossom Festival"
+        common_prefix_len = 0
+        for c1, c2 in zip(name1, name2):
+            if c1 == c2:
+                common_prefix_len += 1
+            else:
+                break
+        has_common_prefix = common_prefix_len >= 15  # Au moins 15 caractères communs (environ 3 mots)
 
         # Critères stricts
         if dates_match_strict and name_sim >= (threshold * 100) and loc_sim >= (threshold * 100):
@@ -333,8 +368,13 @@ class EventDeduplicator:
 
         # Critères préfixe exact (threshold location très bas car le nom préfixe est déjà une forte indication)
         # Ex: "Roppongi Crossing" (Roppongi) vs "Roppongi Crossing 2025: ..." (Mori Art Museum)
-        if dates_match_strict and is_prefix:
+        if dates_match_strict and is_exact_prefix:
             return True, f"Prefix match (shorter is prefix of longer, loc:{loc_sim:.0f}%)"
+
+        # Critères préfixe commun (noms bilingues ou variantes avec même début significatif)
+        # Ex: "Yoshino Baigo Ume Matsuri" vs "Yoshino Baigo Plum Blossom Festival"
+        if dates_match_strict and has_common_prefix:
+            return True, f"Common prefix match ({common_prefix_len} chars common, loc:{loc_sim:.0f}%)"
 
         # Critères assouplis (threshold augmenté pour compenser)
         if dates_overlap and name_sim >= 85 and loc_sim >= 75:
