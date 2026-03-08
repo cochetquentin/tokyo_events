@@ -9,6 +9,7 @@ class EventResponse(BaseModel):
     name: str
     event_type: str
     category: Optional[str] = None
+    display_category: str
     start_date: Optional[str] = None
     end_date: Optional[str] = None
     location: Optional[str] = None
