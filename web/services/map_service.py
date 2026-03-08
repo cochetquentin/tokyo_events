@@ -42,21 +42,8 @@ class MapService:
             if not (event_dict.get('latitude') and event_dict.get('longitude')):
                 continue
 
-            event_type = event_dict.get('event_type', 'festivals')
-
-            # Déterminer couleur et icône
-            if event_type == 'tokyo_cheapo':
-                color, icon_name = self._get_category_marker_style(event_dict)
-            else:
-                # Types standards (hanabi, festivals, etc.)
-                color = EVENT_COLORS.get(event_type, 'gray')
-                event_icons = {
-                    'hanabi': 'fire',
-                    'festivals': 'music',
-                    'expositions': 'palette',
-                    'marches': 'store'
-                }
-                icon_name = event_icons.get(event_type, 'info-sign')
+            # Utiliser display_category pour tous les événements
+            color, icon_name = self._get_category_marker_style(event_dict)
 
             popup_html = self._create_popup_html(event_dict)
 
@@ -98,17 +85,37 @@ class MapService:
         return html
 
     def _get_category_marker_style(self, event: dict) -> tuple:
-        """Retourne (color, icon) basé sur la category_group de l'événement."""
-        from web.config import CATEGORY_GROUPS, CATEGORY_TO_GROUP
+        """Retourne (color, icon) basé sur la display_category de l'événement."""
+        from web.config import ALL_CATEGORIES
 
-        category = event.get('category')
-        if category and category in CATEGORY_TO_GROUP:
-            group_key = CATEGORY_TO_GROUP[category]
-            group_data = CATEGORY_GROUPS[group_key]
-            return group_data['color'], group_data['icon']
+        display_category = event.get('display_category', 'autres')
 
-        # Fallback : tokyo_cheapo default
-        return 'purple', 'globe'
+        if display_category in ALL_CATEGORIES:
+            cat_data = ALL_CATEGORIES[display_category]
+            # Convertir hex color en nom de couleur Folium
+            color = self._hex_to_folium_color(cat_data['color'])
+            icon = cat_data['icon']
+            return color, icon
+
+        # Fallback
+        return 'gray', 'calendar'
+
+    def _hex_to_folium_color(self, hex_color: str) -> str:
+        """Convertit une couleur hex en nom de couleur Folium."""
+        # Mapping approximatif hex → folium colors
+        color_map = {
+            '#ff6b35': 'orange',
+            '#ff385c': 'red',
+            '#5b7fff': 'blue',
+            '#00c896': 'green',
+            '#e91e63': 'pink',
+            '#ff9800': 'orange',
+            '#4caf50': 'green',
+            '#ffd700': 'yellow',
+            '#9c27b0': 'purple',
+            '#607d8b': 'gray',
+        }
+        return color_map.get(hex_color, 'gray')
 
     def _create_popup_html(self, event: dict) -> str:
         """Crée HTML du popup."""

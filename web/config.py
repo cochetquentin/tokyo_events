@@ -25,126 +25,128 @@ EVENT_COLORS = {
     'tokyo_cheapo': 'purple'
 }
 
-# Mapping des catégories sources vers des familles de catégories
+# Mapping des catégories sources vers les catégories d'affichage
+CATEGORY_TO_DISPLAY = {
+    # Tokyo Cheapo categories → Display categories
+    'Music': 'concerts',
+    'Food': 'food',
+    'Sport': 'sport',
+    'Illumination': 'illuminations',
+    'Comedy': 'spectacles',
+    'Film': 'spectacles',
+    'Party': 'autres',
+    'Workshop': 'autres',
+    'Nature': 'autres',
+    'Anime': 'autres',
+    'Fashion': 'autres',
+    'Charity': 'autres',
+    'Volunteering': 'autres',
+    'Trade Show': 'autres',
+    'Living': 'autres',
+}
+
+# Groupes de catégories pour le filtrage backend
+# Chaque clé correspond à une display_category, avec les source categories associées
 CATEGORY_GROUPS = {
-    'culture_arts': {
-        'label': 'Culture & Arts',
-        'icon': 'paint-brush',
-        'color': 'purple',
-        'categories': ['Art', 'Film', 'Fashion', 'Anime']
+    'concerts': {
+        'label': 'Concerts',
+        'categories': ['Music']
     },
-    'nature_outdoor': {
-        'label': 'Nature & Extérieur',
-        'icon': 'tree',
-        'color': 'green',
-        'categories': ['Nature', 'Illumination', 'Fireworks']
+    'food': {
+        'label': 'Food & Restaurants',
+        'categories': ['Food']
     },
-    'entertainment': {
-        'label': 'Divertissement & Spectacle',
-        'icon': 'music',
-        'color': 'red',
-        'categories': ['Music', 'Comedy', 'Party', 'Festival']
+    'sport': {
+        'label': 'Sport',
+        'categories': ['Sport']
     },
-    'sport_activities': {
-        'label': 'Sport & Activités',
-        'icon': 'running',
-        'color': 'orange',
-        'categories': ['Sport', 'Workshop']
+    'illuminations': {
+        'label': 'Illuminations',
+        'categories': ['Illumination']
     },
-    'food_markets': {
-        'label': 'Gastronomie & Marchés',
-        'icon': 'utensils',
-        'color': 'blue',
-        'categories': ['Food', 'Market']
+    'spectacles': {
+        'label': 'Spectacles',
+        'categories': ['Comedy', 'Film']
     },
-    'community': {
-        'label': 'Communauté & Engagement',
-        'icon': 'handshake',
-        'color': 'cadetblue',
-        'categories': ['Charity', 'Volunteering', 'Trade Show']
+    'autres': {
+        'label': 'Autres',
+        'categories': ['Party', 'Workshop', 'Nature', 'Anime', 'Fashion', 'Charity', 'Volunteering', 'Trade Show', 'Living']
     }
 }
 
-# Reverse mapping : category source → group key
-CATEGORY_TO_GROUP = {
-    cat: group_key
-    for group_key, group_data in CATEGORY_GROUPS.items()
-    for cat in group_data['categories']
-}
-
-# Configuration unifiée : tous les types/catégories au même niveau
+# Configuration des catégories d'affichage (10 catégories simples)
 ALL_CATEGORIES = {
-    # Types existants (filtrage par event_type)
     'hanabi': {
         'label': 'Hanabi',
         'icon': 'fire',
-        'color': 'orange',
+        'color': '#ff6b35',
         'filter_type': 'event_type',
         'filter_value': 'hanabi'
     },
     'festivals': {
         'label': 'Festivals',
-        'icon': 'music',
-        'color': 'darkred',
+        'icon': 'torii-gate',
+        'color': '#ff385c',
         'filter_type': 'event_type',
         'filter_value': 'festivals'
     },
     'expositions': {
         'label': 'Expositions',
         'icon': 'palette',
-        'color': 'blue',
+        'color': '#5b7fff',
         'filter_type': 'event_type',
         'filter_value': 'expositions'
     },
     'marches': {
-        'label': 'Marchés aux puces',
+        'label': 'Marchés',
         'icon': 'store',
-        'color': 'darkgreen',
+        'color': '#00c896',
         'filter_type': 'event_type',
         'filter_value': 'marches'
     },
-
-    # Category groups (filtrage par category_groups)
-    'culture_arts': {
-        'label': 'Culture & Arts',
-        'icon': 'paint-brush',
-        'color': 'purple',
-        'filter_type': 'category_group',
-        'categories': ['Art', 'Film', 'Fashion', 'Anime']
-    },
-    'nature_outdoor': {
-        'label': 'Nature & Extérieur',
-        'icon': 'tree',
-        'color': 'green',
-        'filter_type': 'category_group',
-        'categories': ['Nature', 'Illumination', 'Fireworks']
-    },
-    'entertainment': {
-        'label': 'Divertissement',
+    'concerts': {
+        'label': 'Concerts',
         'icon': 'music',
-        'color': 'red',
+        'color': '#e91e63',
         'filter_type': 'category_group',
-        'categories': ['Music', 'Comedy', 'Party', 'Festival']
+        'categories': ['Music']
     },
-    'sport_activities': {
-        'label': 'Sport & Activités',
-        'icon': 'running',
-        'color': 'orange',
-        'filter_type': 'category_group',
-        'categories': ['Sport', 'Workshop']
-    },
-    'food_markets': {
-        'label': 'Gastronomie',
+    'food': {
+        'label': 'Food & Restaurants',
         'icon': 'utensils',
-        'color': 'lightblue',
+        'color': '#ff9800',
         'filter_type': 'category_group',
-        'categories': ['Food', 'Market']
+        'categories': ['Food']
     },
-    'community': {
-        'label': 'Communauté',
-        'icon': 'handshake',
-        'color': 'cadetblue',
+    'sport': {
+        'label': 'Sport',
+        'icon': 'running',
+        'color': '#4caf50',
         'filter_type': 'category_group',
-        'categories': ['Charity', 'Volunteering', 'Trade Show']
+        'categories': ['Sport']
+    },
+    'illuminations': {
+        'label': 'Illuminations',
+        'icon': 'lightbulb',
+        'color': '#ffd700',
+        'filter_type': 'category_group',
+        'categories': ['Illumination']
+    },
+    'spectacles': {
+        'label': 'Spectacles',
+        'icon': 'masks-theater',
+        'color': '#9c27b0',
+        'filter_type': 'category_group',
+        'categories': ['Comedy', 'Film']
+    },
+    'autres': {
+        'label': 'Autres',
+        'icon': 'calendar',
+        'color': '#607d8b',
+        'filter_type': 'category_group',
+        'categories': ['Party', 'Workshop', 'Nature', 'Anime', 'Fashion', 'Charity', 'Volunteering', 'Trade Show', 'Living']
     }
 }
+
+# Backward compatibility
+CATEGORY_TO_GROUP = CATEGORY_TO_DISPLAY

@@ -191,8 +191,7 @@ document.addEventListener('alpine:init', () => {
   // Stats Store
   Alpine.store('stats', {
     totalEvents: 0,
-    byType: {},
-    byCategoryGroup: {},
+    byDisplayCategory: {},
     loading: false,
 
     async load() {
@@ -205,8 +204,7 @@ document.addEventListener('alpine:init', () => {
         const data = await response.json();
 
         this.totalEvents = data.total_events || 0;
-        this.byType = data.by_type || {};
-        this.byCategoryGroup = data.by_category_group || {};
+        this.byDisplayCategory = data.by_display_category || {};
       } catch (error) {
         console.error('Error loading stats:', error);
       } finally {
@@ -216,19 +214,7 @@ document.addEventListener('alpine:init', () => {
 
     // Get count for a specific category
     getCategoryCount(key) {
-      const filters = Alpine.store('filters');
-      const meta = filters.allCategoriesMetadata[key];
-
-      if (!meta) return 0;
-
-      if (meta.filter_type === 'event_type') {
-        const typeKey = meta.filter_value || key;
-        return this.byType[typeKey] || 0;
-      } else if (meta.filter_type === 'category_group') {
-        return this.byCategoryGroup[key] || 0;
-      }
-
-      return 0;
+      return this.byDisplayCategory[key] || 0;
     }
   });
 
@@ -248,7 +234,7 @@ document.addEventListener('alpine:init', () => {
         const data = await response.json();
 
         this.events = data.events || [];
-        this.groupedEvents = this.groupByType(this.events);
+        this.groupedEvents = this.groupByDisplayCategory(this.events);
       } catch (error) {
         console.error('Error loading events:', error);
       } finally {
@@ -256,59 +242,49 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
-    // Group events by type
-    groupByType(events) {
-      const grouped = {
-        'hanabi': [],
-        'festivals': [],
-        'expositions': [],
-        'marches': [],
-        'tokyo_cheapo': []
-      };
+    // Group events by display category
+    groupByDisplayCategory(events) {
+      const grouped = {};
 
       events.forEach(event => {
-        if (grouped[event.event_type]) {
-          grouped[event.event_type].push(event);
+        // Fallback pour rétrocompatibilité
+        const displayCat = event.display_category || event.event_type || 'tokyo_cheapo';
+        if (!grouped[displayCat]) {
+          grouped[displayCat] = [];
+        }
+        grouped[displayCat].push(event);
+      });
+
+      // Trier selon l'ordre de ALL_CATEGORIES
+      const allCategoriesMetadata = Alpine.store('filters').allCategoriesMetadata;
+      const orderedKeys = Object.keys(allCategoriesMetadata);
+
+      const sortedGrouped = {};
+      orderedKeys.forEach(key => {
+        if (grouped[key]) {
+          sortedGrouped[key] = grouped[key];
         }
       });
 
-      return grouped;
+      return sortedGrouped;
     },
 
-    // Get icon for event type
-    getTypeIcon(type) {
-      const icons = {
-        'hanabi': 'fire',
-        'festivals': 'music',
-        'expositions': 'palette',
-        'marches': 'store',
-        'tokyo_cheapo': 'globe'
-      };
-      return icons[type] || 'calendar';
+    // Get icon for display category
+    getTypeIcon(displayCategory) {
+      const meta = Alpine.store('filters').allCategoriesMetadata[displayCategory];
+      return meta?.icon || 'calendar';
     },
 
-    // Get label for event type
-    getTypeLabel(type) {
-      const labels = {
-        'hanabi': 'Hanabi',
-        'festivals': 'Festivals',
-        'expositions': 'Expositions',
-        'marches': 'Marchés',
-        'tokyo_cheapo': 'Tokyo Cheapo'
-      };
-      return labels[type] || type;
+    // Get label for display category
+    getTypeLabel(displayCategory) {
+      const meta = Alpine.store('filters').allCategoriesMetadata[displayCategory];
+      return meta?.label || displayCategory;
     },
 
-    // Get color for event type
-    getTypeColor(type) {
-      const colors = {
-        'hanabi': '#ff6b35',
-        'festivals': '#ff385c',
-        'expositions': '#5b7fff',
-        'marches': '#00c896',
-        'tokyo_cheapo': '#42a5f5'
-      };
-      return colors[type] || '#0d6efd';
+    // Get color for display category
+    getTypeColor(displayCategory) {
+      const meta = Alpine.store('filters').allCategoriesMetadata[displayCategory];
+      return meta?.color || '#0d6efd';
     },
 
     // Focus on a specific event

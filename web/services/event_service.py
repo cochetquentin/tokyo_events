@@ -18,6 +18,7 @@ class EventService:
     def get_events(self, filters: EventFilters) -> EventsListResponse:
         """Récupère événements avec filtres."""
         from web.models.schemas import EventResponse
+        from web.config import CATEGORY_TO_DISPLAY
 
         events = self.db.get_events(
             event_type=filters.event_type,
@@ -31,6 +32,21 @@ class EventService:
         # Filtrer par coordonnées
         if filters.has_coordinates:
             events = [e for e in events if e.get('latitude') and e.get('longitude')]
+
+        # Calculer display_category pour chaque événement
+        for event in events:
+            event_type = event.get('event_type')
+            category = event.get('category')
+
+            # Types directs (hanabi, festivals, expositions, marches)
+            if event_type in ['hanabi', 'festivals', 'expositions', 'marches']:
+                event['display_category'] = event_type
+            # Tokyo Cheapo avec catégorie mappée
+            elif event_type == 'tokyo_cheapo' and category and category in CATEGORY_TO_DISPLAY:
+                event['display_category'] = CATEGORY_TO_DISPLAY[category]
+            # Fallback pour Tokyo Cheapo sans catégorie ou catégorie non mappée
+            else:
+                event['display_category'] = 'autres'
 
         # Convertir en EventResponse objects
         event_responses = [EventResponse(**event) for event in events]
@@ -63,29 +79,27 @@ class EventService:
         total = len(all_events)
         with_gps = sum(1 for e in all_events if e.get('latitude') and e.get('longitude'))
 
-        # Compter par type
-        by_type = {
-            'festivals': sum(1 for e in all_events if e.get('event_type') == 'festivals'),
-            'expositions': sum(1 for e in all_events if e.get('event_type') == 'expositions'),
-            'hanabi': sum(1 for e in all_events if e.get('event_type') == 'hanabi'),
-            'marches': sum(1 for e in all_events if e.get('event_type') == 'marches'),
-            'tokyo_cheapo': sum(1 for e in all_events if e.get('event_type') == 'tokyo_cheapo')
-        }
-
-        # Compter par category_group
-        from web.config import CATEGORY_GROUPS, CATEGORY_TO_GROUP
-        by_category_group = {key: 0 for key in CATEGORY_GROUPS.keys()}
+        # Compter par display_category
+        from web.config import ALL_CATEGORIES, CATEGORY_TO_DISPLAY
+        by_display_category = {key: 0 for key in ALL_CATEGORIES.keys()}
 
         for event in all_events:
-            cat = event.get('category')
-            if cat and cat in CATEGORY_TO_GROUP:
-                group = CATEGORY_TO_GROUP[cat]
-                by_category_group[group] += 1
+            event_type = event.get('event_type')
+            category = event.get('category')
+
+            # Calculer la display_category (même logique que get_events)
+            if event_type in ['hanabi', 'festivals', 'expositions', 'marches']:
+                display_cat = event_type
+            elif event_type == 'tokyo_cheapo' and category and category in CATEGORY_TO_DISPLAY:
+                display_cat = CATEGORY_TO_DISPLAY[category]
+            else:
+                display_cat = 'autres'
+
+            by_display_category[display_cat] += 1
 
         return {
             'total_events': total,
-            'by_type': by_type,
-            'by_category_group': by_category_group,
+            'by_display_category': by_display_category,
             'with_gps_coordinates': with_gps,
             'gps_coverage_percent': round((with_gps / total * 100), 2) if total > 0 else 0
         }

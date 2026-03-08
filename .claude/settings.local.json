@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rtk find:*)",
+      "Bash(rtk ls:*)",
+      "Bash(sqlite3:*)",
+      "Bash(uv run python:*)",
+      "Bash(rtk sqlite3:*)",
+      "Bash(rtk git checkout:*)",
+      "Bash(uv run:*)",
+      "Bash(curl:*)",
+      "Bash(python:*)",
+      "Bash(rtk git status)",
+      "Bash(rtk git diff --stat)",
+      "Bash(rtk git add src/ web/ scripts/create_category_index.py)",
+      "Bash(rtk git commit -m \"$(cat <<''EOF''\nfeat: amélioration du système de catégories avec badges et multi-sélection\n\nRegroupement des 14 catégories Tokyo Cheapo en 6 familles thématiques :\n- Culture & Arts (purple/paint-brush)\n- Nature & Extérieur (green/tree)\n- Divertissement & Spectacle (red/music)\n- Sport & Activités (orange/running)\n- Gastronomie & Marchés (blue/utensils)\n- Communauté & Engagement (cadetblue/handshake)\n\nFonctionnalités :\n- UI badges cliquables avec multi-sélection (remplace dropdown)\n- Couleurs et icônes distinctes par famille sur la carte\n- Filtrage backend optimisé (index sur category)\n- Backward compatibility (ancien param ''category'' conservé)\n\nFichiers modifiés :\n- Backend : database, services, API endpoints\n- Frontend : badges grid, JavaScript multi-sélection, styles CSS\n- Config : CATEGORY_GROUPS mapping centralisé\n\n🤖 Generated with Claude Code\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(rtk git log:*)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)",
+      "Bash(powershell:*)",
+      "Bash(rtk git add:*)",
+      "Bash(rtk git commit:*)",
+      "Bash(rtk git diff:*)",
+      "Bash(timeout 10 bash -c 'while ! netstat -an | grep -q \"\":8000.*LISTENING\"\"; do sleep 1; done; echo \"\"Server is up\"\"')",
+      "Bash(rtk git branch:*)",
+      "Bash(rtk git merge:*)",
+      "Bash(rtk git checkout -b feature/ui-redesign-tokyo-night)",
+      "Bash(rtk git commit -m \"$(cat <<''EOF''\nfeat: refonte UI complète avec thème Tokyo Night + Alpine.js\n\nTransformation majeure de l''interface utilisateur avec nouveau design system\net migration JavaScript vers Alpine.js pour meilleure réactivité.\n\n## Phase 1: Fondations Visuelles\n\n### Identité Visuelle \"Tokyo la Nuit\"\n- Palette de couleurs: fond bleu nuit (#0a0e27), accents corail/cyan\n- Typographie: Google Fonts Inter (400-700 weights)\n- Effets: glassmorphism subtil, gradients, glow effects\n- Pattern background: grille subtile pour effet urbain\n\n### CSS Architecture\n- 693 lignes de CSS custom (vs 92 avant)\n- CSS Variables complètes pour tous les design tokens\n- Organisation modulaire: variables, base, components, utilities, animations\n- Support backdrop-filter avec fallbacks\n\n### Composants Refontés\n- **Navbar**: gradient background, icône torii-gate Tokyo, box-shadow profonde\n- **Cards**: glass effect avec backdrop-blur(20px), borders subtiles\n- **Category badges**: nouveau design avec hover scale/glow, active states\n- **Event cards**: glass background, border-left colorée, hover translateY\n- **Date filters**: segmented control stylé, inputs custom\n- **Buttons**: gradients accent, hover scale effects\n- **Scrollbar**: custom WebKit styling cyan\n\n### UX Improvements\n- Loading states: skeleton loaders avec shimmer animation\n- Empty states: icônes, messages, CTA buttons\n- Toast notifications: positionnées top-right, auto-dismiss\n- Smooth scrolling global\n- Transitions CSS partout (300ms cubic-bezier)\n\n### Responsive\n- Breakpoints: mobile (<768px), tablet (768-1200px), desktop (>1200px)\n- Mobile: badges plus petits, map/events 50vh chacun\n- Tablet: ajustements padding/font-sizes\n\n## Phase 2: Alpine.js Integration\n\n### Setup\n- Alpine.js 3.13.3 via CDN\n- Nouveau fichier app.js (348 lignes)\n- Migration complète du JS inline (445 lignes → 0)\n\n### Architecture Alpine\n- **Store ''filters''**: state selectedCategories, dates, loading, error\n- **Store ''stats''**: totalEvents, byType, byCategoryGroup\n- **Store ''events''**: events array, groupedEvents, loading\n- Méthodes: toggleCategory, setDateRange, applyFilters, resetFilters\n- Utils: debounce function, buildQueryParams\n\n### Templates Alpine\n- x-data sur containers principaux\n- x-for pour category badges (génération dynamique)\n- x-model pour date inputs (two-way binding)\n- @click pour tous les event handlers\n- x-show pour loading/error states\n- x-if pour conditional rendering (empty state)\n- x-transition pour toast animations\n\n### Avantages\n- Code JS réduit de ~40% (réactivité Alpine vs vanilla)\n- State management centralisé dans stores\n- Pas de manipulation DOM manuelle\n- Debouncing automatique sur date changes\n- Loading states cohérents partout\n\n## Fichiers Modifiés\n\n- web/static/css/style.css: 92 → 693 lignes (expansion 7.5x)\n- web/templates/base.html: ajout Inter font, Alpine.js CDN\n- web/templates/index.html: 445 lignes JS inline → 0, Alpine templates\n- web/static/js/app.js: nouveau fichier, 348 lignes\n\n## Layout\nLayout horizontal existant conservé (pas de sidebar):\n- Filtres horizontaux en haut (catégories 8/12, dates 4/12)\n- Split carte 70% / events list 30%\n- Responsive: stack vertical sur mobile\n\n## Tests\n- Tous les filtres fonctionnels (catégories multi-select, dates)\n- Map reload avec iframe src update\n- Stats update temps réel\n- Events list update avec grouping par type\n- Loading states apparaissent correctement\n- Empty state si aucun événement\n- Toast errors fonctionnels\n\n🚀 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n)\")",
+    ]
+  }
+}
