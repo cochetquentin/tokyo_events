@@ -322,9 +322,19 @@ class EventDeduplicator:
             event2.get('_norm_location', '')
         )
 
+        # Détection de préfixes (ex: "Roppongi Crossing" vs "Roppongi Crossing 2025: ...")
+        name1 = event1.get('_norm_name', '')
+        name2 = event2.get('_norm_name', '')
+        is_prefix = (name1.startswith(name2) or name2.startswith(name1)) and min(len(name1), len(name2)) >= 10
+
         # Critères stricts
         if dates_match_strict and name_sim >= (threshold * 100) and loc_sim >= (threshold * 100):
             return True, f"Strict match (name:{name_sim:.0f}%, loc:{loc_sim:.0f}%)"
+
+        # Critères préfixe exact (threshold location très bas car le nom préfixe est déjà une forte indication)
+        # Ex: "Roppongi Crossing" (Roppongi) vs "Roppongi Crossing 2025: ..." (Mori Art Museum)
+        if dates_match_strict and is_prefix:
+            return True, f"Prefix match (shorter is prefix of longer, loc:{loc_sim:.0f}%)"
 
         # Critères assouplis (threshold augmenté pour compenser)
         if dates_overlap and name_sim >= 85 and loc_sim >= 75:
