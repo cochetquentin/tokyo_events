@@ -163,11 +163,51 @@ class EventDatabase:
         if not events:
             return 0
 
+        # Déduplication AVANT insertion
+        from src.deduplicator import EventDeduplicator
+
+        deduplicator = EventDeduplicator()
+        existing_events = self.get_events(event_type=event_type)
+
+        deduplicated_events, report = deduplicator.deduplicate_events(
+            events=events,
+            event_type=event_type,
+            existing_db_events=existing_events
+        )
+
+        # Logger le rapport si doublons détectés
+        if report.duplicates_found > 0:
+            try:
+                print(f"\n📊 Rapport de déduplication pour {event_type}:")
+                bullet = "•"
+            except UnicodeEncodeError:
+                print(f"\n[DEDUP] Rapport de déduplication pour {event_type}:")
+                bullet = "-"
+
+            print(f"   {bullet} Événements en entrée      : {report.total_input}")
+            print(f"   {bullet} Doublons détectés         : {report.duplicates_found}")
+            print(f"   {bullet} Événements fusionnés      : {len(report.merged_events)}")
+            print(f"   {bullet} Événements finaux         : {report.final_count}")
+
+            if report.enrichment_stats:
+                print(f"   {bullet} Enrichissements:")
+                for field, count in report.enrichment_stats.items():
+                    print(f"      - {field}: {count} événements")
+
+            if report.merged_events:
+                print(f"\n   Exemples de fusions (5 premiers):")
+                for merge in report.merged_events[:5]:
+                    print(f"      {bullet} {merge['primary_name'][:50]}")
+                    print(f"        <- {merge['secondary_name'][:50]}")
+                    print(f"        Raison: {merge['reason']}")
+                    if merge.get('enriched_fields'):
+                        print(f"        Enrichi: {', '.join(merge['enriched_fields'])}")
+
         inserted = 0
         with self.get_connection() as conn:
             cursor = conn.cursor()
 
-            for event in events:
+            for event in deduplicated_events:
                 # Convertir dict en format DB
                 row = self._dict_to_db_row(event, event_type)
 
