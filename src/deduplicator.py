@@ -46,18 +46,33 @@ class EventDeduplicator:
         'tokyo_cheapo': 5
     }
 
-    # Mapping de traduction japonais → anglais pour termes courants
+    # Mapping de traduction japonais → anglais (mot à mot)
     TRANSLATION_MAP = {
+        # Événements
         'matsuri': 'festival',
-        'hanabi': 'fireworks',
-        'sakura': 'cherry blossom',
-        'ume': 'plum blossom',
-        'momiji': 'autumn leaves',
-        'illumination': 'illumination',
-        'yozakura': 'night cherry blossom',
         'taikai': 'tournament',
         'marche': 'market',
-        'marche aux puces': 'flea market',
+
+        # Feux d'artifice
+        'hanabi': 'fireworks',
+
+        # Fleurs
+        'sakura': 'cherry',
+        'ume': 'plum',
+        'momiji': 'maple',
+        'ajisai': 'hydrangea',
+        'tsubaki': 'camellia',
+
+        # Termes naturels
+        'yozakura': 'nightcherry',  # Nuit + cerisier (mot composé)
+        'koyo': 'foliage',
+        'koen': 'park',
+
+        # Termes génériques
+        'festival': 'festival',  # Garder tel quel
+        'blossom': 'blossom',
+        'exhibition': 'exhibition',
+        'market': 'market',
     }
 
     # Champs JAMAIS écrasés lors de la fusion
