@@ -100,7 +100,7 @@ make update-all
 # - Festivals       : Mois actuel (skip si déjà scrapé)
 # - Expositions     : Mois actuel (skip si déjà scrapé)
 # - Marchés         : Tous (skip si déjà scrapé)
-# - Hanabi          : 3 prochains mois
+# - Hanabi          : 5 prochains mois
 # - Nettoyage auto  : Supprime événements >30 jours
 
 # Afficher les statistiques
@@ -190,6 +190,7 @@ TokyoEvent/
 │   ├── scraper_marches_tokyo.py      # Scraper marchés aux puces
 │   ├── scraper_hanabi_kanto.py       # Scraper feux d'artifice
 │   ├── scraper_tokyo_cheapo.py       # ⭐ Scraper Tokyo Cheapo (🆕)
+│   ├── deduplicator.py               # ⭐ Déduplication et fusion d'événements
 │   ├── date_utils.py                 # Utilitaires dates japonaises
 │   ├── date_utils_fr.py              # Utilitaires dates françaises
 │   ├── date_utils_en.py              # ⭐ Utilitaires dates anglaises (🆕)
@@ -446,6 +447,16 @@ L'extraction GPS est **automatique** lors du scraping avec les taux de succès s
 - **Données manquantes** : Venue non renseigné dans la source
 
 ## 🌟 Améliorations Récentes
+
+### v4.5 - Déduplication intelligente + Refonte UI + Catégories (Avril 2026)
+
+- ✅ **Système de déduplication avancé** (`src/deduplicator.py`) : fusion intelligente avec matching fuzzy (rapidfuzz), préfixes communs, chevauchement de dates
+- ✅ **Mapping de traduction japonais → anglais** pour normalisation des noms lors de la comparaison
+- ✅ **Détection de doublons par préfixe** : "Festival X" matche avec "Festival X 2026"
+- ✅ **Refonte des catégories** : système unifié avec groupes et couleurs cohérentes
+- ✅ **Refonte UI complète** : thème Tokyo Night + Alpine.js, layout minimaliste épuré
+- ✅ **Affichage liste par catégorie** corrigé avec compteurs
+- ✅ **Fenêtre de scraping hanabi étendue à 5 mois** (vs 3 auparavant) pour couvrir les événements fin juillet/août
 
 ### v4.3 - Scraper Tokyo Cheapo + Système de Mise à Jour Globale (Février 2025)
 
