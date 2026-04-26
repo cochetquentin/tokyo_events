@@ -163,28 +163,26 @@
                     <template x-if="!$store.events.loading && $store.events.events.length > 0">
                         <div>
                             <!-- Group by type -->
-                            <template x-for="[type, eventsList] in Object.entries($store.events.groupedEvents)" :key="type">
-                                <template x-if="eventsList.length > 0">
-                                    <div class="mb-3">
-                                        <!-- Section Header -->
-                                        <div class="event-section-header" :style="`color: ${$store.events.getTypeColor(type)}`">
-                                            <i :class="`fas fa-${$store.events.getTypeIcon(type)}`"></i>
-                                            <span x-text="`${$store.events.getTypeLabel(type)} (${eventsList.length})`"></span>
-                                        </div>
-
-                                        <!-- Event Cards -->
-                                        <template x-for="event in eventsList" :key="event.id || event.name">
-                                            <div
-                                                class="event-item"
-                                                :style="`border-left-color: ${$store.events.getTypeColor(type)}`"
-                                                @click="$store.events.focusOnEvent(event.latitude, event.longitude, event.name)">
-                                                <i :class="`fas fa-${$store.events.getTypeIcon(type)} event-icon`" :style="`color: ${$store.events.getTypeColor(type)}`"></i>
-                                                <strong x-text="event.name"></strong>
-                                                <small x-text="event.location || ''"></small>
-                                            </div>
-                                        </template>
+                            <template x-for="group in Object.entries($store.events.groupedEvents)" :key="group[0]">
+                                <div class="mb-3">
+                                    <!-- Section Header -->
+                                    <div class="event-section-header" :style="`color: ${$store.events.getTypeColor(group[0])}`">
+                                        <i :class="`fas fa-${$store.events.getTypeIcon(group[0])}`"></i>
+                                        <span x-text="`${$store.events.getTypeLabel(group[0])} (${group[1].length})`"></span>
                                     </div>
-                                </template>
+
+                                    <!-- Event Cards -->
+                                    <template x-for="event in group[1]" :key="event.name + (event.start_date || '')">
+                                        <div
+                                            class="event-item"
+                                            :style="`border-left-color: ${$store.events.getTypeColor(group[0])}`"
+                                            @click="$store.events.focusOnEvent(event.latitude, event.longitude, event.name)">
+                                            <i :class="`fas fa-${$store.events.getTypeIcon(group[0])} event-icon`" :style="`color: ${$store.events.getTypeColor(group[0])}`"></i>
+                                            <strong x-text="event.name"></strong>
+                                            <small x-text="event.location || event.start_date || ''"></small>
+                                        </div>
+                                    </template>
+                                </div>
                             </template>
                         </div>
                     </template>

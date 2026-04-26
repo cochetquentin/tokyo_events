@@ -48,6 +48,14 @@ class EventService:
             else:
                 event['display_category'] = 'autres'
 
+            # Pour hanabi, synthétiser location depuis city/venue/prefecture
+            if event_type == 'hanabi' and not event.get('location'):
+                parts = [p for p in [event.get('city'), event.get('venue')] if p]
+                if not parts and event.get('prefecture'):
+                    parts = [event.get('prefecture')]
+                if parts:
+                    event['location'] = ' / '.join(parts)
+
         # Convertir en EventResponse objects
         event_responses = [EventResponse(**event) for event in events]
 
