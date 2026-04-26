@@ -824,6 +824,28 @@ class TokyoFestivalScraper:
 
         return None
 
+    def _enrich_with_gps(self, events: List[Dict]) -> int:
+        """
+        Enrichit les événements avec des coordonnées GPS depuis les liens Google Maps.
+
+        Args:
+            events: Liste d'événements à enrichir (modifiés en place)
+
+        Returns:
+            Nombre d'événements ayant reçu des coordonnées GPS
+        """
+        gps_extractor = GPSExtractor()
+        gps_success = 0
+
+        for event in events:
+            if event.get('googlemap_link'):
+                coords = gps_extractor.extract_from_googlemap_link(event['googlemap_link'])
+                if coords:
+                    event['latitude'], event['longitude'] = coords
+                    gps_success += 1
+
+        return gps_success
+
     def save_to_database(self, festivals: List[Dict], db_path: str = None):
         """
         Sauvegarde les festivals dans la base de données SQLite.
@@ -839,16 +861,7 @@ class TokyoFestivalScraper:
         if not db_path:
             db_path = "data/tokyo_events.sqlite"
 
-        # Extraire les coordonnées GPS pour chaque festival
-        gps_extractor = GPSExtractor()
-        gps_success = 0
-
-        for festival in festivals:
-            if festival.get('googlemap_link'):
-                coords = gps_extractor.extract_from_googlemap_link(festival['googlemap_link'])
-                if coords:
-                    festival['latitude'], festival['longitude'] = coords
-                    gps_success += 1
+        gps_success = self._enrich_with_gps(festivals)
 
         db = EventDatabase(db_path)
         count = db.insert_events(festivals, event_type='festivals')

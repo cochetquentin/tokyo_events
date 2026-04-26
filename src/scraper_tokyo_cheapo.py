@@ -237,14 +237,46 @@ class TokyoCheapoScraper:
             print(f"⚠️ Error parsing event card: {e}")
             return None
 
+    def _parse_single_date_box(self, date_box, current_year: int) -> Tuple[Optional[str], Optional[str]]:
+        """Parse a single-date box (class 'single')."""
+        day_elem = date_box.select_one('div.day')
+        date_elem = date_box.select_one('div.date')
+
+        if day_elem and date_elem:
+            day_text = day_elem.get_text(strip=True)  # "Sun, Mar"
+            date_num = date_elem.get_text(strip=True)  # "01"
+            date = parse_single_date_components(day_text, date_num, current_year)
+            return date, date
+
+        return None, None
+
+    def _parse_range_date_box(self, date_box, current_year: int) -> Tuple[Optional[str], Optional[str]]:
+        """Parse a same-year range date box (class 'multi')."""
+        date_elems = date_box.select('div.date')
+        if len(date_elems) >= 2:
+            start_str = date_elems[0].get_text(strip=True)  # "Feb 28"
+            end_str = date_elems[1].get_text(strip=True)    # "Mar 1"
+            return parse_english_date_range(start_str, end_str, current_year)
+        return None, None
+
+    def _parse_multiyear_date_box(self, date_box, current_year: int) -> Tuple[Optional[str], Optional[str]]:
+        """Parse a cross-year range date box (class 'multi-year')."""
+        date_elems = date_box.select('div.date')
+        if len(date_elems) >= 2:
+            start_str = date_elems[0].get_text(strip=True)  # "Nov 17"
+            end_str = date_elems[1].get_text(strip=True)    # "Mar 1 2026"
+            return parse_english_date_range(start_str, end_str, current_year)
+        return None, None
+
     def _parse_date_box(self, card_elem) -> Tuple[Optional[str], Optional[str]]:
         """
-        Parse date box (3 variants: single, multi, multi-year)
+        Parse date box — dispatches to the right variant based on CSS class.
+
+        Variants: single date, same-year range (multi), cross-year range (multi-year)
 
         Returns:
             (start_date, end_date) in YYYY/MM/DD format
         """
-        # Find date box
         date_box = card_elem.select_one('.card--event__date-box')
         if not date_box:
             return None, None
@@ -253,36 +285,12 @@ class TokyoCheapoScraper:
         current_year = datetime.now().year
 
         try:
-            # Variant 3: Single date
             if 'single' in classes:
-                day_elem = date_box.select_one('div.day')
-                date_elem = date_box.select_one('div.date')
-
-                if day_elem and date_elem:
-                    day_text = day_elem.get_text(strip=True)  # "Sun, Mar"
-                    date_num = date_elem.get_text(strip=True)  # "01"
-
-                    date = parse_single_date_components(day_text, date_num, current_year)
-                    return date, date  # Same date for start and end
-
-            # Variant 2: Multi-year range
+                return self._parse_single_date_box(date_box, current_year)
             elif 'multi-year' in classes:
-                date_elems = date_box.select('div.date')
-                if len(date_elems) >= 2:
-                    start_str = date_elems[0].get_text(strip=True)  # "Nov 17"
-                    end_str = date_elems[1].get_text(strip=True)    # "Mar 1 2026"
-
-                    return parse_english_date_range(start_str, end_str, current_year)
-
-            # Variant 1: Same-year range
+                return self._parse_multiyear_date_box(date_box, current_year)
             elif 'multi' in classes:
-                date_elems = date_box.select('div.date')
-                if len(date_elems) >= 2:
-                    start_str = date_elems[0].get_text(strip=True)  # "Feb 28"
-                    end_str = date_elems[1].get_text(strip=True)    # "Mar 1"
-
-                    return parse_english_date_range(start_str, end_str, current_year)
-
+                return self._parse_range_date_box(date_box, current_year)
         except Exception as e:
             print(f"⚠️ Error parsing date box: {e}")
 
@@ -490,6 +498,28 @@ class TokyoCheapoScraper:
         category_lower = category.lower().strip()
         return self.CATEGORY_MAP.get(category_lower, 'tokyo_cheapo')
 
+    def _enrich_with_gps(self, events: List[Dict]) -> int:
+        """
+        Enrichit les événements avec des coordonnées GPS depuis les liens Google Maps.
+
+        Args:
+            events: Liste d'événements à enrichir (modifiés en place)
+
+        Returns:
+            Nombre d'événements ayant reçu des coordonnées GPS
+        """
+        gps_extractor = GPSExtractor()
+        gps_success = 0
+
+        for event in events:
+            if event.get('googlemap_link'):
+                coords = gps_extractor.extract_from_googlemap_link(event['googlemap_link'])
+                if coords:
+                    event['latitude'], event['longitude'] = coords
+                    gps_success += 1
+
+        return gps_success
+
     def save_to_database(self, events: List[Dict], db_path: str = None):
         """
         Save events to database with GPS extraction
@@ -504,20 +534,11 @@ class TokyoCheapoScraper:
         if not db_path:
             db_path = "data/tokyo_events.sqlite"
 
-        # Extract GPS coordinates
-        gps_extractor = GPSExtractor()
-        gps_success = 0
-
         for event in events:
             # Map category to event_type
             event['event_type'] = self._map_category_to_event_type(event.get('category'))
 
-            # Extract GPS from Google Maps link
-            if event.get('googlemap_link'):
-                coords = gps_extractor.extract_from_googlemap_link(event['googlemap_link'])
-                if coords:
-                    event['latitude'], event['longitude'] = coords
-                    gps_success += 1
+        gps_success = self._enrich_with_gps(events)
 
         # Group events by type for database insertion
         events_by_type = {}

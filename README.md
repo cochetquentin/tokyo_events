@@ -226,13 +226,22 @@ TokyoEvent/
 │   └── migrate_add_gps_columns.py     # Migration DB
 │
 │
-├── tests/                             # Tests
+├── tests/                             # Tests (276 tests au total)
 │   ├── conftest.py                    # ⭐ Fixtures pytest
-│   ├── test_database.py               # ⭐ Tests unitaires database (33 tests)
-│   ├── compare.py                     # ⭐ Comparaison unifiée (tous types)
-│   ├── test_date_utils_fr.py         # Tests unitaires dates
-│   ├── test_location_utils.py        # Tests unitaires locations
-│   └── test_metadata_extractors.py   # Tests unitaires métadonnées
+│   ├── test_database.py               # Tests unitaires database
+│   ├── test_deduplicator.py           # Tests unitaires déduplication
+│   ├── test_date_utils_fr.py         # Tests dates françaises
+│   ├── test_date_utils_en.py         # Tests dates anglaises
+│   ├── test_date_utils_jp.py         # Tests dates japonaises
+│   ├── test_gps_extractor.py         # Tests extraction GPS
+│   ├── test_location_utils.py        # Tests locations/arrondissements
+│   ├── test_metadata_extractors.py   # Tests extraction métadonnées
+│   ├── test_scraper_festivals.py     # Tests parsing festivals
+│   ├── test_scraper_hanabi.py        # Tests parsing hanabi
+│   ├── test_scraper_marches.py       # Tests parsing marchés
+│   ├── test_scraper_tokyo_cheapo.py  # Tests parsing Tokyo Cheapo
+│   ├── test_integration_dedup.py     # Tests intégration déduplication
+│   └── compare.py                     # Comparaison unifiée (tous types)
 │
 └── data/                              # Données
     ├── tokyo_events.sqlite            # ⭐ Base de données SQLite
@@ -289,7 +298,7 @@ Scraping événements depuis **tokyocheapo.com** :
 ### Tests Automatisés
 
 ```bash
-# Tests unitaires (104 tests, dont 33 pour la database)
+# Tests unitaires (276 tests)
 uv run python -m pytest tests/ -v
 
 # Tests de comparaison (tous types: festivals, expositions, hanabi, marches)
@@ -445,6 +454,14 @@ L'extraction GPS est **automatique** lors du scraping avec les taux de succès s
 
 ## 🌟 Améliorations Récentes
 
+### v4.6 - Couverture de tests complète (Avril 2026)
+
+- ✅ **276 tests** au total (vs 104 auparavant)
+- ✅ **Couverture de tous les scrapers** : tests de parsing avec fixtures HTML/JSON (sans HTTP)
+- ✅ **Couverture de tous les modules utilitaires** : date_utils (fr/en/jp), gps_extractor, location_utils, metadata_extractors
+- ✅ **SRP** : extraction `_enrich_with_gps()` dans les 5 scrapers, décomposition `_parse_date_box()` en 3 méthodes
+- ✅ **Corrections de bugs** : regex unicode `date_utils_fr`, casse `extract_hours`, virgule `extract_fee`, quantificateur `location_utils`
+
 ### v4.5 - Déduplication intelligente + Refonte UI + Catégories (Avril 2026)
 
 - ✅ **Système de déduplication avancé** (`src/deduplicator.py`) : fusion intelligente avec matching fuzzy (rapidfuzz), préfixes communs, chevauchement de dates
@@ -504,10 +521,8 @@ L'extraction GPS est **automatique** lors du scraping avec les taux de succès s
 - ✅ **Table unique** avec support 4 types d'événements
 - ✅ **Déduplication automatique** via clé composite unique
 - ✅ **Stratégie UPSERT** (INSERT OR REPLACE) pour mises à jour
-- ✅ **33 tests unitaires** pour la database
 - ✅ **API de requêtage** avec filtres (type, dates, lieu)
 - ✅ **Support champs JSON** pour dates multiples (hanabi/marches)
-- ✅ **104 tests pytest** au total
 
 ### v2.0 - Couverture 97%+
 

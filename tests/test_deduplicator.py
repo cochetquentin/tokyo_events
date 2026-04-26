@@ -19,13 +19,13 @@ class TestNormalization:
 
     def test_normalize_name_punctuation(self):
         """Doit supprimer la ponctuation"""
-        assert self.deduplicator._normalize_name("Festival-Matsuri!") == "festival matsuri"
+        assert self.deduplicator._normalize_name("Festival-Taiko!") == "festival taiko"
         assert self.deduplicator._normalize_name("Cherry Blossom (2025)") == "cherry blossom 2025"
 
     def test_normalize_name_spaces(self):
         """Doit normaliser les espaces multiples"""
         assert self.deduplicator._normalize_name("Festival   de    Tokyo") == "festival de tokyo"
-        assert self.deduplicator._normalize_name("  Hanabi  ") == "hanabi"
+        assert self.deduplicator._normalize_name("  Ohanami  ") == "ohanami"
 
     def test_normalize_name_case(self):
         """Doit convertir en minuscules"""

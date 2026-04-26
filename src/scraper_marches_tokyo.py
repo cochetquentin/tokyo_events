@@ -258,6 +258,28 @@ class TokyoMarcheScraper:
 
         return None
 
+    def _enrich_with_gps(self, events: List[Dict]) -> int:
+        """
+        Enrichit les événements avec des coordonnées GPS depuis les liens Google Maps.
+
+        Args:
+            events: Liste d'événements à enrichir (modifiés en place)
+
+        Returns:
+            Nombre d'événements ayant reçu des coordonnées GPS
+        """
+        gps_extractor = GPSExtractor()
+        gps_success = 0
+
+        for event in events:
+            if event.get('googlemap_link'):
+                coords = gps_extractor.extract_from_googlemap_link(event['googlemap_link'])
+                if coords:
+                    event['latitude'], event['longitude'] = coords
+                    gps_success += 1
+
+        return gps_success
+
     def save_to_database(self, marches: List[Dict], db_path: str = None):
         """
         Sauvegarde les marchés dans la base de données SQLite.
@@ -273,16 +295,7 @@ class TokyoMarcheScraper:
         if not db_path:
             db_path = "data/tokyo_events.sqlite"
 
-        # Extraire les coordonnées GPS pour chaque marché
-        gps_extractor = GPSExtractor()
-        gps_success = 0
-
-        for marche in marches:
-            if marche.get('googlemap_link'):
-                coords = gps_extractor.extract_from_googlemap_link(marche['googlemap_link'])
-                if coords:
-                    marche['latitude'], marche['longitude'] = coords
-                    gps_success += 1
+        gps_success = self._enrich_with_gps(marches)
 
         db = EventDatabase(db_path)
         count = db.insert_events(marches, event_type='marches')

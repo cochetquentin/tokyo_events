@@ -28,7 +28,7 @@ def extract_hours(text: str) -> Optional[str]:
     # Pattern 1: "de Xh à Yh" ou "de XhMM à YhMM"
     match = re.search(r'de\s+(\d{1,2})h\s*(\d{2})?\s*à\s+(\d{1,2})h\s*(\d{2})?', text, re.IGNORECASE)
     if match:
-        return match.group(0)
+        return match.group(0).lower()
 
     # Pattern 2: "Xh-Yh" ou "XhMM-YhMM"
     match = re.search(r'(\d{1,2})h\s*(\d{2})?\s*[-–]\s*(\d{1,2})h\s*(\d{2})?', text, re.IGNORECASE)
@@ -75,7 +75,7 @@ def extract_fee(text: str) -> Optional[str]:
 
     # Pattern 3: Montant en yens (format: "1,500 yens", "1500 yens", "1 500 yens")
     # Chercher après "Tarif :", "Entrée :", "Prix :"
-    match = re.search(r'(?:tarif|entr[ée]e|prix)\s*:\s*([^\n,\.]+)', text, re.IGNORECASE)
+    match = re.search(r'(?:tarif|entr[ée]e|prix)\s*:\s*([^\n\.]+)', text, re.IGNORECASE)
     if match:
         fee_text = match.group(1).strip()
         # Vérifier que ça contient un montant

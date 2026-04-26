@@ -123,34 +123,33 @@ class TestInsertOrReplace:
     """Tests de la stratégie UPSERT (INSERT OR REPLACE)."""
 
     def test_insert_or_replace_prevents_duplicates(self, in_memory_db, sample_festivals):
-        """Test que INSERT OR REPLACE empêche les doublons."""
+        """Test que la déduplication empêche les doublons à la ré-insertion."""
         # Insérer deux fois
         count1 = in_memory_db.insert_events(sample_festivals, 'festivals')
         count2 = in_memory_db.insert_events(sample_festivals, 'festivals')
 
         assert count1 == len(sample_festivals)
-        assert count2 == len(sample_festivals)
+        # La deuxième insertion détecte tous les événements comme doublons → 0 insertions
+        assert count2 == 0
 
         # Vérifier qu'il n'y a toujours que le nombre original
         total = in_memory_db.count_events('festivals')
         assert total == len(sample_festivals)
 
     def test_insert_or_replace_updates_existing(self, in_memory_db, sample_festivals):
-        """Test que INSERT OR REPLACE met à jour les événements existants."""
+        """Test que la déduplication enrichit les événements existants."""
         # Insérer original
         in_memory_db.insert_events(sample_festivals, 'festivals')
 
-        # Modifier et ré-insérer
+        # Ré-insérer avec une description plus longue (le deduplicator prend la plus longue)
         modified = [sample_festivals[0].copy()]
-        modified[0]['description'] = 'Description mise à jour'
-        modified[0]['fee'] = '500 yens'
+        modified[0]['description'] = 'Description enrichie bien plus longue que la version originale du festival'
         in_memory_db.insert_events(modified, 'festivals')
 
-        # Vérifier mise à jour
+        # Vérifier que la description la plus longue est conservée
         events = in_memory_db.get_events(event_type='festivals')
         updated_event = next(e for e in events if e['name'] == modified[0]['name'])
-        assert updated_event['description'] == 'Description mise à jour'
-        assert updated_event['fee'] == '500 yens'
+        assert updated_event['description'] == 'Description enrichie bien plus longue que la version originale du festival'
 
     def test_unique_constraint_with_null_start_date(self, in_memory_db):
         """Test contrainte unique avec start_date NULL."""
@@ -223,13 +222,16 @@ class TestGetEvents:
             assert '2025/02' in event['start_date']
 
     def test_get_events_filter_by_date_from(self, in_memory_db, sample_festivals):
-        """Test filtrage par date de début minimum."""
+        """Test filtrage par date de début minimum — logique de chevauchement."""
         in_memory_db.insert_events(sample_festivals, 'festivals')
 
+        # Logique de chevauchement : inclut les événements actifs à cette date
+        # (end_date >= start_date_from OR end_date IS NULL)
         events = in_memory_db.get_events(start_date_from='2025/03/01')
 
         for event in events:
-            assert event['start_date'] >= '2025/03/01'
+            end = event.get('end_date') or event['start_date']
+            assert end >= '2025/03/01'
 
     def test_get_events_filter_by_date_to(self, in_memory_db, sample_festivals):
         """Test filtrage par date de début maximum."""
@@ -428,4 +430,68 @@ class TestNullFieldHandling:
         assert 'id' not in events[0]
         assert 'created_at' not in events[0]
         assert 'updated_at' not in events[0]
-        assert 'event_type' not in events[0]
+        # Note: event_type est conservé pour l'API web
+
+
+class TestGetEventsWithCoordinates:
+    """Tests pour get_events_with_coordinates()"""
+
+    def test_returns_only_events_with_gps(self, in_memory_db):
+        """Ne doit retourner que les événements avec lat/lon non NULL."""
+        events = [
+            {
+                'name': 'Festival A',
+                'start_date': '2025/07/01',
+                'end_date': '2025/07/01',
+                'location': 'Shibuya',
+                'latitude': 35.6585,
+                'longitude': 139.7013,
+            },
+            {
+                'name': 'Festival B',
+                'start_date': '2025/08/01',
+                'end_date': '2025/08/01',
+                'location': 'Shinjuku',
+                # No GPS
+            },
+        ]
+        in_memory_db.insert_events(events, 'festivals')
+
+        with_coords = in_memory_db.get_events_with_coordinates()
+        assert len(with_coords) == 1
+        assert with_coords[0]['name'] == 'Festival A'
+        assert 'latitude' in with_coords[0]
+        assert 'longitude' in with_coords[0]
+
+    def test_returns_empty_when_no_gps(self, in_memory_db, sample_festivals):
+        """Doit retourner liste vide si aucun événement n'a de GPS."""
+        in_memory_db.insert_events(sample_festivals, 'festivals')
+        with_coords = in_memory_db.get_events_with_coordinates()
+        assert with_coords == []
+
+    def test_returns_all_types_with_gps(self, in_memory_db):
+        """Doit retourner tous les types d'événements ayant des GPS."""
+        festival = {
+            'name': 'Festival GPS',
+            'start_date': '2025/07/01',
+            'end_date': '2025/07/01',
+            'location': 'Tokyo',
+            'latitude': 35.6762,
+            'longitude': 139.6503,
+        }
+        hanabi = {
+            'name': 'Hanabi GPS',
+            'event_id': 'ar0313e111',
+            'start_date': '2025/08/01',
+            'end_date': '2025/08/01',
+            'prefecture': '東京都',
+            'city': '台東区',
+            'venue': 'Sumida River',
+            'latitude': 35.7147,
+            'longitude': 139.7967,
+        }
+        in_memory_db.insert_events([festival], 'festivals')
+        in_memory_db.insert_events([hanabi], 'hanabi')
+
+        with_coords = in_memory_db.get_events_with_coordinates()
+        assert len(with_coords) == 2

@@ -131,7 +131,7 @@ def extract_location_with_district(text: str) -> Optional[str]:
 
     # Pattern 2: Lieux avec préposition (parc, temple, etc.)
     match = re.search(
-        r'(?:au|à|dans le|dans l\')\s+(parc|temple|sanctuaire|jardin|quartier|station|mont|siège|musée|galerie|centre|espace)\s+([A-Za-zÀ-ÿ\-\s]+?)(?:\s+\([^)]+\))?',
+        r'(?:au|à|dans le|dans l\')\s+(parc|temple|sanctuaire|jardin|quartier|station|mont|siège|musée|galerie|centre|espace)\s+([A-Za-zÀ-ÿ\-\s]+)(?:\s+\([^)]+\))?',
         text,
         re.IGNORECASE
     )

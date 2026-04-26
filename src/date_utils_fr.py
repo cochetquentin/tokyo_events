@@ -41,13 +41,13 @@ def expand_complex_dates(date_string: str, default_year: int = None) -> List[str
 
     # Extraire le mois et l'année
     # Pattern: "... février 2026" ou "... février"
-    month_year_match = re.search(r'([a-zéè]+)\s+(\d{4})', date_string)
+    month_year_match = re.search(r'([a-zéèùûîàâçô]+)\s+(\d{4})', date_string)
     if month_year_match:
         month_name = month_year_match.group(1)
         year = month_year_match.group(2)
     else:
         # Chercher juste le mois
-        month_match = re.search(r'([a-zéè]+)$', date_string)
+        month_match = re.search(r'([a-zéèùûîàâçô]+)$', date_string)
         if month_match:
             month_name = month_match.group(1)
             year = str(default_year) if default_year else datetime.now().year
@@ -131,7 +131,7 @@ def parse_french_date_range(date_string: str, default_year: int = None) -> Tuple
 
     # Pattern 1: "Du X mois1 année1 au Y mois2 année2" (cross-year)
     match = re.search(
-        r'du\s+(\d{1,2})(?:\s*er)?\s+([a-zéè]+)\s+(\d{4})\s+au\s+(\d{1,2})(?:\s*er)?\s+([a-zéè]+)\s+(\d{4})',
+        r'du\s+(\d{1,2})(?:\s*er)?\s+([a-zéèùûîàâçô]+)\s+(\d{4})\s+au\s+(\d{1,2})(?:\s*er)?\s+([a-zéèùûîàâçô]+)\s+(\d{4})',
         date_string
     )
     if match:
@@ -145,7 +145,7 @@ def parse_french_date_range(date_string: str, default_year: int = None) -> Tuple
 
     # Pattern 2: "Du X mois1 au Y mois2 année" (cross-month, same year)
     match = re.search(
-        r'du\s+(\d{1,2})(?:\s*er)?\s+([a-zéè]+)\s+au\s+(\d{1,2})(?:\s*er)?\s+([a-zéè]+)\s+(\d{4})',
+        r'du\s+(\d{1,2})(?:\s*er)?\s+([a-zéèùûîàâçô]+)\s+au\s+(\d{1,2})(?:\s*er)?\s+([a-zéèùûîàâçô]+)\s+(\d{4})',
         date_string
     )
     if match:
@@ -158,7 +158,7 @@ def parse_french_date_range(date_string: str, default_year: int = None) -> Tuple
 
     # Pattern 3: "Du X au Y mois année" (same month)
     match = re.search(
-        r'du\s+(\d{1,2})(?:\s*er)?\s+au\s+(\d{1,2})(?:\s*er)?\s+([a-zéè]+)\s+(\d{4})',
+        r'du\s+(\d{1,2})(?:\s*er)?\s+au\s+(\d{1,2})(?:\s*er)?\s+([a-zéèùûîàâçô]+)\s+(\d{4})',
         date_string
     )
     if match:
@@ -169,7 +169,7 @@ def parse_french_date_range(date_string: str, default_year: int = None) -> Tuple
         return f"{annee}/{mois}/{jour1}", f"{annee}/{mois}/{jour2}"
 
     # Pattern 4: "Jusqu'au X mois année"
-    match = re.search(r'jusqu[\'\'\u2019]?au\s+(\d{1,2})(?:\s*er)?\s+([a-zéè]+)\s+(\d{4})', date_string)
+    match = re.search(r'jusqu[\'\'\u2019]?au\s+(\d{1,2})(?:\s*er)?\s+([a-zéèùûîàâçô]+)\s+(\d{4})', date_string)
     if match:
         jour = match.group(1).zfill(2)
         mois = MOIS_MAPPING.get(match.group(2), '??')
@@ -178,7 +178,7 @@ def parse_french_date_range(date_string: str, default_year: int = None) -> Tuple
         return f"{annee}/{mois}/01", f"{annee}/{mois}/{jour}"
 
     # Pattern 5: "(jusqu'au X mois année)" - avec parenthèses
-    match = re.search(r'\(jusqu[\'\'\u2019]?au\s+(\d{1,2})(?:\s*er)?\s+([a-zéè]+)\s+(\d{4})\)', date_string)
+    match = re.search(r'\(jusqu[\'\'\u2019]?au\s+(\d{1,2})(?:\s*er)?\s+([a-zéèùûîàâçô]+)\s+(\d{4})\)', date_string)
     if match:
         jour = match.group(1).zfill(2)
         mois = MOIS_MAPPING.get(match.group(2), '??')
@@ -186,7 +186,7 @@ def parse_french_date_range(date_string: str, default_year: int = None) -> Tuple
         return f"{annee}/{mois}/01", f"{annee}/{mois}/{jour}"
 
     # Pattern 6: "X-Y mois année" (range without "du...au")
-    match = re.search(r'(\d{1,2})(?:\s*er)?\s*[-–]\s*(\d{1,2})(?:\s*er)?\s+([a-zéè]+)\s+(\d{4})', date_string)
+    match = re.search(r'(\d{1,2})(?:\s*er)?\s*[-–]\s*(\d{1,2})(?:\s*er)?\s+([a-zéèùûîàâçô]+)\s+(\d{4})', date_string)
     if match:
         jour1 = match.group(1).zfill(2)
         jour2 = match.group(2).zfill(2)
@@ -195,7 +195,7 @@ def parse_french_date_range(date_string: str, default_year: int = None) -> Tuple
         return f"{annee}/{mois}/{jour1}", f"{annee}/{mois}/{jour2}"
 
     # Pattern 7: "X mois1-Y mois2 année" (cross-month without "du...au")
-    match = re.search(r'(\d{1,2})(?:\s*er)?\s+([a-zéè]+)\s*[-–]\s*(\d{1,2})(?:\s*er)?\s+([a-zéè]+)\s+(\d{4})', date_string)
+    match = re.search(r'(\d{1,2})(?:\s*er)?\s+([a-zéèùûîàâçô]+)\s*[-–]\s*(\d{1,2})(?:\s*er)?\s+([a-zéèùûîàâçô]+)\s+(\d{4})', date_string)
     if match:
         jour1 = match.group(1).zfill(2)
         mois1 = MOIS_MAPPING.get(match.group(2), '??')
@@ -206,7 +206,7 @@ def parse_french_date_range(date_string: str, default_year: int = None) -> Tuple
             return f"{annee}/{mois1}/{jour1}", f"{annee}/{mois2}/{jour2}"
 
     # Pattern 8: "X mois année" (single date)
-    match = re.search(r'(\d{1,2})(?:\s*er)?\s+([a-zéè]+)\s+(\d{4})', date_string)
+    match = re.search(r'(\d{1,2})(?:\s*er)?\s+([a-zéèùûîàâçô]+)\s+(\d{4})', date_string)
     if match:
         jour = match.group(1).zfill(2)
         mois = MOIS_MAPPING.get(match.group(2), '??')
