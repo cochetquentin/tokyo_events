@@ -3,6 +3,15 @@ Scraper pour les feux d'artifice (hanabi) de la région Kanto
 Source: https://hanabi.walkerplus.com/list/ar0300/
 """
 
+import sys
+import os
+
+# Allow running as script (uv run src/scraper_hanabi_kanto.py)
+# by ensuring the project root is in sys.path before src.* imports
+_project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if _project_root not in sys.path:
+    sys.path.insert(0, _project_root)
+
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -78,70 +87,88 @@ class KantoHanabiScraper:
 
     def _scrape_list_page(self) -> List[Dict]:
         """
-        Stage 1: Scrape list page for basic event info
-
-        Uses JSON-LD data embedded in the page (schema.org Event data)
+        Stage 1: Scrape all pages (main Kanto + each prefecture) for event info.
 
         Returns:
-            List of events with basic fields
+            List of events with basic fields (deduplicated by event_id)
         """
-        try:
-            response = self.session.get(self.LIST_URL, timeout=15)
-            response.raise_for_status()
-        except requests.RequestException as e:
-            print(f"❌ Erreur lors du chargement de la page liste: {e}")
-            return []
-
-        soup = BeautifulSoup(response.content, 'html.parser')
         events = []
         event_ids_seen = set()
 
-        # Method 1: Parse JSON-LD data (more reliable, but limited to ~7 events)
-        json_ld_scripts = soup.find_all('script', type='application/ld+json')
+        # Collect all URLs to scrape: main Kanto + all paginated prefecture pages
+        urls_to_scrape: List[tuple] = [(self.LIST_URL, "Kanto")]
 
-        for script in json_ld_scripts:
+        for code in self.PREFECTURES.keys():
+            base_pref_url = f"{self.BASE_URL}/list/{code}/"
+            # Discover pagination by fetching first page
             try:
-                data = json.loads(script.string)
-                # Data can be a list or a single object
-                if isinstance(data, list):
-                    for event_data in data:
-                        if event_data.get('@type') == 'Event':
-                            event = self._parse_json_ld_event(event_data)
-                            if event and event.get('event_id'):
-                                event_ids_seen.add(event['event_id'])
-                                events.append(event)
-                elif isinstance(data, dict) and data.get('@type') == 'Event':
-                    event = self._parse_json_ld_event(data)
-                    if event and event.get('event_id'):
-                        event_ids_seen.add(event['event_id'])
-                        events.append(event)
-            except json.JSONDecodeError as e:
-                print(f"  ⚠️ Erreur JSON: {e}")
-                continue
+                resp = self.session.get(base_pref_url, timeout=15)
+                resp.raise_for_status()
+                soup_first = BeautifulSoup(resp.content, 'html.parser')
+                pager = soup_first.find('div', class_='pager')
+                page_urls = [(base_pref_url, code, soup_first)]  # (url, label, already_fetched_soup)
+                if pager:
+                    for a in pager.find_all('a', href=re.compile(r'/list/' + code + r'/\d+\.html')):
+                        pg_url = f"{self.BASE_URL}{a['href']}"
+                        if pg_url not in [u for u, _, _ in page_urls]:
+                            page_urls.append((pg_url, code, None))
+                for item in page_urls:
+                    urls_to_scrape.append(item)
+            except requests.RequestException as e:
+                print(f"  ⚠️ Erreur découverte pages {code}: {e}")
+            time.sleep(0.3)
 
-        print(f"  • {len(events)} événements depuis JSON-LD")
-
-        # Method 2: Parse HTML cards (to get ALL events)
-        # Structure: <li class="lists"><a href="/detail/...">
-        event_cards = soup.find_all('li', class_='lists')
-
-        for card in event_cards:
-            link = card.find('a', href=re.compile(r'/detail/ar\d+e\d+/'))
-            if not link:
-                continue
+        # Scrape all collected URLs
+        for i, item in enumerate(urls_to_scrape):
+            if item[0] == self.LIST_URL:
+                url, label = item[0], item[1]
+                soup = None
+            else:
+                url, label, soup = item
 
             try:
-                event = self._parse_html_event_card(card)
-                if event and event.get('event_id'):
-                    # Skip if already parsed from JSON-LD
-                    if event['event_id'] not in event_ids_seen:
-                        event_ids_seen.add(event['event_id'])
-                        events.append(event)
-            except Exception as e:
-                print(f"  ⚠️ Erreur parsing HTML card: {e}")
+                if soup is None:
+                    response = self.session.get(url, timeout=15)
+                    response.raise_for_status()
+                    soup = BeautifulSoup(response.content, 'html.parser')
+            except requests.RequestException as e:
+                print(f"  ⚠️ Erreur {label} ({url}): {e}")
                 continue
 
-        print(f"  • {len(events)} événements au total (JSON-LD + HTML)")
+            before = len(events)
+
+            # JSON-LD (only on main Kanto page)
+            if url == self.LIST_URL:
+                for script in soup.find_all('script', type='application/ld+json'):
+                    try:
+                        data = json.loads(script.string)
+                        items = data if isinstance(data, list) else [data]
+                        for event_data in items:
+                            if event_data.get('@type') == 'Event':
+                                event = self._parse_json_ld_event(event_data)
+                                if event and event.get('event_id') and event['event_id'] not in event_ids_seen:
+                                    event_ids_seen.add(event['event_id'])
+                                    events.append(event)
+                    except json.JSONDecodeError:
+                        continue
+
+            # HTML cards
+            for card in soup.find_all('li', class_='lists'):
+                if not card.find('a', href=re.compile(r'/detail/ar\d+e\d+/')):
+                    continue
+                try:
+                    event = self._parse_html_event_card(card)
+                    if event and event.get('event_id') and event['event_id'] not in event_ids_seen:
+                        event_ids_seen.add(event['event_id'])
+                        events.append(event)
+                except Exception as e:
+                    print(f"  ⚠️ Erreur parsing card ({label}): {e}")
+
+            added = len(events) - before
+            print(f"  • {label} ({url.split('/')[-1] or 'p1'}): +{added} ({len(events)} total)")
+
+            if i < len(urls_to_scrape) - 1:
+                time.sleep(0.5)
 
         return events
 
@@ -173,61 +200,75 @@ class KantoHanabiScraper:
             prefecture_code = event_id[:6]
             prefecture = self.PREFECTURES.get(prefecture_code, '')
 
-            # Extract city: <div class="area_name">
-            city_elem = link.find('div', class_='area_name')
-            city = city_elem.get_text(strip=True) if city_elem else ''
-            # Remove icon text
-            city = re.sub(r'^.*?>', '', city).strip()
-
-            # Extract name: <p class="name">
-            name_elem = link.find('p', class_='name')
+            # --- Detect page structure ---
+            # Kanto main page: p.name.bold + div.area_name
+            # Prefecture pages: h2.name + div.area (format: "東京都・港区/会場")
+            name_elem = link.find('p', class_='name') or link.find('h2', class_='name')
             name = name_elem.get_text(strip=True) if name_elem else ''
 
             if not name:
                 return None
 
-            # Extract dates: <div class="detail">
-            detail_elem = link.find('div', class_='detail')
+            # Skip cancelled events
+            if re.search(r'【[^】]*(?:中止|非開催|開催なし|中断)[^】]*】', name):
+                return None
+
+            # City & venue extraction
+            city = ''
+            venue = None
+            city_elem = link.find('div', class_='area_name')  # Kanto page
+            if city_elem:
+                city = re.sub(r'^.*?>', '', city_elem.get_text(strip=True)).strip()
+            else:
+                area_elem = link.find('div', class_='area')   # Prefecture pages
+                if area_elem:
+                    area_text = area_elem.get_text(strip=True)
+                    # Format: "東京都・港区/お台場海浜公園" → city=港区, venue=お台場海浜公園
+                    area_match = re.search(r'[都道府県]・(.+?)(?:/(.+))?$', area_text)
+                    if area_match:
+                        city = area_match.group(1)
+                        venue = area_match.group(2) if area_match.group(2) else None
+
+            # Date extraction — find div.detail with "期間："
             dates_text = ''
-            if detail_elem:
-                # Remove "期間：" prefix
-                dates_text = detail_elem.get_text(strip=True)
-                dates_text = re.sub(r'^.*?期間：', '', dates_text).strip()
+            start_time = None
+            fireworks_count = None
+            for detail_elem in link.find_all('div', class_='detail'):
+                text = detail_elem.get_text(strip=True)
+                if '期間：' in text:
+                    dates_text = re.sub(r'^.*?期間：', '', text).strip()
+                elif '開催時間：' in text:
+                    time_text = re.sub(r'^.*?開催時間：', '', text).strip()
+                    tm = re.search(r'(\d{1,2}:\d{2})', time_text)
+                    if tm:
+                        start_time = tm.group(1)
 
-            # Parse dates - get full list
+            # Fireworks count from status list (prefecture pages)
+            fw_elem = link.find('li', class_=re.compile(r'icon-ico06'))
+            if fw_elem:
+                fw_text = fw_elem.get_text(strip=True)
+                fw_match = re.search(r'((?:約|延べ)?[0-9万千百,]+[0-9]発|[0-9][0-9,]*発)', fw_text)
+                if fw_match:
+                    fireworks_count = fw_match.group(1)
+
             dates_list = parse_japanese_dates_list(dates_text) if dates_text else []
+            detail_url = f"{self.BASE_URL}/detail/{event_id}/"
 
-            # Build location string
-            location = f"{city}, {prefecture}" if city and prefecture else (city or prefecture or '')
-
-            # Build detail URL
-            detail_url = f"{self.BASE_URL}/detail/{event_id}/" if event_id else None
-
-            # Create event dict
-            event = {
-                # Core fields
+            return {
                 'name': name,
                 'event_id': event_id,
-                'dates': dates_list,  # List of all individual dates ["2026/01/17", "2026/01/24", ...]
-                'start_date': dates_list[0] if dates_list else None,  # First date (for filtering)
-                'end_date': dates_list[-1] if dates_list else None,  # Last date (for filtering)
-
-                # Location fields
+                'dates': dates_list,
+                'start_date': dates_list[0] if dates_list else None,
+                'end_date': dates_list[-1] if dates_list else None,
                 'prefecture': prefecture,
                 'city': city,
-                'venue': None,  # Will be filled in detail scraping
-
-                # Event details
-                'description': '',  # Will be filled in detail scraping
-                'start_time': None,  # Will be filled in detail scraping
-                'fireworks_count': None,  # Will be filled in detail scraping
-
-                # Links
-                'detail_url': detail_url,  # Direct link to event page on walkerplus
+                'venue': venue,
+                'description': '',
+                'start_time': start_time,
+                'fireworks_count': fireworks_count,
+                'detail_url': detail_url,
                 'googlemap_link': None
             }
-
-            return event
 
         except Exception as e:
             print(f"  ⚠️ Erreur parsing HTML card: {e}")
@@ -247,6 +288,10 @@ class KantoHanabiScraper:
             # Extract basic info
             name = event_data.get('name', '')
             if not name:
+                return None
+
+            # Skip cancelled events
+            if re.search(r'【[^】]*(?:中止|非開催|開催なし|中断)[^】]*】', name):
                 return None
 
             # Extract dates (format: "2026-01-17")
@@ -381,56 +426,73 @@ class KantoHanabiScraper:
         soup = BeautifulSoup(response.content, 'html.parser')
         detail_data = {}
 
-        # Extract full page text for pattern matching
-        page_text = soup.get_text(separator=' ')
+        # Build a dict of dl/dt/dd pairs (the page uses this structure for all key data)
+        dl_data = {}
+        for dl in soup.find_all('dl'):
+            for dt in dl.find_all('dt'):
+                dd = dt.find_next_sibling('dd')
+                if dd:
+                    key = dt.get_text(strip=True)
+                    val = dd.get_text(strip=True)
+                    dl_data[key] = val
 
-        # Extract detailed dates from "開催期間" section
-        # Pattern: "開催期間 2026年1月17日(土)・24日(土)・31日(土)、2月7日(土)・14日(土)"
-        dates_match = re.search(r'開催期間\s+(.+?)(?:開催時間|$)', page_text, re.DOTALL)
-        if dates_match:
-            dates_text = dates_match.group(1).strip()
-            # Remove line breaks and extra spaces
-            dates_text = re.sub(r'\s+', ' ', dates_text)
-            # Parse all individual dates
+        # Extract dates from "開催期間" entry
+        if '開催期間' in dl_data:
+            dates_text = dl_data['開催期間']
             dates_list = parse_japanese_dates_list(dates_text)
             if dates_list:
                 detail_data['dates'] = dates_list
                 detail_data['start_date'] = dates_list[0]
                 detail_data['end_date'] = dates_list[-1]
 
-        # Extract start time: pattern "19:15～19:25" or "19:15~19:25"
-        time_match = re.search(r'(\d{1,2}:\d{2})[～〜~](\d{1,2}:\d{2})', page_text)
-        if time_match:
-            detail_data['start_time'] = time_match.group(1)
+        # Extract start time from "開催時間" entry (avoids picking up venue opening hours)
+        if '開催時間' in dl_data:
+            time_text = dl_data['開催時間']
+            time_match = re.search(r'(\d{1,2}:\d{2})', time_text)
+            if time_match:
+                detail_data['start_time'] = time_match.group(1)
 
-        # Extract fireworks count: pattern "1200発" or "延べ6000発"
-        fireworks_match = re.search(r'([\d,]+)発', page_text)
-        if fireworks_match:
-            # Try to find more context (e.g., "1日1200発×5日間で、延べ6000発")
-            context_match = re.search(r'(.{0,50}[\d,]+発.{0,50})', page_text)
-            if context_match:
-                detail_data['fireworks_count'] = context_match.group(1).strip()
-            else:
-                detail_data['fireworks_count'] = f"{fireworks_match.group(1)}発"
+        # Extract venue from FAQ-style DT "打ち上げ場所はどこ？..."
+        for key, val in dl_data.items():
+            if '打ち上げ場所' in key or '会場' in key:
+                # Pattern: "打ち上げ場所はXXXです。" → extract XXX
+                venue_match = re.search(r'打ち上げ場所は(.+?)(?:です|。|会場アクセス)', val)
+                if venue_match:
+                    detail_data['venue'] = venue_match.group(1).strip()
+                    break
+                # Fallback: "会場：XXX"
+                venue_match2 = re.search(r'会場[：:]\s*([^。\n]{3,50})', val)
+                if venue_match2:
+                    detail_data['venue'] = venue_match2.group(1).strip()
+                    break
 
-        # Extract venue/location name
-        # Usually near "会場" or at the top of the page
-        venue_match = re.search(r'会場[：:]\s*([^\n<]+)', page_text)
-        if venue_match:
-            detail_data['venue'] = venue_match.group(1).strip()
+        # Extract fireworks count from FAQ-style DT "打ち上げ数は何発？"
+        for key, val in dl_data.items():
+            if '打ち上げ数' in key:
+                # Pattern: "打ち上げ数は約1万3000発です。" → "約1万3000発"
+                count_match = re.search(r'((?:約|延べ)?[0-9万千百,]+[0-9]発|[0-9][0-9,]*発)', val)
+                if count_match:
+                    detail_data['fireworks_count'] = count_match.group(1)
+                break
 
-        # Extract description: look for main content area
-        # Typically in a specific div or section
-        description_elem = soup.find('div', class_=re.compile(r'description|content|detail'))
-        if description_elem:
-            desc_text = description_elem.get_text(separator=' ', strip=True)
-            if len(desc_text) > 50:
-                detail_data['description'] = desc_text[:500]  # Limit to 500 chars
-
-        # Extract Google Maps link
-        maps_link = soup.find('a', href=re.compile(r'google.*maps|maps\.app\.goo\.gl'))
-        if maps_link:
-            detail_data['googlemap_link'] = maps_link.get('href')
+        # Extract GPS from map page: /detail/{event_id}/map.html
+        # The page has <div class="map_canvas"><iframe src="...maps/embed...q=LAT,LNG...">
+        map_url = f"{self.BASE_URL}/detail/{event_id}/map.html"
+        try:
+            map_resp = self.session.get(map_url, timeout=10)
+            if map_resp.status_code == 200:
+                map_soup = BeautifulSoup(map_resp.content, 'html.parser')
+                map_canvas = map_soup.find('div', class_='map_canvas')
+                if map_canvas:
+                    iframe = map_canvas.find('iframe')
+                    if iframe:
+                        src = iframe.get('src', '')
+                        coords = re.search(r'[?&](?:q|center)=(-?\d+\.\d+),(-?\d+\.\d+)', src)
+                        if coords:
+                            detail_data['latitude'] = float(coords.group(1))
+                            detail_data['longitude'] = float(coords.group(2))
+        except requests.RequestException:
+            pass
 
         return detail_data
 
@@ -535,4 +597,17 @@ def main():
 
 
 if __name__ == "__main__":
+    import sys
+    import os
+
+    # Fix imports when running as script (uv run src/scraper_hanabi_kanto.py)
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if project_root not in sys.path:
+        sys.path.insert(0, project_root)
+
+    # Fix emoji encoding on Windows terminals
+    if sys.stdout.encoding and sys.stdout.encoding.lower() not in ('utf-8', 'utf8'):
+        import io
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+
     main()

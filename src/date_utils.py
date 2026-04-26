@@ -82,63 +82,35 @@ def parse_japanese_dates_list(dates_text: str, default_year: int = None) -> list
         dates.append(f"{end_year}/{end_month:02d}/{end_day:02d}")
         return sorted(set(dates))
 
-    # Pattern 2: Multiple days in same month with ・ separator
-    # "1月17日(土)・24日(土)・31日(土)" → all days in January
-    # This pattern appears before commas, so process the full text first
-
-    # Find all occurrences of month+day followed by just days with ・
-    # Example: "1月17日・24日・31日" should give us all three days in month 1
-
-    # Strategy: Find month, then find all following day numbers until we hit another month or comma
-    parts = re.split(r'[、,]', cleaned_text)
+    # Tokenize approach: scan sequentially, updating year/month as we go.
+    # Handles "7月26日・8月2日・9日" correctly (month changes mid-sequence).
+    # Tokens we care about: YYYY年, MM月, DD日, MM/DD (slash format)
 
     current_month = None
+    token_pattern = re.compile(
+        r'(\d{4})年'           # year marker
+        r'|(\d{1,2})月'        # month marker
+        r'|(\d{1,2})日'        # day marker
+        r'|(?<!\d)(\d{1,2})/(\d{1,2})(?!\d)'  # slash format M/D (not part of YYYY/...)
+    )
 
-    for part in parts:
-        part = part.strip()
-        if not part:
-            continue
-
-        # Check if part has a year
-        year_in_part = re.search(r'(\d{4})年', part)
-        if year_in_part:
-            current_year = int(year_in_part.group(1))
-
-        # Pattern A: "1月17日・24日・31日" - month followed by multiple days
-        # First extract the month
-        month_match = re.search(r'(\d{1,2})月', part)
-        if month_match:
-            current_month = int(month_match.group(1))
-
-            # Now find ALL day numbers in this part (including the first one)
-            day_matches = re.findall(r'(\d{1,2})日', part)
-            for day_str in day_matches:
-                day = int(day_str)
-                date_str = f"{current_year}/{current_month:02d}/{day:02d}"
-                if date_str not in dates:  # Avoid duplicates
-                    dates.append(date_str)
-            continue
-
-        # Pattern B: slash format "1/24・31" or "1/24"
-        slash_match = re.search(r'(\d{1,2})/(\d{1,2})', part)
-        if slash_match:
-            current_month = int(slash_match.group(1))
-            first_day = int(slash_match.group(2))
-            dates.append(f"{current_year}/{current_month:02d}/{first_day:02d}")
-
-            # Find additional days with ・
-            additional_days = re.findall(r'・(\d{1,2})', part)
-            for day_str in additional_days:
-                day = int(day_str)
-                dates.append(f"{current_year}/{current_month:02d}/{day:02d}")
-            continue
-
-        # Pattern C: just days "24・31" (no month marker, use current month)
-        if current_month and '日' in part:
-            day_matches = re.findall(r'(\d{1,2})日', part)
-            for day_str in day_matches:
-                day = int(day_str)
-                dates.append(f"{current_year}/{current_month:02d}/{day:02d}")
+    for m in token_pattern.finditer(cleaned_text):
+        yr, mo, day, sl_mo, sl_day = m.group(1), m.group(2), m.group(3), m.group(4), m.group(5)
+        if yr:
+            current_year = int(yr)
+        elif mo:
+            current_month = int(mo)
+            if not (1 <= current_month <= 12):
+                current_month = None
+        elif day and current_month:
+            d = int(day)
+            if 1 <= d <= 31:
+                dates.append(f"{current_year}/{current_month:02d}/{d:02d}")
+        elif sl_mo and sl_day:
+            sm, sd = int(sl_mo), int(sl_day)
+            if 1 <= sm <= 12 and 1 <= sd <= 31:
+                current_month = sm
+                dates.append(f"{current_year}/{sm:02d}/{sd:02d}")
 
     # If no dates found with complex parsing, try simple pattern
     if not dates:
@@ -149,9 +121,17 @@ def parse_japanese_dates_list(dates_text: str, default_year: int = None) -> list
             day = int(day_str)
             dates.append(f"{current_year}/{month:02d}/{day:02d}")
 
-    # Remove duplicates and sort
-    dates = sorted(set(dates))
-    return dates
+    # Remove duplicates, filter invalid dates, and sort
+    valid_dates = []
+    for d in dates:
+        try:
+            parts = d.split('/')
+            y, m, day = int(parts[0]), int(parts[1]), int(parts[2])
+            if 1 <= m <= 12 and 1 <= day <= 31 and y >= 2000:
+                valid_dates.append(d)
+        except (ValueError, IndexError):
+            pass
+    return sorted(set(valid_dates))
 
 
 def split_date_range(date_str: str) -> Tuple[Optional[str], Optional[str]]:
