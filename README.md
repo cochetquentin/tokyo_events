@@ -99,7 +99,7 @@ make update-all
 # - Tokyo Cheapo    : 5 pages (~120 événements)
 # - Festivals       : Mois actuel (skip si déjà scrapé)
 # - Expositions     : Mois actuel (skip si déjà scrapé)
-# - Marchés         : Tous (skip si déjà scrapé)
+# - Marchés         : Mois actuel (skip si déjà scrapé)
 # - Hanabi          : 5 prochains mois
 # - Nettoyage auto  : Supprime événements >30 jours
 
@@ -159,7 +159,7 @@ uv run main.py expositions avril 2025
 #### Scraper des marchés aux puces
 
 ```bash
-# Scrape tous les marchés (pas de paramètre de date)
+# Scrape les marchés du mois actuel
 uv run main.py marches
 ```
 
@@ -383,9 +383,9 @@ scraper = TokyoExpositionScraper()
 expositions = scraper.scrape_expositions(month=4, year=2025)
 scraper.save_to_database(expositions)
 
-# Marchés
+# Marchés (mois actuel par défaut)
 scraper = TokyoMarcheScraper()
-marches = scraper.scrape_marches()
+marches = scraper.scrape_marches()  # month/year = mois actuel par défaut
 scraper.save_to_database(marches)
 
 # Hanabi
@@ -453,6 +453,12 @@ L'extraction GPS est **automatique** lors du scraping avec les taux de succès s
 - **Données manquantes** : Venue non renseigné dans la source
 
 ## 🌟 Améliorations Récentes
+
+### v4.7 - CI/CD + Filtrage marchés par mois (Avril 2026)
+
+- ✅ **GitHub Actions CI** : workflow automatique qui lance les tests sur chaque PR vers `main`
+- ✅ **Filtrage marchés par mois actuel** : le scraper marchés retournait tous les marchés sans filtre de date — aligné sur le comportement des autres scrapers (festivals/expositions)
+- ✅ **README corrigé** : documentation mise à jour pour refléter le comportement réel
 
 ### v4.6 - Couverture de tests complète (Avril 2026)
 
