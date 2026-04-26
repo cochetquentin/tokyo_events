@@ -1,3 +1,4 @@
+import calendar
 import requests
 from bs4 import BeautifulSoup
 import json
@@ -28,13 +29,22 @@ class TokyoMarcheScraper:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         })
 
-    def scrape_marches(self) -> List[Dict]:
+    def scrape_marches(self, month: int = None, year: int = None) -> List[Dict]:
         """
-        Scrape tous les marchés aux puces
+        Scrape les marchés aux puces, filtrés par mois si spécifié.
+
+        Args:
+            month: Mois à filtrer (1-12). Par défaut : mois actuel.
+            year: Année à filtrer. Par défaut : année actuelle.
 
         Returns:
             Liste de dictionnaires contenant les informations des marchés
         """
+        if month is None:
+            month = datetime.now().month
+        if year is None:
+            year = datetime.now().year
+
         url = self.BASE_URL
         print(f"Scraping: {url}")
 
@@ -46,13 +56,31 @@ class TokyoMarcheScraper:
             return []
 
         soup = BeautifulSoup(response.content, 'html.parser')
-        marches = []
-
-        # Parser le contenu de la page
         marches = self._parse_page(soup)
+        marches = self._filter_by_month(marches, month, year)
 
         print(f"✓ {len(marches)} marchés trouvés")
         return marches
+
+    def _filter_by_month(self, events: List[Dict], month: int, year: int) -> List[Dict]:
+        """Garde uniquement les marchés qui ont lieu dans le mois donné."""
+        first_day = datetime(year, month, 1)
+        last_day = datetime(year, month, calendar.monthrange(year, month)[1])
+
+        filtered = []
+        for event in events:
+            start_str = event.get('start_date')
+            end_str = event.get('end_date')
+            if not start_str:
+                continue
+            try:
+                start = datetime.strptime(start_str, '%Y/%m/%d')
+                end = datetime.strptime(end_str, '%Y/%m/%d') if end_str else start
+                if start <= last_day and end >= first_day:
+                    filtered.append(event)
+            except ValueError:
+                continue
+        return filtered
 
     def _parse_page(self, soup: BeautifulSoup) -> List[Dict]:
         """

@@ -179,7 +179,7 @@ def update_all_events(dry_run: bool = False):
     print(f"📊 Événements existants: {len(existing)}")
     scraper_m = TokyoMarcheScraper()
     print(f"🕷️  Scraping marchés...")
-    scraped = scraper_m.scrape_marches()
+    scraped = scraper_m.scrape_marches(month=month, year=year)
     print(f"   ✓ {len(scraped)} événements scrapés")
     new_events = identify_new_events(scraped, existing)
     print(f"🆕 {len(new_events)} nouveaux événements")
@@ -316,7 +316,9 @@ def main():
     if scrape_type == 'marches':
         print(f"🛍️ Scraping des marchés aux puces de Tokyo...\n")
         scraper = TokyoMarcheScraper()
-        events = scraper.scrape_marches()
+        month = datetime.now().month
+        year = datetime.now().year
+        events = scraper.scrape_marches(month=month, year=year)
 
         scraper.save_to_database(events)
 
