@@ -32,3 +32,12 @@ wheels/
 # OS
 .DS_Store
 Thumbs.db
+
+# Fichier de todo local
+todo.md
+
+# Outils de développement one-shot
+tools/
+
+# Fichiers de backup DB
+data/*.backup*

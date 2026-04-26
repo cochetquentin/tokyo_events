@@ -234,12 +234,9 @@ TokyoEvent/
 │   ├── test_location_utils.py        # Tests unitaires locations
 │   └── test_metadata_extractors.py   # Tests unitaires métadonnées
 │
-├── data/                              # Données
-│   ├── tokyo_events.sqlite            # ⭐ Base de données SQLite
-│   └── reference/                     # Données de référence (JSON)
-│
-└── tools/                             # Scripts utilitaires
-    └── update_references_districts.py
+└── data/                              # Données
+    ├── tokyo_events.sqlite            # ⭐ Base de données SQLite
+    └── reference/                     # Données de référence (JSON)
 ```
 
 ## 🎯 Fonctionnalités
