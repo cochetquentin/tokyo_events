@@ -26,7 +26,7 @@ async def get_events(
     category_groups: Optional[str] = Query(None, description="Familles de catégories séparées par virgules (ex: culture_arts,nature_outdoor)"),
     start_date_from: Optional[str] = None,
     start_date_to: Optional[str] = None,
-    has_coordinates: bool = Query(True, description="Uniquement événements avec GPS")
+    has_coordinates: bool = Query(False, description="Uniquement événements avec GPS")
 ):
     """Liste des événements avec filtres."""
     # Parse category_groups et event_types si fournis
@@ -53,7 +53,7 @@ async def get_stats(
     category_groups: Optional[str] = Query(None, description="Familles de catégories séparées par virgules"),
     start_date_from: Optional[str] = None,
     start_date_to: Optional[str] = None,
-    has_coordinates: bool = Query(True, description="Uniquement événements avec GPS")
+    has_coordinates: bool = Query(False, description="Uniquement événements avec GPS")
 ):
     """Statistiques avec filtres."""
     # Parse category_groups et event_types si fournis
