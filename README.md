@@ -29,7 +29,7 @@ L'application web permet de visualiser tous les événements de Tokyo sur une ca
 **Fonctionnalités :**
 - 🗺️ Carte interactive avec tous les événements géolocalisés (style CartoDB Voyager épuré)
 - 🎨 Icônes personnalisées par type (🔥 hanabi, 🎵 festivals, 🎨 expositions, 🏪 marchés)
-- 🔍 Filtrage intelligent par type d'événement et période de dates (utilise une logique de chevauchement pour inclure les événements en cours)
+- 🔍 Filtrage intelligent par type d'événement et période de dates (utilise une logique de chevauchement pour inclure les événements en cours) — raccourcis : Auj. / Sem. / Mois / 3 mois
 - 📍 Popups détaillés avec toutes les informations (nom, dates, lieu, horaires, tarifs, description)
 - 📊 Statistiques dynamiques en temps réel (mises à jour selon les filtres appliqués)
 - 📋 Liste des événements groupée par catégorie avec compteurs
@@ -453,6 +453,11 @@ L'extraction GPS est **automatique** lors du scraping avec les taux de succès s
 - **Données manquantes** : Venue non renseigné dans la source
 
 ## 🌟 Améliorations Récentes
+
+### v4.8 - Raccourci période "3 mois" (Avril 2026)
+
+- ✅ **Nouveau bouton "3 mois"** dans les filtres de période de l'interface web
+- ✅ **Calcul dynamique** : aujourd'hui + 3 mois via `setMonth(+3)`
 
 ### v4.7 - CI/CD + Filtrage marchés par mois (Avril 2026)
 

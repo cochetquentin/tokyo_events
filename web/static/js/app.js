@@ -74,6 +74,11 @@ document.addEventListener('alpine:init', () => {
           startDate = today;
           endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
           break;
+        case '3months':
+          startDate = today;
+          endDate = new Date(today);
+          endDate.setMonth(today.getMonth() + 3);
+          break;
         default:
           return;
       }
