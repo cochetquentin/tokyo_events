@@ -456,6 +456,12 @@ L'extraction GPS est **automatique** lors du scraping avec les taux de succès s
 
 ## 🌟 Améliorations Récentes
 
+### v5.0 - Déduplication bilingue japonais/anglais (Avril 2026)
+
+- ✅ **Translittération kanji/kana → romaji** via `pykakasi` dans la normalisation des noms et localisations (ex : `足立の花火` → `adachi no fireworks`)
+- ✅ **Nouveau critère bilingue** dans le déduplicateur : `token_set_ratio` + `partial_ratio` pour tolérer les tokens supplémentaires (numéros d'édition `第48回`, particules japonaises)
+- ✅ **Détection cross-source** : un événement en japonais (walkerplus) est maintenant fusionné avec son équivalent anglais (tokyo_cheapo) sans créer de doublon
+
 ### v4.9 - Popups hanabi enrichis (Avril 2026)
 
 - ✅ **Heure de début et de fin** dans les popups hanabi (ex : `19:20～20:20`), extraite depuis walkerplus
@@ -486,7 +492,7 @@ L'extraction GPS est **automatique** lors du scraping avec les taux de succès s
 ### v4.5 - Déduplication intelligente + Refonte UI + Catégories (Avril 2026)
 
 - ✅ **Système de déduplication avancé** (`src/deduplicator.py`) : fusion intelligente avec matching fuzzy (rapidfuzz), préfixes communs, chevauchement de dates
-- ✅ **Mapping de traduction japonais → anglais** pour normalisation des noms lors de la comparaison
+- ✅ **Mapping de traduction romaji → anglais** pour normalisation des noms lors de la comparaison
 - ✅ **Détection de doublons par préfixe** : "Festival X" matche avec "Festival X 2026"
 - ✅ **Refonte des catégories** : système unifié avec groupes et couleurs cohérentes
 - ✅ **Refonte UI complète** : thème Tokyo Night + Alpine.js, layout minimaliste épuré
