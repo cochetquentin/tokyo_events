@@ -36,10 +36,13 @@ async def startup_event():
     load_last_update_timestamp()
 
 
+APP_VERSION = "4.8"
+
+
 @app.get("/")
 async def root(request: Request):
     """Page d'accueil avec carte."""
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("index.html", {"request": request, "version": APP_VERSION})
 
 
 @app.get("/health")
