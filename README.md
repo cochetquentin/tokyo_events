@@ -112,7 +112,7 @@ uv run main.py update-all --dry-run
 
 **Fonctionnalités :**
 - ✅ Détection intelligente des nouveaux événements
-- ✅ Évite les doublons (basé sur nom + date)
+- ✅ Évite les doublons — par `event_id` (URL) en intra-scraper, par nom fuzzy en inter-scraper
 - ✅ Nettoyage automatique des événements passés
 - ✅ Statistiques avant/après chaque mise à jour
 - ✅ Skip automatique si déjà scrapé
@@ -226,7 +226,7 @@ TokyoEvent/
 │   └── migrate_add_gps_columns.py     # Migration DB
 │
 │
-├── tests/                             # Tests (276 tests au total)
+├── tests/                             # Tests (288 tests au total)
 │   ├── conftest.py                    # ⭐ Fixtures pytest
 │   ├── test_database.py               # Tests unitaires database
 │   ├── test_deduplicator.py           # Tests unitaires déduplication
@@ -300,7 +300,7 @@ Scraping événements depuis **tokyocheapo.com** :
 ### Tests Automatisés
 
 ```bash
-# Tests unitaires (276 tests)
+# Tests unitaires (288 tests)
 uv run python -m pytest tests/ -v
 
 # Tests de comparaison (tous types: festivals, expositions, hanabi, marches)
@@ -456,6 +456,16 @@ L'extraction GPS est **automatique** lors du scraping avec les taux de succès s
 
 ## 🌟 Améliorations Récentes
 
+### v5.2 - Déduplication par event_id + Tokyo Cheapo slug (Avril 2026)
+
+- ✅ **Déduplication intra-scraper par event_id** : court-circuit immédiat si même ID URL (hanabi `ar0313e123` ou slug tokyo_cheapo), sans passer par la logique fuzzy
+- ✅ **Déduplication inter-scraper par nom** : l'`event_id` est ignoré entre scrapers — seul le nom fuzzy compte, pour croiser des sources qui ont des systèmes d'ID différents
+- ✅ **Tokyo Cheapo event_id** : slug extrait de l'URL (ex: `anime-japan-2026`) désormais sauvegardé en DB comme identifiant canonique
+- ✅ **detail_url Tokyo Cheapo** : lien vers la page source enfin persisté (était perdu après scraping)
+- ✅ **Index unique partiel** sur `event_id WHERE event_id IS NOT NULL` au niveau SQLite
+- ✅ **4 nouveaux tests** couvrant les 4 cas : même event_id intra, event_id différents intra, event_id ignoré inter, noms identiques inter
+- ✅ **Nettoyage DB** : 1 doublon hanabi (`ar0314e541039`) et 6 doublons tokyo_cheapo (événements sans date) supprimés
+
 ### v5.1 - Nettoyage DB robuste + libération espace disque (Avril 2026)
 
 - ✅ **VACUUM automatique** après chaque nettoyage : SQLite libère maintenant l'espace disque réellement (sans VACUUM, les pages supprimées restaient allouées dans le fichier)
@@ -589,7 +599,7 @@ CREATE TABLE events (
     googlemap_link TEXT,
     hours TEXT,
     fee TEXT,
-    event_id TEXT,             -- Hanabi uniquement
+    event_id TEXT,             -- Hanabi (ar0313e123) + Tokyo Cheapo (slug URL)
     start_time TEXT,           -- Hanabi uniquement
     end_time TEXT,             -- Hanabi uniquement
     fireworks_count TEXT,      -- Hanabi uniquement
@@ -648,10 +658,14 @@ CREATE TABLE events (
 
 - **Table unifiée** `events` pour tous les types
 - **Clé primaire** auto-incrémentée (`id`)
-- **Clé unique composite** : `(event_type, name, start_date, location)`
-- **Déduplication** automatique via `INSERT OR REPLACE`
+- **Clé unique composite** : `(event_type, name, start_date, location)` — anti-doublon SQL
+- **Index unique partiel** : `event_id WHERE event_id IS NOT NULL` — garantit l'unicité des IDs URL
+- **Déduplication en 2 passes** :
+  - Intra-scraper : court-circuit sur `event_id` (même slug/ID = doublon, même si le nom a changé)
+  - Inter-scraper : comparaison par nom fuzzy (bilingue JP/EN via translittération)
 - **Champs type-spécifiques** :
-  - Hanabi : `prefecture`, `city`, `venue`, `event_id`, `start_time`, `end_time`, `fireworks_count`, `detail_url`
+  - Hanabi : `prefecture`, `city`, `venue`, `event_id` (ex: `ar0313e123`), `start_time`, `end_time`, `fireworks_count`, `detail_url`
+  - Tokyo Cheapo : `event_id` (slug URL, ex: `anime-japan-2026`), `detail_url`
   - Autres : `location`, `hours`, `fee`
 - **JSON** pour champs `dates` (liste de dates multiples)
 

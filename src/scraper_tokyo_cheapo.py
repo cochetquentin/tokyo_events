@@ -206,6 +206,11 @@ class TokyoCheapoScraper:
             if detail_url.startswith('/'):
                 detail_url = self.BASE_URL + detail_url
 
+            # Extract slug from URL as event_id
+            # e.g. https://tokyocheapo.com/events/anime-japan-2026/ → anime-japan-2026
+            slug_match = re.search(r'/events/([^/]+)/?$', detail_url)
+            event_id = slug_match.group(1) if slug_match else None
+
             # Parse dates
             start_date, end_date = self._parse_date_box(card_elem)
 
@@ -220,6 +225,7 @@ class TokyoCheapoScraper:
             event = {
                 'name': name,
                 'detail_url': detail_url,
+                'event_id': event_id,
                 'start_date': start_date,
                 'end_date': end_date,
                 'location': attrs.get('location'),

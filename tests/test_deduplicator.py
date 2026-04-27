@@ -453,6 +453,71 @@ class TestMerging:
         assert merged['description'] == 'Much longer description with more details about the event'
 
 
+class TestEventIdDeduplication:
+    """Tests de déduplication basée sur event_id (URL)"""
+
+    def setup_method(self):
+        self.deduplicator = EventDeduplicator()
+
+    def test_intra_same_event_id_is_duplicate(self):
+        """Intra : même event_id → doublon même si noms différents"""
+        events = [
+            {'name': 'Yokohama Night Flowers 2026', 'event_id': 'ar0314e541039', 'start_date': '2026/04/04'},
+            {'name': 'Yokohama Night Flowers × GREEN×EXPO2027', 'event_id': 'ar0314e541039', 'start_date': '2026/04/04'},
+        ]
+        normalized = [self.deduplicator._normalize_event(e) for e in events]
+        deduped, report = self.deduplicator._deduplicate_intra(normalized, 'hanabi')
+
+        assert len(deduped) == 1
+        assert report.duplicates_found == 1
+
+    def test_intra_different_event_id_not_duplicate(self):
+        """Intra : event_id différents → pas doublon même si noms très similaires"""
+        events = [
+            {'name': 'Tokyo Hanabi 2026', 'event_id': 'ar0313e000001', 'start_date': '2026/07/25'},
+            {'name': 'Tokyo Hanabi 2026', 'event_id': 'ar0313e000002', 'start_date': '2026/07/25'},
+        ]
+        normalized = [self.deduplicator._normalize_event(e) for e in events]
+        deduped, report = self.deduplicator._deduplicate_intra(normalized, 'hanabi')
+
+        assert len(deduped) == 2
+        assert report.duplicates_found == 0
+
+    def test_inter_event_id_ignored_uses_name(self):
+        """Inter : même event_id ignoré — c'est le nom qui détermine le doublon"""
+        # Même event_id mais noms clairement différents → PAS un doublon inter-scraper
+        new_events = [
+            {'name': 'Sumida River Fireworks', 'event_id': 'ar0313e123', 'start_date': '2026/07/25', 'end_date': '2026/07/25', 'event_type': 'hanabi', 'prefecture': '東京都'},
+        ]
+        existing_events = [
+            {'name': 'Koenji Awa Odori Dance Festival', 'event_id': 'ar0313e123', 'start_date': '2026/07/25', 'end_date': '2026/07/25', 'event_type': 'hanabi', 'prefecture': '東京都'},
+        ]
+        normalized_new = [self.deduplicator._normalize_event(e) for e in new_events]
+        normalized_existing = [self.deduplicator._normalize_event(e) for e in existing_events]
+
+        deduped, report = self.deduplicator._deduplicate_inter(normalized_new, normalized_existing, 'hanabi')
+
+        # Même event_id mais noms très différents → 0 doublon (event_id ignoré en inter)
+        assert report.duplicates_found == 0
+        assert len(deduped) == 1
+
+    def test_inter_different_event_id_but_same_name_is_duplicate(self):
+        """Inter : event_id différents mais même nom → doublon quand même (noms comparés)"""
+        new_events = [
+            {'name': 'Adachi Fireworks Festival', 'event_id': 'adachi-fireworks-festival-2026', 'start_date': '2026/07/20', 'end_date': '2026/07/20', 'event_type': 'tokyo_cheapo', 'location': 'Adachi'},
+        ]
+        existing_events = [
+            {'name': 'Adachi Fireworks Festival', 'event_id': 'ar0313e999', 'start_date': '2026/07/20', 'end_date': '2026/07/20', 'event_type': 'hanabi', 'location': 'Adachi'},
+        ]
+        normalized_new = [self.deduplicator._normalize_event(e) for e in new_events]
+        normalized_existing = [self.deduplicator._normalize_event(e) for e in existing_events]
+
+        deduped, report = self.deduplicator._deduplicate_inter(normalized_new, normalized_existing, 'tokyo_cheapo')
+
+        # Doublon détecté : tokyo_cheapo (priorité 5) < hanabi (priorité 1) → skip sans insertion
+        assert len(deduped) == 0
+
+
 class TestDeduplicationIntra:
     """Tests de déduplication intra-scraper"""
 

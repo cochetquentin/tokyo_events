@@ -342,7 +342,8 @@ class EventDeduplicator:
         self,
         event1: Dict,
         event2: Dict,
-        threshold: float = 0.80
+        threshold: float = 0.80,
+        use_event_id: bool = False
     ) -> Tuple[bool, str]:
         """
         Détermine si 2 événements sont des doublons.
@@ -355,10 +356,22 @@ class EventDeduplicator:
             event1: Premier événement (normalisé)
             event2: Deuxième événement (normalisé)
             threshold: Seuil de similarité (default: 0.80)
+            use_event_id: Si True, court-circuit sur event_id (intra-scraper uniquement)
 
         Returns:
             Tuple (is_duplicate, reason)
         """
+        # Court-circuit sur event_id : identifiant canonique issu de l'URL
+        # Réservé à l'intra-scraper — entre scrapers, on compare les noms
+        if use_event_id:
+            id1 = event1.get('event_id')
+            id2 = event2.get('event_id')
+            if id1 and id2:
+                if id1 == id2:
+                    return True, f"Same event_id ({id1})"
+                else:
+                    return False, f"Different event_id ({id1} vs {id2})"
+
         # Edge case : événements sans dates
         if not event1.get('start_date') or not event2.get('start_date'):
             return False, "Missing dates - skipping comparison"
@@ -511,7 +524,7 @@ class EventDeduplicator:
             is_duplicate = False
 
             for j, existing in enumerate(deduped):
-                is_dup, reason = self._are_duplicates(event, existing)
+                is_dup, reason = self._are_duplicates(event, existing, use_event_id=True)
 
                 if is_dup:
                     # Fusionner (garder le premier trouvé comme primaire)
