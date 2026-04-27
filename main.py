@@ -80,9 +80,16 @@ def clean_old_events(db_path: str, days_old: int = 30) -> int:
     cutoff_date = (datetime.now() - timedelta(days=days_old)).strftime('%Y/%m/%d')
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM events WHERE (end_date < ? OR (end_date IS NULL AND start_date < ?))", (cutoff_date, cutoff_date))
+    cursor.execute("""
+        DELETE FROM events WHERE
+            (end_date < ? AND end_date GLOB '[0-9][0-9][0-9][0-9]/*')
+            OR (end_date IS NULL AND start_date < ? AND start_date GLOB '[0-9][0-9][0-9][0-9]/*')
+            OR (end_date IS NOT NULL AND end_date NOT GLOB '[0-9][0-9][0-9][0-9]/*'
+                AND start_date < ? AND start_date GLOB '[0-9][0-9][0-9][0-9]/*')
+    """, (cutoff_date, cutoff_date, cutoff_date))
     deleted = cursor.rowcount
     conn.commit()
+    conn.execute("VACUUM")
     conn.close()
     return deleted
 

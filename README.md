@@ -456,6 +456,12 @@ L'extraction GPS est **automatique** lors du scraping avec les taux de succès s
 
 ## 🌟 Améliorations Récentes
 
+### v5.1 - Nettoyage DB robuste + libération espace disque (Avril 2026)
+
+- ✅ **VACUUM automatique** après chaque nettoyage : SQLite libère maintenant l'espace disque réellement (sans VACUUM, les pages supprimées restaient allouées dans le fichier)
+- ✅ **Gestion des `end_date` en texte libre** : les événements avec des dates non-structurées (ex : "mi avril-début mai 2026") utilisent `start_date` comme critère de suppression via GLOB `YYYY/*`
+- ✅ **Comparaison SQL sécurisée** : filtrage exclusif aux dates au format `YYYY/MM/DD` pour éviter les faux positifs dans les comparaisons alphabétiques
+
 ### v5.0 - Déduplication bilingue japonais/anglais (Avril 2026)
 
 - ✅ **Translittération kanji/kana → romaji** via `pykakasi` dans la normalisation des noms et localisations (ex : `足立の花火` → `adachi no fireworks`)
