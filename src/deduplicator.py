@@ -15,6 +15,9 @@ from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass, field
 from rapidfuzz import fuzz
 from datetime import datetime
+import pykakasi
+
+_kks = pykakasi.kakasi()
 
 
 @dataclass
@@ -180,6 +183,11 @@ class EventDeduplicator:
         if not name:
             return ""
 
+        # Translittérer kanji/kana → romaji si le nom contient des caractères japonais
+        if re.search(r'[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]', name):
+            result = _kks.convert(name)
+            name = ' '.join(item['hepburn'] for item in result if item['hepburn'])
+
         # Minuscules
         text = name.lower()
 
@@ -237,6 +245,11 @@ class EventDeduplicator:
         if not text:
             return ""
 
+        # Translittérer kanji/kana → romaji
+        if re.search(r'[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]', text):
+            result = _kks.convert(text)
+            text = ' '.join(item['hepburn'] for item in result if item['hepburn'])
+
         # Minuscules
         text = text.lower()
 
@@ -244,8 +257,8 @@ class EventDeduplicator:
         text = unicodedata.normalize('NFD', text)
         text = ''.join(char for char in text if unicodedata.category(char) != 'Mn')
 
-        # Supprimer ponctuation (garder alphanumériques, espaces, caractères japonais)
-        text = re.sub(r'[^\w\s\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]', ' ', text)
+        # Supprimer ponctuation (garder alphanumériques et espaces uniquement)
+        text = re.sub(r'[^\w\s]', ' ', text)
 
         # Normaliser espaces
         text = re.sub(r'\s+', ' ', text).strip()
@@ -269,6 +282,18 @@ class EventDeduplicator:
             return 0.0
 
         return fuzz.ratio(str1, str2)
+
+    def _calculate_token_similarity(self, str1: str, str2: str) -> float:
+        """
+        Calcule la similarité token_set entre 2 chaînes (0-100%).
+
+        Efficace pour les noms de longueurs différentes partageant des tokens clés
+        (ex : noms bilingues japonais/anglais après translittération).
+        """
+        if not str1 or not str2:
+            return 0.0
+
+        return max(fuzz.token_set_ratio(str1, str2), fuzz.partial_ratio(str1, str2))
 
     def _dates_match(self, date1: Optional[str], date2: Optional[str]) -> bool:
         """
@@ -394,6 +419,16 @@ class EventDeduplicator:
         # Critères assouplis (threshold augmenté pour compenser)
         if dates_overlap and name_sim >= 85 and loc_sim >= 75:
             return True, f"Overlap match (name:{name_sim:.0f}%, loc:{loc_sim:.0f}%)"
+
+        # Critères bilingues (noms japonais translittérés vs anglais)
+        # token_set_ratio + partial_ratio tolèrent les tokens supplémentaires (numéros d'édition, particules)
+        name_token_sim = self._calculate_token_similarity(name1, name2)
+        loc_token_sim = self._calculate_token_similarity(
+            event1.get('_norm_location', ''),
+            event2.get('_norm_location', '')
+        )
+        if dates_match_strict and name_token_sim >= 68 and loc_token_sim >= 65:
+            return True, f"Bilingual match (name_token:{name_token_sim:.0f}%, loc_token:{loc_token_sim:.0f}%)"
 
         return False, ""
 
