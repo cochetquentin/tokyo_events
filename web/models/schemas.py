@@ -18,6 +18,9 @@ class EventResponse(BaseModel):
     googlemap_link: Optional[str] = None
     hours: Optional[str] = None
     fee: Optional[str] = None
+    start_time: Optional[str] = None
+    end_time: Optional[str] = None
+    detail_url: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
 

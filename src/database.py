@@ -82,6 +82,7 @@ class EventDatabase:
                     -- Champs spécifiques hanabi
                     event_id TEXT,
                     start_time TEXT,
+                    end_time TEXT,
                     fireworks_count TEXT,
                     detail_url TEXT,
 
@@ -100,6 +101,11 @@ class EventDatabase:
                 CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_event
                 ON events(event_type, name, COALESCE(start_date, ''), COALESCE(location, ''))
             """)
+
+            # Migration : ajouter colonnes manquantes sur DB existante
+            existing_cols = {row[1] for row in conn.execute("PRAGMA table_info(events)")}
+            if 'end_time' not in existing_cols:
+                conn.execute("ALTER TABLE events ADD COLUMN end_time TEXT")
 
             # Créer les autres index pour performance
             conn.execute("CREATE INDEX IF NOT EXISTS idx_event_type ON events(event_type)")

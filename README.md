@@ -30,7 +30,7 @@ L'application web permet de visualiser tous les événements de Tokyo sur une ca
 - 🗺️ Carte interactive avec tous les événements géolocalisés (style CartoDB Voyager épuré)
 - 🎨 Icônes personnalisées par type (🔥 hanabi, 🎵 festivals, 🎨 expositions, 🏪 marchés)
 - 🔍 Filtrage intelligent par type d'événement et période de dates (utilise une logique de chevauchement pour inclure les événements en cours) — raccourcis : Auj. / Sem. / Mois / 3 mois
-- 📍 Popups détaillés avec toutes les informations (nom, dates, lieu, horaires, tarifs, description)
+- 📍 Popups détaillés avec toutes les informations (nom, dates, heure début/fin, lieu, horaires, tarifs, description, liens Walkerplus et Google Maps)
 - 📊 Statistiques dynamiques en temps réel (mises à jour selon les filtres appliqués)
 - 📋 Liste des événements groupée par catégorie avec compteurs
 - 🎯 Clic sur un événement pour zoomer et centrer la carte
@@ -272,14 +272,16 @@ Support des **dates complexes** :
 ### Feux d'Artifice (Hanabi)
 
 Scraping région **Kanto** (7 préfectures) :
-- ✅ **13 champs** extraits par événement
+- ✅ **14 champs** extraits par événement
 - ✅ **Dates multiples** (liste complète des occurrences)
-- ✅ **Horaires de début**
+- ✅ **Horaires de début et de fin** (ex : `19:20～20:20`)
 - ✅ **Nombre de feux d'artifice**
 - ✅ **Préfecture et ville**
 - ✅ **Lieu détaillé**
 - ✅ **Double parsing** (JSON-LD + HTML)
 - ✅ **Coordonnées GPS** via extraction map.html (100% de couverture)
+- ✅ **Lien Walkerplus** vers la page détail de l'événement
+- ✅ **Lien Google Maps** généré automatiquement depuis les coordonnées GPS
 
 ### Tokyo Cheapo Events 🆕
 
@@ -454,6 +456,14 @@ L'extraction GPS est **automatique** lors du scraping avec les taux de succès s
 
 ## 🌟 Améliorations Récentes
 
+### v4.9 - Popups hanabi enrichis (Avril 2026)
+
+- ✅ **Heure de début et de fin** dans les popups hanabi (ex : `19:20～20:20`), extraite depuis walkerplus
+- ✅ **Lien Walkerplus** direct vers la page détail de chaque hanabi
+- ✅ **Lien Google Maps itinéraire** généré automatiquement depuis les coordonnées GPS quand absent en base
+- ✅ **Nouveau champ `end_time`** en base de données avec migration automatique
+- ✅ **Backfill** des `end_time` manquants depuis le champ description pour les données existantes
+
 ### v4.8 - Raccourci période "3 mois" (Avril 2026)
 
 - ✅ **Nouveau bouton "3 mois"** dans les filtres de période de l'interface web
@@ -569,6 +579,7 @@ CREATE TABLE events (
     fee TEXT,
     event_id TEXT,             -- Hanabi uniquement
     start_time TEXT,           -- Hanabi uniquement
+    end_time TEXT,             -- Hanabi uniquement
     fireworks_count TEXT,      -- Hanabi uniquement
     detail_url TEXT,           -- Hanabi + Tokyo Cheapo
     dates TEXT,                -- JSON array pour marches/hanabi
@@ -611,6 +622,7 @@ CREATE TABLE events (
   "city": "台東区・墨田区",
   "venue": "Sumida River",
   "start_time": "19:00",
+  "end_time": "20:00",
   "fireworks_count": "約20,000発",
   "description": "...",
   "detail_url": "https://...",
@@ -627,7 +639,7 @@ CREATE TABLE events (
 - **Clé unique composite** : `(event_type, name, start_date, location)`
 - **Déduplication** automatique via `INSERT OR REPLACE`
 - **Champs type-spécifiques** :
-  - Hanabi : `prefecture`, `city`, `venue`, `event_id`, `start_time`, `fireworks_count`, `detail_url`
+  - Hanabi : `prefecture`, `city`, `venue`, `event_id`, `start_time`, `end_time`, `fireworks_count`, `detail_url`
   - Autres : `location`, `hours`, `fee`
 - **JSON** pour champs `dates` (liste de dates multiples)
 

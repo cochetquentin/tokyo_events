@@ -232,6 +232,7 @@ class KantoHanabiScraper:
             # Date extraction — find div.detail with "期間："
             dates_text = ''
             start_time = None
+            end_time = None
             fireworks_count = None
             for detail_elem in link.find_all('div', class_='detail'):
                 text = detail_elem.get_text(strip=True)
@@ -239,9 +240,14 @@ class KantoHanabiScraper:
                     dates_text = re.sub(r'^.*?期間：', '', text).strip()
                 elif '開催時間：' in text:
                     time_text = re.sub(r'^.*?開催時間：', '', text).strip()
-                    tm = re.search(r'(\d{1,2}:\d{2})', time_text)
+                    tm = re.search(r'(\d{1,2}:\d{2})[～~](\d{1,2}:\d{2})', time_text)
                     if tm:
                         start_time = tm.group(1)
+                        end_time = tm.group(2)
+                    else:
+                        tm = re.search(r'(\d{1,2}:\d{2})', time_text)
+                        if tm:
+                            start_time = tm.group(1)
 
             # Fireworks count from status list (prefecture pages)
             fw_elem = link.find('li', class_=re.compile(r'icon-ico06'))
@@ -265,6 +271,7 @@ class KantoHanabiScraper:
                 'venue': venue,
                 'description': '',
                 'start_time': start_time,
+                'end_time': end_time,
                 'fireworks_count': fireworks_count,
                 'detail_url': detail_url,
                 'googlemap_link': None
@@ -445,12 +452,17 @@ class KantoHanabiScraper:
                 detail_data['start_date'] = dates_list[0]
                 detail_data['end_date'] = dates_list[-1]
 
-        # Extract start time from "開催時間" entry (avoids picking up venue opening hours)
+        # Extract start/end time from "開催時間" entry (avoids picking up venue opening hours)
         if '開催時間' in dl_data:
             time_text = dl_data['開催時間']
-            time_match = re.search(r'(\d{1,2}:\d{2})', time_text)
+            time_match = re.search(r'(\d{1,2}:\d{2})[～~](\d{1,2}:\d{2})', time_text)
             if time_match:
                 detail_data['start_time'] = time_match.group(1)
+                detail_data['end_time'] = time_match.group(2)
+            else:
+                time_match = re.search(r'(\d{1,2}:\d{2})', time_text)
+                if time_match:
+                    detail_data['start_time'] = time_match.group(1)
 
         # Extract venue from FAQ-style DT "打ち上げ場所はどこ？..."
         for key, val in dl_data.items():
