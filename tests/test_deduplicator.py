@@ -52,6 +52,42 @@ class TestNormalization:
         assert self.deduplicator._normalize_location() == ""
         assert self.deduplicator._normalize_location(location="") == ""
 
+    def test_normalize_name_kanji_transliteration(self):
+        """Doit translittérer les kanji en romaji puis appliquer le TRANSLATION_MAP"""
+        # 足立 → adachi, 花火 → hanabi → fireworks (via TRANSLATION_MAP)
+        result = self.deduplicator._normalize_name("足立の花火")
+        assert "adachi" in result
+        assert "fireworks" in result
+
+    def test_normalize_name_kanji_with_edition_number(self):
+        """Doit translittérer un nom avec numéro d'édition kanji"""
+        # 第48回 → dai 48 kai, 足立 → adachi, 花火 → fireworks
+        result = self.deduplicator._normalize_name("第48回 足立の花火")
+        assert "adachi" in result
+        assert "fireworks" in result
+
+    def test_normalize_name_mixed_kanji_ascii(self):
+        """Doit gérer un mélange kanji + ASCII"""
+        result = self.deduplicator._normalize_name("隅田川 Fireworks 2026")
+        assert "sumida" in result
+        assert "fireworks" in result
+
+    def test_normalize_location_kanji(self):
+        """Doit translittérer les kanji dans les localisations"""
+        result = self.deduplicator._normalize_location(
+            prefecture="東京都",
+            city="足立区",
+            venue="荒川河川敷"
+        )
+        assert "arakawa" in result
+        assert "adachi" in result
+
+    def test_normalize_name_translation_after_transliteration(self):
+        """Les tokens traduits par TRANSLATION_MAP doivent l'être après translittération"""
+        # hanabi (mot séparé) → fireworks ; hanabitaikai (un seul token) → non traduit
+        result_separate = self.deduplicator._normalize_name("足立の花火")
+        assert "fireworks" in result_separate
+
 
 class TestSimilarity:
     """Tests de calcul de similarité"""
@@ -236,6 +272,69 @@ class TestDuplicateDetection:
         is_dup, reason = self.deduplicator._are_duplicates(event1, event2)
         assert is_dup is False
         assert "Missing dates" in reason
+
+    def test_bilingual_duplicate_jp_vs_en(self):
+        """Doit détecter doublon entre nom japonais et anglais (cas Adachi)"""
+        event_en = self.deduplicator._normalize_event({
+            'name': 'Adachi Fireworks Festival 2026',
+            'start_date': '2026/05/30',
+            'end_date': '2026/05/30',
+            'location': 'Arakawa River',
+            'event_type': 'tokyo_cheapo'
+        })
+        event_jp = self.deduplicator._normalize_event({
+            'name': '第48回 足立の花火',
+            'start_date': '2026/05/30',
+            'end_date': '2026/05/30',
+            'prefecture': '東京都',
+            'city': '足立区',
+            'venue': '荒川河川敷',
+            'event_type': 'hanabi'
+        })
+
+        is_dup, reason = self.deduplicator._are_duplicates(event_en, event_jp)
+        assert is_dup is True
+        assert "Bilingual" in reason
+
+    def test_bilingual_no_false_positive_different_ward(self):
+        """Ne doit PAS détecter doublon entre festivals de quartiers différents"""
+        event1 = self.deduplicator._normalize_event({
+            'name': 'Shinjuku Festival 2026',
+            'start_date': '2026/07/15',
+            'end_date': '2026/07/15',
+            'location': 'Shinjuku',
+            'event_type': 'festivals'
+        })
+        event2 = self.deduplicator._normalize_event({
+            'name': 'Shibuya Festival 2026',
+            'start_date': '2026/07/15',
+            'end_date': '2026/07/15',
+            'location': 'Shibuya',
+            'event_type': 'festivals'
+        })
+
+        is_dup, _ = self.deduplicator._are_duplicates(event1, event2)
+        assert is_dup is False
+
+    def test_bilingual_no_false_positive_different_city(self):
+        """Ne doit PAS détecter doublon entre marathons de villes différentes"""
+        event1 = self.deduplicator._normalize_event({
+            'name': 'Tokyo Marathon 2026',
+            'start_date': '2026/03/01',
+            'end_date': '2026/03/01',
+            'location': 'Tokyo',
+            'event_type': 'festivals'
+        })
+        event2 = self.deduplicator._normalize_event({
+            'name': 'Osaka Marathon 2026',
+            'start_date': '2026/03/01',
+            'end_date': '2026/03/01',
+            'location': 'Osaka',
+            'event_type': 'festivals'
+        })
+
+        is_dup, _ = self.deduplicator._are_duplicates(event1, event2)
+        assert is_dup is False
 
 
 class TestMerging:
