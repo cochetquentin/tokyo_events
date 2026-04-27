@@ -108,6 +108,7 @@ class EventDatabase:
                 conn.execute("ALTER TABLE events ADD COLUMN end_time TEXT")
 
             # Créer les autres index pour performance
+            conn.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_event_id ON events(event_id) WHERE event_id IS NOT NULL")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_event_type ON events(event_type)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_start_date ON events(start_date)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_end_date ON events(end_date)")
@@ -468,10 +469,15 @@ class EventDatabase:
             row['prefecture'] = None
             row['city'] = None
             row['venue'] = None
-            row['event_id'] = None
             row['start_time'] = None
             row['fireworks_count'] = None
-            row['detail_url'] = None
+            # tokyo_cheapo a un event_id (slug URL) et une detail_url
+            if event_type == 'tokyo_cheapo':
+                row['event_id'] = event.get('event_id')
+                row['detail_url'] = event.get('detail_url')
+            else:
+                row['event_id'] = None
+                row['detail_url'] = None
 
         return row
 
