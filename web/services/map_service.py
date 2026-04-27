@@ -132,6 +132,12 @@ class MapService:
                 dates += f" - {event['end_date']}"
             html += f"<p><strong>Dates:</strong> {dates}</p>"
 
+        if event.get('start_time'):
+            time_str = event['start_time']
+            if event.get('end_time'):
+                time_str += f"～{event['end_time']}"
+            html += f"<p><strong>Heure :</strong> {time_str}</p>"
+
         if event.get('location'):
             html += f"<p><strong>Lieu:</strong> {event['location']}</p>"
 
@@ -148,8 +154,13 @@ class MapService:
         links = []
         if event.get('website'):
             links.append(f"<a href='{event['website']}' target='_blank'>Site officiel</a>")
-        if event.get('googlemap_link'):
-            links.append(f"<a href='{event['googlemap_link']}' target='_blank'>Google Maps</a>")
+        if event.get('detail_url'):
+            links.append(f"<a href='{event['detail_url']}' target='_blank'>Walkerplus</a>")
+        maps_url = event.get('googlemap_link')
+        if not maps_url and event.get('latitude') and event.get('longitude'):
+            maps_url = f"https://www.google.com/maps/dir/?api=1&destination={event['latitude']},{event['longitude']}"
+        if maps_url:
+            links.append(f"<a href='{maps_url}' target='_blank'>Google Maps</a>")
 
         if links:
             html += f"<p>{' | '.join(links)}</p>"
