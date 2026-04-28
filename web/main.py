@@ -36,7 +36,7 @@ async def startup_event():
     load_last_update_timestamp()
 
 
-APP_VERSION = "4.8"
+APP_VERSION = "4.9"
 
 
 @app.get("/")
