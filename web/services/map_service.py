@@ -56,31 +56,17 @@ class MapService:
 
         marker_cluster.add_to(m)
 
-        # Générer HTML et forcer la carte à prendre 100% de hauteur
-        html = m._repr_html_()
+        # get_root().render() génère un HTML standalone complet sans le wrapper
+        # aspect-ratio 60% de _repr_html_() (conçu pour Jupyter, inutilisable en iframe)
+        html = m.get_root().render()
 
-        # Injecter du CSS pour forcer la carte à remplir l'iframe sans scroll
-        custom_css = """
-        <style>
-            html, body {
-                width: 100%;
-                height: 100%;
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
-            }
-            .folium-map {
-                width: 100% !important;
-                height: 100% !important;
-            }
-        </style>
-        """
+        # Forcer html/body/carte à prendre 100% de l'iframe
+        custom_css = """<style>
+            html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
+            .folium-map { width: 100% !important; height: 100% !important; }
+        </style>"""
 
-        # Injecter le CSS au début du HTML
-        if '<head>' in html:
-            html = html.replace('<head>', '<head>' + custom_css)
-        else:
-            html = custom_css + html
+        html = html.replace('<head>', '<head>' + custom_css)
 
         return html
 

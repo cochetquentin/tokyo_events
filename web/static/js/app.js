@@ -305,6 +305,9 @@ document.addEventListener('alpine:init', () => {
       if (iframe) {
         iframe.src = `/api/map/generate?${params.toString()}`;
       }
+
+      // Sur mobile : basculer vers l'onglet carte
+      Alpine.store('mobileView').showMap();
     }
   });
 
@@ -432,6 +435,15 @@ document.addEventListener('alpine:init', () => {
       const seconds = this.cooldownRemaining % 60;
       return `${minutes}m ${seconds}s`;
     }
+  });
+
+  // Mobile View Store
+  Alpine.store('mobileView', {
+    activeTab: 'map',   // 'map' | 'list'
+    filtersOpen: false,
+    switchTab(tab) { this.activeTab = tab; },
+    showMap() { this.activeTab = 'map'; },
+    toggleFilters() { this.filtersOpen = !this.filtersOpen; }
   });
 });
 
