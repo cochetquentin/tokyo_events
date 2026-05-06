@@ -182,8 +182,8 @@ class EventDatabase:
             existing_db_events=existing_events
         )
 
-        # Logger le rapport si doublons détectés
-        if report.duplicates_found > 0:
+        # Logger le rapport si doublons ou skips détectés
+        if report.duplicates_found > 0 or report.skipped_count > 0:
             try:
                 print(f"\n📊 Rapport de déduplication pour {event_type}:")
                 bullet = "•"
@@ -193,6 +193,8 @@ class EventDatabase:
 
             print(f"   {bullet} Événements en entrée      : {report.total_input}")
             print(f"   {bullet} Doublons détectés         : {report.duplicates_found}")
+            if report.skipped_count > 0:
+                print(f"   {bullet} Déjà en DB (skip)        : {report.skipped_count}")
             print(f"   {bullet} Événements fusionnés      : {len(report.merged_events)}")
             print(f"   {bullet} Événements finaux         : {report.final_count}")
 

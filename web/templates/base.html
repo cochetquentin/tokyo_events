@@ -54,13 +54,21 @@
                 </template>
 
                 <!-- Texte dynamique -->
-                <span class="d-none d-md-inline" x-show="$store.updateStatus.status === 'idle'">Mettre à jour</span>
-                <span class="d-none d-md-inline" x-show="$store.updateStatus.status === 'running'">Mise à jour...</span>
-                <span class="d-none d-md-inline" x-show="$store.updateStatus.status === 'cooldown'"
-                      x-text="$store.updateStatus.formatCooldown()">
-                </span>
-                <span class="d-none d-md-inline" x-show="$store.updateStatus.status === 'success'">Réussi !</span>
-                <span class="d-none d-md-inline" x-show="$store.updateStatus.status === 'error'">Erreur</span>
+                <template x-if="$store.updateStatus.status === 'idle'">
+                    <span class="d-none d-md-inline">Mettre à jour</span>
+                </template>
+                <template x-if="$store.updateStatus.status === 'running'">
+                    <span class="d-none d-md-inline">Mise à jour...</span>
+                </template>
+                <template x-if="$store.updateStatus.status === 'cooldown'">
+                    <span class="d-none d-md-inline" x-text="$store.updateStatus.formatCooldown()"></span>
+                </template>
+                <template x-if="$store.updateStatus.status === 'success'">
+                    <span class="d-none d-md-inline">Réussi !</span>
+                </template>
+                <template x-if="$store.updateStatus.status === 'error'">
+                    <span class="d-none d-md-inline">Erreur</span>
+                </template>
             </button>
         </div>
     </nav>
