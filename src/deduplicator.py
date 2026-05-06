@@ -28,6 +28,7 @@ class DeduplicationReport:
     merged_events: List[Dict] = field(default_factory=list)
     final_count: int = 0
     enrichment_stats: Dict[str, int] = field(default_factory=dict)
+    skipped_count: int = 0  # Doublons DB sans enrichissement (SKIP silencieux)
 
 
 class EventDeduplicator:
@@ -440,7 +441,7 @@ class EventDeduplicator:
             event1.get('_norm_location', ''),
             event2.get('_norm_location', '')
         )
-        if dates_match_strict and name_token_sim >= 68 and loc_token_sim >= 65:
+        if dates_match_strict and name_token_sim >= 80 and loc_token_sim >= 70:
             return True, f"Bilingual match (name_token:{name_token_sim:.0f}%, loc_token:{loc_token_sim:.0f}%)"
 
         return False, ""
@@ -588,6 +589,7 @@ class EventDeduplicator:
         to_insert = []
         merged_events = []
         enrichment_counts = {}
+        skipped_count = 0
         new_priority = self._get_source_priority(event_type)
 
         for new_event in new_events:
@@ -630,7 +632,8 @@ class EventDeduplicator:
                             # Compter enrichissements
                             for field in merged.get('_enriched_fields', []):
                                 enrichment_counts[field] = enrichment_counts.get(field, 0) + 1
-                        # Sinon SKIP
+                        else:
+                            skipped_count += 1
 
                     # Même priorité → Enrichir champs manquants
                     else:
@@ -648,6 +651,8 @@ class EventDeduplicator:
 
                             for field in merged.get('_enriched_fields', []):
                                 enrichment_counts[field] = enrichment_counts.get(field, 0) + 1
+                        else:
+                            skipped_count += 1
 
                     found_duplicate = True
                     break
@@ -661,7 +666,8 @@ class EventDeduplicator:
             duplicates_found=len(merged_events),
             merged_events=merged_events,
             final_count=len(to_insert),
-            enrichment_stats=enrichment_counts
+            enrichment_stats=enrichment_counts,
+            skipped_count=skipped_count
         )
 
         return to_insert, report
@@ -695,5 +701,6 @@ class EventDeduplicator:
             duplicates_found=intra_report.duplicates_found + inter_report.duplicates_found,
             merged_events=merged_events,
             final_count=inter_report.final_count,
-            enrichment_stats=enrichment_stats
+            enrichment_stats=enrichment_stats,
+            skipped_count=inter_report.skipped_count
         )
