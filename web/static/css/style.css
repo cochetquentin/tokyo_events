@@ -75,12 +75,16 @@ body {
 .navbar {
   background-color: var(--bg-surface) !important;
   box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-  padding: 0.75rem 0;
-  min-height: 60px;
+  padding: 0.35rem 0;
+  min-height: 44px;
+}
+
+.navbar > .container-fluid {
+  flex-wrap: nowrap !important;
 }
 
 .navbar-brand {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   transition: all var(--transition-base);
@@ -103,6 +107,13 @@ body {
   min-width: 140px;
   transition: all var(--transition-base);
   font-weight: 500;
+}
+
+@media (max-width: 767.98px) {
+  #updateEventsBtn {
+    min-width: unset;
+    padding: 0.25rem 0.5rem;
+  }
 }
 
 #updateEventsBtn:disabled {
@@ -556,51 +567,124 @@ body {
 /* ==========================================
    10. RESPONSIVE
    ========================================== */
-@media (max-width: 768px) {
-  .category-badge {
-    padding: 8px 10px;
-    font-size: 0.8125rem;
-    min-width: auto;
-  }
-
-  .category-badge i {
-    font-size: 16px;
-  }
-
-  .event-item {
-    padding: 10px;
-  }
-
-  .event-item strong {
-    font-size: 0.8125rem;
-  }
-
-  .event-item small {
-    font-size: 0.6875rem;
-  }
-
-  #mapContainer {
-    height: 50vh !important;
-  }
-
-  #eventsListContent {
-    max-height: 50vh !important;
-  }
-
-  .navbar-brand {
-    font-size: 1.25rem;
-  }
-
-  .card-body {
-    padding: var(--spacing-md);
-  }
-
-}
 
 @media (min-width: 769px) and (max-width: 1200px) {
   .category-badge {
     padding: 9px 12px;
     font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  /* Flexbox chain : body → container → mobile-page → filtres → carte
+     Chaque élément prend sa taille naturelle, la carte prend tout le reste */
+  html, body {
+    height: 100%;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 56px; /* espace pour la tabbar fixe */
+    box-sizing: border-box;
+  }
+
+  nav.navbar { flex-shrink: 0; }
+  nav.navbar .container-fluid { flex-wrap: nowrap !important; flex-direction: row !important; justify-content: center; align-items: center; gap: 0.75rem; }
+
+  .container-fluid {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .mobile-page {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Toggle filtres : taille naturelle, dans le flux normal */
+  .mobile-filter-toggle {
+    flex-shrink: 0;
+    position: static;
+    padding: 6px 12px 4px;
+  }
+
+  /* Panneau filtres : taille naturelle, scrollable si trop haut */
+  .mobile-filters-row {
+    flex-shrink: 0;
+    overflow-y: auto;
+    max-height: 50vh;
+    margin-bottom: 0 !important;
+  }
+
+  /* Contenu (carte/liste) : prend tout l'espace restant */
+  .mobile-content-row {
+    flex: 1;
+    min-height: 0;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+  }
+
+  .mobile-content-row > [class*="col"] {
+    flex: 1;
+    min-height: 0;
+    padding: 0;
+  }
+
+  .mobile-content-row .card {
+    height: 100%;
+    border-radius: 0;
+    border: none;
+  }
+
+  .mobile-content-row .card-body {
+    height: 100%;
+    padding: 0 !important;
+  }
+
+  #mapContainer {
+    height: 100%;
+    border-radius: 0;
+  }
+
+  #mapFrame {
+    height: 100%;
+    display: block;
+  }
+
+  /* Styles généraux mobile */
+  .navbar-brand { font-size: 1.1rem; }
+
+  .category-badge {
+    padding: 6px 8px;
+    font-size: 0.75rem;
+    min-width: auto;
+    gap: 4px;
+  }
+  .category-badge i { font-size: 13px; }
+
+  .event-item { padding: 10px; }
+  .event-item strong { font-size: 0.8125rem; }
+  .event-item small { font-size: 0.6875rem; }
+
+  #eventsListContent { max-height: none; }
+
+  .toast-notification {
+    left: var(--spacing-sm);
+    right: var(--spacing-sm);
+    max-width: calc(100% - 16px);
+    top: 68px;
   }
 }
 
@@ -656,7 +740,79 @@ body {
 }
 
 /* ==========================================
-   12. UPDATE RESULTS MODAL
+   12. MOBILE TAB BAR
+   ========================================== */
+.mobile-tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background-color: var(--bg-surface);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: stretch;
+  z-index: 1030;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.mobile-tab-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.6rem;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: color var(--transition-fast);
+}
+
+.mobile-tab-btn i { font-size: 20px; }
+
+.mobile-tab-btn.active { color: var(--accent-primary); }
+
+.mobile-tab-btn.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 2px;
+  background-color: var(--accent-primary);
+  border-radius: 0 0 2px 2px;
+}
+
+.mobile-tab-btn:active {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.mobile-tab-badge {
+  position: absolute;
+  top: 6px;
+  right: calc(50% - 22px);
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background-color: var(--accent-primary);
+  color: #000;
+  font-size: 0.6rem;
+  font-weight: 700;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ==========================================
+   13. UPDATE RESULTS MODAL
    ========================================== */
 .modal-content {
   background-color: var(--bg-elevated);
