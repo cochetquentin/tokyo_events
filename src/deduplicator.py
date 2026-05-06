@@ -436,12 +436,20 @@ class EventDeduplicator:
 
         # Critères bilingues (noms japonais translittérés vs anglais)
         # token_set_ratio + partial_ratio tolèrent les tokens supplémentaires (numéros d'édition, particules)
+        # Exige au moins 1 token significatif commun (hors termes génériques) pour éviter les faux positifs
+        # comme "Vietnam Festival" ≈ "Hibiya Music Festival" (seul "festival" en commun)
         name_token_sim = self._calculate_token_similarity(name1, name2)
         loc_token_sim = self._calculate_token_similarity(
             event1.get('_norm_location', ''),
             event2.get('_norm_location', '')
         )
-        if dates_match_strict and name_token_sim >= 80 and loc_token_sim >= 70:
+        _GENERIC_TOKENS = {
+            'festival', 'market', 'expo', 'fes', 'festa', 'fair', 'show',
+            'event', 'night', 'spring', 'summer', 'autumn', 'winter',
+            'matsuri', 'taikai', 'no', 'kai', 'dai', 'de', 'the', 'in', 'at',
+        }
+        meaningful_shared = set(name1.split()) & set(name2.split()) - _GENERIC_TOKENS
+        if dates_match_strict and name_token_sim >= 68 and loc_token_sim >= 65 and meaningful_shared:
             return True, f"Bilingual match (name_token:{name_token_sim:.0f}%, loc_token:{loc_token_sim:.0f}%)"
 
         return False, ""
